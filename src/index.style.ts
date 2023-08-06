@@ -1,4 +1,3 @@
-import { styled } from 'styled-components/native';
 import { Dimensions } from 'react-native';
 
 export const COLOR = {
@@ -16,11 +15,3 @@ export const COLOR = {
 
 export const screenWidth = Dimensions.get('screen').width;
 export const screenHeight = Dimensions.get('screen').height;
-
-export const PageViewContainer = styled.View`
-  width: ${screenWidth}px;
-  height: ${screenHeight}px;
-  position: relative;
-  background-color: white;
-  z-index: 5;
-`;

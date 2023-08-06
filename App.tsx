@@ -5,11 +5,14 @@ import Router from './src/pages/Router';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { EventProvider } from 'react-native-outside-press';
 import * as NavigationBar from 'expo-navigation-bar';
+import { Platform } from 'react-native';
 
 export default function App() {
-  NavigationBar.setBackgroundColorAsync('white');
-  NavigationBar.setButtonStyleAsync("dark");
-  NavigationBar.setVisibilityAsync("hidden");
+  if(Platform.OS === 'android'){
+    NavigationBar.setBackgroundColorAsync('white');
+    NavigationBar.setButtonStyleAsync("dark");
+    NavigationBar.setVisibilityAsync("hidden");
+  }
 
   const [fontsLoaded] = useFonts({
     Apple: require('./src/assets/fonts/AppleSDGothicNeoR.ttf'),

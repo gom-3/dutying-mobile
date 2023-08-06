@@ -1,19 +1,20 @@
 import { days } from '@pages/HomePage/components/Calendar';
 import Shift from '@components/Shift';
 import useCalendar from './index.hook';
-import { COLOR, PageViewContainer } from 'index.style';
-import { View, Text, Pressable, Button, StyleSheet } from 'react-native';
+import { COLOR } from 'index.style';
+import { View, Text, Pressable, StyleSheet } from 'react-native';
+import PageViewContainer from '@components/PageView';
 
 const RegistDuty = () => {
   const {
     state: { date, weeks, selectedDate, shiftTypes, shiftTypesCount },
-    actions: { insertShift, deleteShift, isSameDate, selectDate, saveRegistDutyChange },
+    actions: { insertShift, deleteShift, isSameDate, selectDate },
   } = useCalendar();
   return (
     <PageViewContainer>
       <View style={styles.calendarHeaderView}>
         {days.map((day) => (
-          <View style={styles.dayView}>
+          <View key={day} style={styles.dayView}>
             <Text
               style={[
                 styles.dayText,
@@ -28,9 +29,10 @@ const RegistDuty = () => {
         ))}
       </View>
       {weeks.map((week, i) => (
-        <View style={styles.weekView}>
+        <View key={i} style={styles.weekView}>
           {week.map((day, j) => (
             <Pressable
+              key={day.date.getTime()}
               style={{
                 flex: 1,
                 height: 67,
@@ -70,33 +72,19 @@ const RegistDuty = () => {
         <View style={styles.registHeaderView}>
           <Text style={styles.registHeaderText}>근무 유형 선택</Text>
           <Pressable onPress={deleteShift}>
-            <View
-              style={styles.deleteShiftView}
-            >
+            <View style={styles.deleteShiftView}>
               <Text style={styles.deleteShiftText}>삭제</Text>
             </View>
           </Pressable>
         </View>
         <View style={styles.registShiftItemsView}>
           {shiftTypes.map((shift, i) => (
-            <Pressable onPress={() => insertShift(i)}>
+            <Pressable key={shift.name} onPress={() => insertShift(i)}>
               <View style={styles.shiftItemView}>
-                <Text style={styles.shiftCountText}>
-                  {shiftTypesCount[i]}
-                </Text>
-                <View
-                  style={[styles.shiftView, {backgroundColor:shift.color}]}
-                >
-                  <Text
-                    style={styles.shiftShortNameText}
-                  >
-                    {shift.shortName}
-                  </Text>
-                  <Text
-                    style={styles.shiftFullNameText}
-                  >
-                    {shift.name}
-                  </Text>
+                <Text style={styles.shiftCountText}>{shiftTypesCount[i]}</Text>
+                <View style={[styles.shiftView, { backgroundColor: shift.color }]}>
+                  <Text style={styles.shiftShortNameText}>{shift.shortName}</Text>
+                  <Text style={styles.shiftFullNameText}>{shift.name}</Text>
                 </View>
               </View>
             </Pressable>
@@ -144,7 +132,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
   },
   deleteShiftText: { fontSize: 12, fontFamily: 'Apple', color: COLOR.main2 },
-  registShiftItemsView:{ flexDirection: 'row', marginTop: 26 },
+  registShiftItemsView: { flexDirection: 'row', marginTop: 26 },
   shiftItemView: { alignItems: 'center', justifyContent: 'center' },
   shiftCountText: { fontFamily: 'Poppins', color: COLOR.sub25, fontSize: 12 },
   shiftView: {
