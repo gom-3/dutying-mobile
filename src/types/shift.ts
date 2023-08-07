@@ -10,7 +10,9 @@ type Shift = {
 type Schedule = {
   name:string;
   color:string;
-  startTime:string;
-  endTime:string;
+  startTime:Date;
+  endTime:Date;
   level:number;
+  isStart:boolean;
+  isEnd:boolean;
 }

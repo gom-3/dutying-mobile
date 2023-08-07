@@ -5,9 +5,11 @@ import { shallow } from 'zustand/shallow';
 import { DateType } from '.';
 import { mockCalendarData } from '@mocks/calendar';
 
+const memoizedCalendars = new Map();
+
 const useCalendar = () => {
-  const [date, setState] = useCaledarDateStore(
-    (state) => [state.date, state.setState],
+  const [date, calendar, setState] = useCaledarDateStore(
+    (state) => [state.date, state.calendar, state.setState],
     shallow,
   );
   const [shiftTypes] = useShiftTypeStore((state) => [state.shiftTypes], shallow);
@@ -19,6 +21,13 @@ const useCalendar = () => {
   };
 
   const initCalendar = (year: number, month: number) => {
+    const key = `${year}-${month}`;
+
+    if (memoizedCalendars.has(key)) {
+      setState('calendar', memoizedCalendars.get(key));
+      return;
+    }
+
     const first = new Date(year, month, 1);
     const last = new Date(year, month + 1, 0);
     const calendar: DateType[] = [];
@@ -48,15 +57,25 @@ const useCalendar = () => {
       };
       calendar.push(date);
     }
-    setState('calendar', [...calendar]);
-    const weeks = [];
-    while (calendar.length > 0) weeks.push(calendar.splice(0, 7));
-    setWeeks(weeks);
+    setState('calendar', calendar);
+    setState('isCalendarReady', true);
+    memoizedCalendars.set(key, calendar);
+    console.log('init');
   };
 
   useEffect(() => {
+    if (calendar.length > 0) {
+      const tempCalendar = [...calendar];
+      const weeks = [];
+      while (tempCalendar.length > 0) weeks.push(tempCalendar.splice(0, 7));
+      setWeeks(weeks);
+      console.log(4);
+    }
+  }, [calendar]);
+
+  useEffect(() => {
     initCalendar(date.getFullYear(), date.getMonth());
-  }, [date.getFullYear(), date.getMonth()]);
+  }, [date]);
 
   const isSameDate = (date1: Date, date2: Date) => {
     return (

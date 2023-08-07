@@ -12,6 +12,7 @@ interface State {
   isDateSelectorOpen: boolean;
   onSideMenuClosing: boolean;
   calendar: DateType[];
+  isCalendarReady: boolean;
   setDateOnThread: (value: string) => void;
 }
 
@@ -31,6 +32,7 @@ export const useCaledarDateStore = create<Store>()(
     isCardOpen: false,
     isPopupOpen: false,
     isDateSelectorOpen: false,
+    isCalendarReady: false,
     setState: (state, value) => set((prev) => ({ ...prev, [state]: value })),
     setDateOnThread: (value) => set((prev) => ({ ...prev, date: new Date(value) })),
   })),

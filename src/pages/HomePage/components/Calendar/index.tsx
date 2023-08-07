@@ -19,7 +19,6 @@ const Calendar = () => {
   } = useCalendar();
 
   useDeviceCalendar();
-
   return (
     <View style={styles.calendar}>
       <View style={styles.calendarHeader}>
@@ -34,9 +33,13 @@ const Calendar = () => {
         ))}
       </View>
       {weeks.map((week, i) => (
-        <View key={i} style={{ flexDirection: 'row', borderColor: '#d6d6de', borderTopWidth: 0.5 }}>
+        <View key={i} style={styles.week}>
           {week.map((day) => (
-            <Pressable key={day.date.getTime()} style={styles.day} onPress={() => dateClickHandler(day.date)}>
+            <Pressable
+              key={day.date.getTime()}
+              style={styles.day}
+              onPress={() => dateClickHandler(day.date)}
+            >
               <View
                 style={[
                   styles.day,
@@ -50,6 +53,39 @@ const Calendar = () => {
                   isToday={isSameDate(today, day.date)}
                   fullNameVisibilty={false}
                 />
+                {day.schedules.map((schedule) => (
+                  <View
+                    key={schedule.name}
+                    style={[
+                      styles.scheduleView,
+                      {
+                        backgroundColor: '#5AF8F84D',
+                        top: 27 + (schedule.level - 1) * 24,
+                        width: schedule.isEnd ? '95%' : '100%',
+                        borderTopLeftRadius: schedule.isStart ? 2 : 0,
+                        borderBottomLeftRadius: schedule.isStart ? 2 : 0,
+                        borderTopRightRadius: schedule.isEnd ? 2 : 0,
+                        borderBottomRightRadius: schedule.isEnd ? 2 : 0,
+                      },
+                    ]}
+                  >
+                    {schedule.isStart && (
+                      <View
+                        style={[
+                          styles.scheduleStartView,
+                          {
+                            backgroundColor: '#5AF8F8',
+                          },
+                        ]}
+                      />
+                    )}
+                    {(schedule.isStart || day.date.getDay() === 0) && (
+                      <Text numberOfLines={1} style={styles.scheduleText}>
+                        {schedule.name}
+                      </Text>
+                    )}
+                  </View>
+                ))}
               </View>
             </Pressable>
           ))}
@@ -87,11 +123,31 @@ const styles = StyleSheet.create({
   },
   week: {
     flexDirection: 'row',
+    borderColor: '#d6d6de',
+    borderTopWidth: 0.5,
   },
   day: {
     flex: 1,
-    height: 88,
+    height: 96,
     backgroundColor: 'white',
+    position: 'relative',
+  },
+  scheduleView: {
+    position: 'absolute',
+    height: 20,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  scheduleStartView: {
+    width: 4,
+    height: '100%',
+    borderRadius: 2,
+  },
+  scheduleText: {
+    fontFamily: 'Poppins',
+    color: COLOR.sub2,
+    fontSize: 12,
+    marginLeft: 4,
   },
 });
 

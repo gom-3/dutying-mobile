@@ -1,4 +1,4 @@
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import Animated, { ZoomInRotate, ZoomOutRotate } from 'react-native-reanimated';
 import { COLOR, screenWidth } from 'index.style';
 import { GestureDetector } from 'react-native-gesture-handler';
@@ -58,6 +58,26 @@ const ScheduleCard = () => {
               )}
               {selectedDateData?.shift !== undefined && <PencilIcon />}
             </View>
+            <ScrollView style={{ padding: 24 }}>
+              {selectedDateData?.schedules.map((schedule) => (
+                <View style={styles.scheduleView}>
+                  <View
+                    style={[
+                      styles.scheduleColorView,
+                      {
+                        backgroundColor: schedule.color,
+                      },
+                    ]}
+                  />
+                  <View>
+                    <Text style={styles.scheduleNameText}>{schedule.name}</Text>
+                    <Text style={styles.scheduleDateText}>
+                      {schedule.startTime.getMonth() + '월 ' + schedule.endTime.getDate() + '일'}
+                    </Text>
+                  </View>
+                </View>
+              ))}
+            </ScrollView>
             <Pressable style={styles.addButtonIcon} onPress={addButtonPressHandler}>
               <AddButtonIcon />
             </Pressable>
@@ -76,7 +96,6 @@ const styles = StyleSheet.create({
     position: 'absolute',
     flexDirection: 'row',
     zIndex: 10,
-    // overflow: 'hidden',
     top: '25%',
     left: -screenWidth * 0.76,
   },
@@ -136,6 +155,15 @@ const styles = StyleSheet.create({
     marginLeft: 20,
     fontFamily: 'Apple',
     color: COLOR.sub25,
+  },
+  scheduleView: { flexDirection: 'row', marginBottom: 24 },
+  scheduleColorView: { width: 24, height: 24, borderRadius: 5, marginRight: 20 },
+  scheduleNameText: { fontFamily: 'Apple', fontSize: 16, color: COLOR.sub1 },
+  scheduleDateText: {
+    fontFamily: 'Poppins',
+    fontSize: 12,
+    color: COLOR.sub3,
+    marginTop: 8,
   },
   addButtonIcon: {
     position: 'absolute',
