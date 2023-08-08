@@ -1,17 +1,18 @@
 import { useShiftTypeStore } from 'store/shift';
 import { useEffect, useState } from 'react';
 import { useCaledarDateStore } from 'store/calendar';
-import { shallow } from 'zustand/shallow';
 import { DateType } from '../Calendar';
 import { runOnJS, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 import { Gesture } from 'react-native-gesture-handler';
 import { screenWidth } from 'index.style';
 
 const useScheduleCard = () => {
-  const [date, calendar, setDateOnThread, setState] = useCaledarDateStore(
-    (state) => [state.date, state.calendar, state.setDateOnThread, state.setState],
-    shallow,
-  );
+  const [date, calendar, setDateOnThread, setState] = useCaledarDateStore((state) => [
+    state.date,
+    state.calendar,
+    state.setDateOnThread,
+    state.setState,
+  ]);
   const [shiftTypes] = useShiftTypeStore((state) => [state.shiftTypes]);
   const [selectedDateData, setSelectedDateData] = useState<DateType>();
 

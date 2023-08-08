@@ -1,8 +1,7 @@
 import { useCaledarDateStore } from 'store/calendar';
-import { shallow } from 'zustand/shallow';
 
 const useDateSelector = () => {
-  const [date, setState] = useCaledarDateStore((state) => [state.date, state.setState], shallow);
+  const [date, setState] = useCaledarDateStore((state) => [state.date, state.setState]);
 
   const closeDateSelector = () => {
     setState('isDateSelectorOpen', false);

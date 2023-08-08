@@ -1,6 +1,7 @@
 import { DateType } from '@pages/HomePage/components/Calendar';
-import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
+import { shallow } from 'zustand/shallow';
+import { createWithEqualityFn } from 'zustand/traditional';
 
 interface State {
   year: number;
@@ -21,8 +22,8 @@ interface Store extends State {
   setState: (key: keyof State, value: any) => void;
 }
 
-export const useCaledarDateStore = create<Store>()(
-  devtools((set, get) => ({
+export const useCaledarDateStore = createWithEqualityFn<Store>()(
+  devtools((set, _) => ({
     year: new Date().getFullYear(),
     month: new Date().getMonth(),
     date: new Date(),
@@ -36,4 +37,5 @@ export const useCaledarDateStore = create<Store>()(
     setState: (state, value) => set((prev) => ({ ...prev, [state]: value })),
     setDateOnThread: (value) => set((prev) => ({ ...prev, date: new Date(value) })),
   })),
+  shallow,
 );

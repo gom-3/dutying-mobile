@@ -1,6 +1,7 @@
 import { shiftList } from '@mocks/calendar';
-import { create } from 'zustand';
 import { devtools, persist } from 'zustand/middleware';
+import { shallow } from 'zustand/shallow';
+import { createWithEqualityFn } from 'zustand/traditional';
 
 interface State {
   shiftTypes: Shift[];
@@ -11,14 +12,15 @@ interface Store extends State {
   setState: (key: keyof State, value: any) => void;
 }
 
-export const useShiftTypeStore = create<Store>()(
+export const useShiftTypeStore = createWithEqualityFn<Store>()(
   devtools(
     persist(
-      (set, get) => ({
+      (set, _) => ({
         shiftTypes: shiftList,
         setState: (state, value) => set((prev) => ({ ...prev, [state]: value })),
       }),
       { name: 'useShiftTypeStore' },
     ),
   ),
+  shallow,
 );

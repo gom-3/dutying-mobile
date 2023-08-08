@@ -1,14 +1,15 @@
 import { useShiftTypeStore } from 'store/shift';
 import { useEffect, useState } from 'react';
 import { useCaledarDateStore } from 'store/calendar';
-import { shallow } from 'zustand/shallow';
 
 const useCalendarHeader = () => {
-  const [date, calendar, isDateSelectorOpen, setState] = useCaledarDateStore(
-    (state) => [state.date, state.calendar, state.isDateSelectorOpen, state.setState],
-    shallow,
-  );
-  const [shiftTypes] = useShiftTypeStore((state) => [state.shiftTypes], shallow);
+  const [date, calendar, isDateSelectorOpen, setState] = useCaledarDateStore((state) => [
+    state.date,
+    state.calendar,
+    state.isDateSelectorOpen,
+    state.setState,
+  ]);
+  const [shiftTypes] = useShiftTypeStore((state) => [state.shiftTypes]);
   const [shiftTypesCount, setShiftTypesCount] = useState(
     Array.from({ length: shiftTypes.length }, () => 0),
   );
