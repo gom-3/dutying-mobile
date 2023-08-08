@@ -28,7 +28,7 @@ const HomePage = ({ navigation }: HomeNavigationProps) => {
       <Header />
       <Calendar />
       <NavigationBar />
-      {isDateSelectorOpen && <DateSelector />}
+      {/* {isDateSelectorOpen && <DateSelector />} */}
       {isCardOpen && <ScheduleCard />}
       {isSideMenuOpen && <SideMenu />}
       {isPopupOpen && <SchedulePopup />}

@@ -4,12 +4,14 @@ import useCalendar from './index.hook';
 import { COLOR } from 'index.style';
 import { View, Text, Pressable, StyleSheet } from 'react-native';
 import PageViewContainer from '@components/PageView';
+import useImagePicker from 'hooks/useImagePicker';
 
 const RegistDuty = () => {
   const {
     state: { date, weeks, selectedDate, shiftTypes, shiftTypesCount },
     actions: { insertShift, deleteShift, isSameDate, selectDate },
   } = useCalendar();
+  useImagePicker();
   return (
     <PageViewContainer>
       <View style={styles.calendarHeaderView}>

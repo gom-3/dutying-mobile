@@ -5,6 +5,7 @@ import { Pressable, StyleSheet, View, Text } from 'react-native';
 import useCalendarHeader from './index.hook';
 import { COLOR } from 'index.style';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import DateSelector from '@components/DateSelector';
 
 const Header = () => {
   const {
@@ -15,14 +16,15 @@ const Header = () => {
   return (
     <SafeAreaView style={styles.headerContainer}>
       <View style={styles.firstLevelView}>
-        <Pressable onPress={dateViewClickHander}>
+        {/* <Pressable onPress={dateViewClickHander}>
           <View style={styles.dateView}>
             <Text style={styles.dateText}>
               {date.getFullYear()}년 {date.getMonth() + 1}월
             </Text>
             <UnderArrowIcon />
           </View>
-        </Pressable>
+        </Pressable> */}
+        <DateSelector />
         <View style={styles.sideMenuView}>
           <View style={styles.bellView}>
             <BellIcon />
@@ -97,7 +99,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginRight: 10,
-    zIndex: 3,
   },
   shiftBoxView: {
     borderRadius: 2,

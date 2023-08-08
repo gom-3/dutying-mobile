@@ -11,11 +11,10 @@ const useImagePicker = () => {
       quality: 1,
     });
 
-    console.log(result);
-
-    // if (!result.canceled) {
-    //   setImage(result.assets[0].uri);
-    // }
+    if (!result.canceled) {
+      // api request
+      console.log(1);
+    }
   };
   useEffect(()=>{
     pickImage();
