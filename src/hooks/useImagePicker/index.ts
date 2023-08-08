@@ -1,7 +1,8 @@
 import * as ImagePicker from 'expo-image-picker';
-import { useEffect } from 'react';
+import { useState } from 'react';
 
 const useImagePicker = () => {
+  const [image, setImage] = useState<string>();
   const pickImage = async () => {
     // No permissions request is necessary for launching the image library
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -12,13 +13,11 @@ const useImagePicker = () => {
     });
 
     if (!result.canceled) {
-      // api request
-      console.log(1);
+      setImage(result.assets[0].uri);
     }
   };
-  useEffect(()=>{
-    pickImage();
-  },[]);
+
+  return { state: { image }, actions: { pickImage } };
 };
 
 export default useImagePicker;
