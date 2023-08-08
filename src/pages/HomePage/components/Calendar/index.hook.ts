@@ -60,7 +60,6 @@ const useCalendar = () => {
     setState('calendar', calendar);
     setState('isCalendarReady', true);
     memoizedCalendars.set(key, calendar);
-    console.log('init');
   };
 
   useEffect(() => {
@@ -69,7 +68,6 @@ const useCalendar = () => {
       const weeks = [];
       while (tempCalendar.length > 0) weeks.push(tempCalendar.splice(0, 7));
       setWeeks(weeks);
-      console.log(4);
     }
   }, [calendar]);
 
