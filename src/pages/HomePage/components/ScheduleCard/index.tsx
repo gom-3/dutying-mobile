@@ -60,17 +60,17 @@ const ScheduleCard = () => {
             </View>
             <ScrollView style={{ padding: 24 }}>
               {selectedDateData?.schedules.map((schedule) => (
-                <View style={styles.scheduleView}>
+                <View key={schedule.title} style={styles.scheduleView}>
                   <View
                     style={[
                       styles.scheduleColorView,
                       {
-                        backgroundColor: schedule.color,
+                        backgroundColor: '#5AF8F8',
                       },
                     ]}
                   />
                   <View>
-                    <Text style={styles.scheduleNameText}>{schedule.name}</Text>
+                    <Text style={styles.scheduleNameText}>{schedule.title}</Text>
                     <Text style={styles.scheduleDateText}>
                       {schedule.startTime.getMonth() + '월 ' + schedule.endTime.getDate() + '일'}
                     </Text>

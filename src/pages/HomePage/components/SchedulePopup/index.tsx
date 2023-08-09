@@ -4,13 +4,18 @@ import ExitIcon from '@assets/svgs/exit.svg';
 import CheckIcon from '@assets/svgs/check.svg';
 import { COLOR } from 'index.style';
 import { useCaledarDateStore } from 'store/calendar';
-import { shallow } from 'zustand/shallow';
 import Time from './items/Time';
 import Alarm from './items/Alarm';
 import Repeat from './items/Repeat';
+import useSchedulePopup from './index.hook';
 
 const SchedulePopup = () => {
-  const [setState] = useCaledarDateStore((state) => [state.setState], shallow);
+  const [setState] = useCaledarDateStore((state) => [state.setState]);
+  const {
+    state: { titleText },
+    actions: { titleInputChangeHandler, createEvent },
+  } = useSchedulePopup();
+
   return (
     <Animated.ScrollView
       entering={SlideInDown.duration(300)}
@@ -23,13 +28,32 @@ const SchedulePopup = () => {
         </Pressable>
         <Text style={styles.headerTitle}>일정 등록</Text>
         <Pressable>
-          <CheckIcon />
+          <CheckIcon onPress={createEvent} />
         </Pressable>
       </View>
-      <TextInput style={styles.title} placeholder="제목" />
+      <TextInput
+        value={titleText}
+        onChangeText={titleInputChangeHandler}
+        style={styles.title}
+        placeholder="제목"
+      />
       <Time />
       <Alarm />
       <Repeat />
+      <Text
+        style={{
+          color: COLOR.sub3,
+          fontFamily: 'Apple',
+          fontSize: 16,
+          paddingHorizontal: 24,
+          paddingVertical: 10,
+          borderTopColor: '#d6d6de',
+          borderTopWidth: 0.5,
+        }}
+      >
+        메모
+      </Text>
+      <TextInput />
     </Animated.ScrollView>
   );
 };
