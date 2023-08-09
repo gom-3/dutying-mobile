@@ -1,8 +1,19 @@
-import { useEffect, useState } from 'react';
-import * as Calendar from 'expo-calendar';
+import { useEffect } from 'react';
 import { useCaledarDateStore } from 'store/calendar';
 import { useDeviceCalendarStore } from './store';
-import { Event } from 'expo-calendar';
+import {
+  Event,
+  Calendar,
+  createCalendarAsync,
+  getEventsAsync,
+  requestCalendarPermissionsAsync,
+  getCalendarsAsync,
+  Availability,
+  CalendarType,
+  EntityTypes,
+  CalendarAccessLevel,
+  deleteCalendarAsync,
+} from 'expo-calendar';
 
 export type Schedule = Event & {
   level: number;
@@ -23,8 +34,9 @@ const useDeviceCalendar = () => {
       state.setState,
     ],
   );
-  const [deviceCalendar, setDeivceCalendar] = useDeviceCalendarStore((state) => [
+  const [deviceCalendar, dutyingCalendars, setDeivceCalendar] = useDeviceCalendarStore((state) => [
     state.calendars,
+    state.dutyingCalendars,
     state.setState,
   ]);
 
@@ -36,7 +48,7 @@ const useDeviceCalendar = () => {
     // const startDate = new Date(year, month, -(first.getDay() - 1)); 전달 까지 범위 확대
     // const endDate = new Date(year, month + 1, 6 - last.getDay()); 다음달 까지 범위 확대
 
-    const events = await Calendar.getEventsAsync(['1', '2', '3', '5'], first, last);
+    const events = await getEventsAsync(['1', '2', '3', '5'], first, last);
     const newCalendar = [...calendar];
 
     if (isScheduleUpdated) {
@@ -71,14 +83,14 @@ const useDeviceCalendar = () => {
         if (endIndex > newCalendar.length - 1) endIndex = newCalendar.length - 1;
         let index = startIndex;
         while (index <= endIndex) {
-          console.log(index,newCalendar[index].schedules);
+          console.log(index, newCalendar[index].schedules);
           const occupiedLevels = new Set();
           let jump = 0;
-          for (let i = index; i <= endIndex ; i++) {
+          for (let i = index; i <= endIndex; i++) {
             const schedules = newCalendar[i].schedules;
             jump++;
             schedules.forEach((schedule) => occupiedLevels.add(schedule.level));
-            if(newCalendar[i].date.getDay() == 6) break;
+            if (newCalendar[i].date.getDay() == 6) break;
           }
 
           level = 1;
@@ -92,9 +104,7 @@ const useDeviceCalendar = () => {
               startTime: eventStartDate,
               endTime: eventEndDate,
               level,
-              isStart:
-                eventStartDate.getDate() === newCalendar[i].date.getDate() ||
-                newCalendar[i].date.getDay() === 0,
+              isStart: eventStartDate.getDate() === newCalendar[i].date.getDate(),
               isEnd: eventEndDate.getDate() === newCalendar[i].date.getDate(),
               leftDuration: endIndex - i,
             };
@@ -110,16 +120,26 @@ const useDeviceCalendar = () => {
   };
 
   const getPermissionFromDevice = async () => {
-    const { status } = await Calendar.requestCalendarPermissionsAsync();
+    const { status } = await requestCalendarPermissionsAsync();
 
     if (status === 'granted') {
-      const calendars = await Calendar.getCalendarsAsync();
-      const deviceCalendar = calendars.map((calendar) => ({
+      let calendars = await getCalendarsAsync();
+      let deviceDutyingCalendars = calendars.filter((calendar) =>
+        calendar.title.startsWith('듀팅'),
+      );
+      if (dutyingCalendars.length === 0 && deviceDutyingCalendars.length === 0) {
+        await createCalendarAsync(newCalendars[0]);
+        await createCalendarAsync(newCalendars[1]);
+        calendars = await getCalendarsAsync();
+        deviceDutyingCalendars = calendars.filter((calendar) => calendar.title.startsWith('듀팅'));
+        setDeivceCalendar('dutyingCalendars', deviceDutyingCalendars);
+      }
+      const deviceCalendars = calendars.map((calendar) => ({
         id: calendar.id,
         name: calendar.name,
         isLinked: true,
       }));
-      setDeivceCalendar('calendars', deviceCalendar);
+      setDeivceCalendar('calendars', deviceCalendars);
     }
   };
 
@@ -137,5 +157,32 @@ const useDeviceCalendar = () => {
 
   return;
 };
+
+const newCalendars: Partial<Calendar>[] = [
+  {
+    accessLevel: CalendarAccessLevel.OWNER,
+    ownerAccount: 'Dutying',
+    name: 'dutying-appointment',
+    id: 'duyting-appointment',
+    title: '듀팅-일정',
+    allowsModifications: true,
+    color: '#5af8f8',
+    allowedAvailabilities: [Availability.BUSY, Availability.FREE],
+    source: { name: 'dutying', type: CalendarType.LOCAL, id: 'Dutying' },
+    entityType: EntityTypes.EVENT,
+  },
+  {
+    accessLevel: CalendarAccessLevel.OWNER,
+    ownerAccount: 'Dutying',
+    name: 'dutying-appointment',
+    id: 'duyting-appointment',
+    title: '듀팅-할일',
+    allowsModifications: true,
+    color: '#F8E85A',
+    allowedAvailabilities: [Availability.BUSY, Availability.FREE],
+    source: { name: 'dutying', type: CalendarType.LOCAL, id: 'Dutying' },
+    entityType: EntityTypes.EVENT,
+  },
+];
 
 export default useDeviceCalendar;

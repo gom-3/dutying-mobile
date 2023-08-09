@@ -62,7 +62,10 @@ const Calendar = () => {
                       {
                         backgroundColor: '#5AF8F84D',
                         top: 27 + (schedule.level - 1) * 24,
-                        width: schedule.isStart ? `${schedule.leftDuration * 100 + 98}%` : 0,
+                        width:
+                          schedule.isStart || day.date.getDay() === 0
+                            ? `${schedule.leftDuration * 100 + 98}%`
+                            : 0,
                         borderTopLeftRadius: schedule.isStart ? 2 : 0,
                         borderBottomLeftRadius: schedule.isStart ? 2 : 0,
                         borderTopRightRadius: schedule.isEnd ? 2 : 0,
@@ -80,7 +83,7 @@ const Calendar = () => {
                         ]}
                       />
                     )}
-                    {(schedule.isStart) && (
+                    {(schedule.isStart || day.date.getDay() === 0) && (
                       <Text numberOfLines={1} style={styles.scheduleText}>
                         {schedule.title}
                       </Text>

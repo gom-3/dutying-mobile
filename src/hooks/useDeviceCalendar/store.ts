@@ -8,6 +8,7 @@ type DeviceCalendar = Pick<Calendar, 'id' | 'name'> & { isLinked: boolean };
 
 interface State {
   calendars: DeviceCalendar[];
+  dutyingCalendars: Calendar[];
   permission: boolean;
 }
 
@@ -21,6 +22,7 @@ export const useDeviceCalendarStore = createWithEqualityFn<Store>()(
     persist(
       (set, _) => ({
         calendars: [],
+        dutyingCalendars: [],
         permission: true,
         setState: (state, value) => set((prev) => ({ ...prev, [state]: value })),
       }),
