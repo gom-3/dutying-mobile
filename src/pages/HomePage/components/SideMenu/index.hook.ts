@@ -16,7 +16,7 @@ interface SideMenuItem {
 
 const useSideMenu = () => {
   const [setState] = useCaledarDateStore((state) => [state.setState]);
-  const { onPress: onPressLinkRegistDuty } = useLinkProps({ to: { screen: 'Regist' } });
+  const { onPress: onPressLinkRegistDuty } = useLinkProps({ to: { screen: 'RegistDuty' } });
 
   const closeSideMenu = () => {
     setState('isSideMenuOpen', false);

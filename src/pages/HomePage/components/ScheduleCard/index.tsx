@@ -51,10 +51,12 @@ const ScheduleCard = () => {
                   </Text>
                 </View>
               ) : (
-                <View style={styles.shiftWrapperView}>
-                  <AddShiftIcon />
-                  <Text style={styles.registShiftText}>근무를 등록해주세요.</Text>
-                </View>
+                <Pressable>
+                  <View style={styles.shiftWrapperView}>
+                    <AddShiftIcon />
+                    <Text style={styles.registShiftText}>근무를 등록해주세요.</Text>
+                  </View>
+                </Pressable>
               )}
               {selectedDateData?.shift !== undefined && <PencilIcon />}
             </View>

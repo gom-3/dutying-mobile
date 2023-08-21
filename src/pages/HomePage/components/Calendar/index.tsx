@@ -38,15 +38,10 @@ const Calendar = () => {
           {week.map((day) => (
             <Pressable
               key={day.date.getTime()}
-              style={styles.day}
+              style={[styles.day, { height: weeks.length === 6 ? 93 : 115 }]}
               onPress={() => dateClickHandler(day.date)}
             >
-              <View
-                style={[
-                  styles.day,
-                  // { backgroundColor: isSameDate(today, day.date) ? COLOR.sub5 : 'white' },
-                ]}
-              >
+              <View style={[styles.day, { height: weeks.length === 6 ? 93 : 115 }]}>
                 <Shift
                   date={day.date.getDate()}
                   shift={day.shift !== undefined ? shiftTypes[day.shift] : undefined}
@@ -132,7 +127,6 @@ const styles = StyleSheet.create({
   },
   day: {
     flex: 1,
-    height: 96,
     // backgroundColor: 'white',
     position: 'relative',
   },

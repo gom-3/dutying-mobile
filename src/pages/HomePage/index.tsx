@@ -4,9 +4,8 @@ import Calendar from './components/Calendar';
 import Header from './components/Header';
 import ScheduleCard from './components/ScheduleCard';
 import { useCaledarDateStore } from 'store/calendar';
-import { shallow } from 'zustand/shallow';
 import SideMenu from './components/SideMenu';
-import SchedulePopup from './components/SchedulePopup';
+// import SchedulePopup from './components/SchedulePopup';
 import DateSelector from './components/DateSelector';
 import NavigationBar from '@components/NavigationBar';
 import PageViewContainer from '@components/PageView';
@@ -21,7 +20,6 @@ const HomePage = ({ navigation }: HomeNavigationProps) => {
       state.isPopupOpen,
       state.isDateSelectorOpen,
     ],
-    shallow,
   );
   return (
     <PageViewContainer>
@@ -31,7 +29,7 @@ const HomePage = ({ navigation }: HomeNavigationProps) => {
       {/* {isDateSelectorOpen && <DateSelector />} */}
       {isCardOpen && <ScheduleCard />}
       {isSideMenuOpen && <SideMenu />}
-      {isPopupOpen && <SchedulePopup />}
+      {/* {isPopupOpen && <SchedulePopup />} */}
     </PageViewContainer>
   );
 };

@@ -1,23 +1,29 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { createEventAsync, Event, Frequency } from 'expo-calendar';
 import { useCaledarDateStore } from 'store/calendar';
 import { useDeviceCalendarStore } from 'hooks/useDeviceCalendar/store';
+import { useNavigation } from '@react-navigation/native';
+import { ScrollView } from 'react-native';
 
 type DeviceEvent = Partial<Event>;
 
 const useSchedulePopup = () => {
+  const ref = useRef<ScrollView | null>(null);
   const [date, setState] = useCaledarDateStore((state) => [state.date, state.setState]);
   const [calendars] = useDeviceCalendarStore((state) => [state.calendars]);
 
-  const [isTimeEnable, setIsTimeEnable] = useState(false);
-  const [isAlarmEnable, setIsAlarmEnable] = useState(false);
-  const [isRepeatEnable, setIsRepeatEnable] = useState(false);
   const [titleText, setTitleText] = useState('');
+
+  const navigation = useNavigation();
+
+  const backToPrevPage = () => {
+    navigation.goBack();
+  };
 
   const event: DeviceEvent = {
     title: titleText,
     startDate: date,
-    endDate: new Date(date.getFullYear(), date.getMonth(), date.getDate()+5),
+    endDate: new Date(date.getFullYear(), date.getMonth(), date.getDate() + 5),
   };
 
   const titleInputChangeHandler = (text: string) => {
@@ -27,17 +33,15 @@ const useSchedulePopup = () => {
   const createEvent = async () => {
     await createEventAsync(calendars[0].id, event);
     setState('isScheduleUpdated', true);
-    setState('isPopupOpen', false);
+    backToPrevPage();
   };
 
   return {
-    state: { isTimeEnable, isAlarmEnable, isRepeatEnable, titleText },
+    state: { titleText, ref },
     actions: {
-      setIsRepeatEnable,
-      setIsAlarmEnable,
-      setIsTimeEnable,
       titleInputChangeHandler,
       createEvent,
+      backToPrevPage,
     },
   };
 };

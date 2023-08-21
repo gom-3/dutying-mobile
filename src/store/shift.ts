@@ -5,6 +5,7 @@ import { createWithEqualityFn } from 'zustand/traditional';
 
 interface State {
   shiftTypes: Shift[];
+  shiftRegistDate: Date;
 }
 
 interface Store extends State {
@@ -17,6 +18,7 @@ export const useShiftTypeStore = createWithEqualityFn<Store>()(
     persist(
       (set, _) => ({
         shiftTypes: shiftList,
+        shiftRegistDate: new Date(),
         setState: (state, value) => set((prev) => ({ ...prev, [state]: value })),
       }),
       { name: 'useShiftTypeStore' },

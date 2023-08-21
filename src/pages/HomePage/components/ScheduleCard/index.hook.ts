@@ -5,6 +5,7 @@ import { DateType } from '../Calendar';
 import { runOnJS, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 import { Gesture } from 'react-native-gesture-handler';
 import { screenWidth } from 'index.style';
+import { useLinkProps } from '@react-navigation/native';
 
 const useScheduleCard = () => {
   const [date, calendar, setDateOnThread, setState] = useCaledarDateStore((state) => [
@@ -15,6 +16,7 @@ const useScheduleCard = () => {
   ]);
   const [shiftTypes] = useShiftTypeStore((state) => [state.shiftTypes]);
   const [selectedDateData, setSelectedDateData] = useState<DateType>();
+  const { onPress: onPressAddScheduleButton } = useLinkProps({ to: { screen: 'RegistSchedule' } });
 
   const isSameDate = (date1: Date, date2: Date) => {
     return (
@@ -70,7 +72,7 @@ const useScheduleCard = () => {
   };
 
   const addButtonPressHandler = () => {
-    setState('isPopupOpen', true);
+    onPressAddScheduleButton();
   };
 
   return {
