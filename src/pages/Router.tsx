@@ -10,6 +10,7 @@ export type StackParams = {
   Group: undefined;
   RegistDuty: undefined;
   RegistSchedule: undefined;
+  Modal: undefined;
 };
 
 const Stack = createNativeStackNavigator<StackParams>();

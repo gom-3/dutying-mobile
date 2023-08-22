@@ -1,17 +1,25 @@
 import { COLOR } from 'index.style';
 import { useState } from 'react';
-import { View, Text, StyleSheet, Switch } from 'react-native';
-import RepeatIcon from '@assets/svgs/repeat.svg';
+import { View, Text, StyleSheet, Switch, Pressable, Platform } from 'react-native';
+import AlarmClockIcon from '@assets/svgs/clock-alarm.svg';
+import useAlarm from './index.hook';
 
-const Repeat = () => {
-  const [using, setUsing] = useState(false);
+interface Props {
+  openModal: () => void;
+}
+
+const Alarm = ({ openModal }: Props) => {
+  const {
+    states: { using, alarmText },
+    actions: { setUsing },
+  } = useAlarm(openModal);
 
   return (
     <>
       <View style={styles.item}>
         <View style={styles.itemTitleWrapper}>
-          <RepeatIcon />
-          <Text style={styles.itemTitle}>반복</Text>
+          <AlarmClockIcon />
+          <Text style={styles.itemTitle}>알람</Text>
         </View>
         <Switch
           trackColor={{ true: COLOR.main1 }}
@@ -22,14 +30,11 @@ const Repeat = () => {
       </View>
       {using && (
         <View style={styles.usingView}>
-          <Text style={styles.itemTitle}>날짜</Text>
-          <View style={styles.usingItemWrapper}>
-            <Text style={styles.usingItemText}>7월 27일</Text>
-          </View>
-          <Text style={[styles.itemTitle, { marginTop: 14 }]}>시간</Text>
-          <View style={styles.usingItemWrapper}>
-            <Text style={styles.usingItemText}>오전 10:00 - 오후 5:00</Text>
-          </View>
+          <Pressable onPress={openModal}>
+            <View style={styles.usingItemWrapper}>
+              <Text style={styles.usingItemText}>{alarmText}</Text>
+            </View>
+          </Pressable>
         </View>
       )}
     </>
@@ -42,22 +47,21 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     marginHorizontal: 24,
-    marginVertical: 10,
+    marginVertical: Platform.OS === 'ios' ? 10 : 0,
   },
   itemTitleWrapper: { flexDirection: 'row' },
   itemTitle: { marginLeft: 8, fontFamily: 'Apple', fontSize: 16, color: COLOR.sub25 },
-  usingView: { marginHorizontal: 24, marginVertical: 5 },
+  usingView: { marginHorizontal: 24, marginVertical: 0 },
   usingItemWrapper: { flexDirection: 'row' },
-  usingItemTitle: { fontFamily: 'Apple', fontSize: 10, color: COLOR.sub3 },
   usingItemText: {
-    marginTop: 4,
     backgroundColor: COLOR.bg,
     borderRadius: 5,
     borderColor: COLOR.sub5,
     borderWidth: 0.5,
     paddingHorizontal: 10,
+    color: COLOR.sub1,
     paddingVertical: 4,
   },
 });
 
-export default Repeat;
+export default Alarm;

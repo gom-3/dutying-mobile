@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useCaledarDateStore } from 'store/calendar';
-import { useDeviceCalendarStore } from './store';
+import { useDeviceCalendarStore } from '../../store/device';
 import {
   Event,
   Calendar,

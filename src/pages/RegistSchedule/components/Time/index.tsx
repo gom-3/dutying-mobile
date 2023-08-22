@@ -1,5 +1,14 @@
 import { COLOR } from 'index.style';
-import { View, Text, StyleSheet, Switch, Pressable, Platform } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  Switch,
+  Pressable,
+  Platform,
+  StyleProp,
+  ViewStyle,
+} from 'react-native';
 import ClockIcon from '@assets/svgs/clock.svg';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import useTimeHook from './index.hook';
@@ -15,13 +24,18 @@ const Time = () => {
     date,
     mode,
     dateString,
+    text,
+    style,
   }: {
     date: Date;
     mode: 'date' | 'time';
     dateString: 'startDate' | 'endDate';
+    text: string;
+    style?: StyleProp<ViewStyle>;
   }) => {
     return (
-      <Pressable onPress={() => datePressHander(mode, date, dateString)}>
+      <Pressable style={style} onPress={() => datePressHander(mode, date, dateString)}>
+        <Text style={styles.usingItemTitle}>{text}</Text>
         <View style={styles.usingItemWrapper}>
           <Text style={styles.usingItemText}>
             {mode === 'date'
@@ -38,7 +52,7 @@ const Time = () => {
 
   return (
     <>
-      <OutsidePressHandler disabled={false} onOutsidePress={()=>setIsOpen(false)}>
+      <OutsidePressHandler disabled={false} onOutsidePress={() => setIsOpen(false)}>
         <View style={styles.item}>
           <View style={styles.itemTitleWrapper}>
             <ClockIcon />
@@ -61,15 +75,26 @@ const Time = () => {
                 onChange={onChange}
               />
             )}
-            <Text style={styles.itemTitle}>날짜</Text>
+
             <View style={styles.itemTitleWrapper}>
-              <DateSelector mode="date" date={startDate} dateString="startDate" />
-              <DateSelector mode="date" date={endDate} dateString="endDate" />
+              <DateSelector mode="date" date={startDate} dateString="startDate" text="시작일" />
+              <DateSelector
+                style={{ marginLeft: 24 }}
+                mode="date"
+                date={endDate}
+                dateString="endDate"
+                text="종료일"
+              />
             </View>
-            <Text style={[styles.itemTitle, { marginTop: 14 }]}>시간</Text>
-            <View style={styles.itemTitleWrapper}>
-              <DateSelector mode="time" date={startDate} dateString="startDate" />
-              <DateSelector mode="time" date={endDate} dateString="endDate" />
+            <View style={[styles.itemTitleWrapper, { marginTop: 18 }]}>
+              <DateSelector mode="time" date={startDate} dateString="startDate" text="시작 시간" />
+              <DateSelector
+                style={{ marginLeft: 37 }}
+                mode="time"
+                date={endDate}
+                dateString="endDate"
+                text="종료 시간"
+              />
             </View>
           </View>
         )}
@@ -84,20 +109,20 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     marginHorizontal: 24,
-    marginVertical: 10,
+    marginVertical: Platform.OS === 'ios' ? 10 : 0,
   },
   itemTitleWrapper: { flexDirection: 'row' },
   itemTitle: { marginLeft: 8, fontFamily: 'Apple', fontSize: 16, color: COLOR.sub25 },
-  usingView: { marginHorizontal: 24, marginVertical: 5 },
-  usingItemWrapper: { flexDirection: 'row' },
+  usingView: { marginHorizontal: 24, marginVertical: 0 },
   usingItemTitle: { fontFamily: 'Apple', fontSize: 10, color: COLOR.sub3 },
+  usingItemWrapper: { flexDirection: 'row' },
   usingItemText: {
-    marginTop: 4,
     backgroundColor: COLOR.bg,
     borderRadius: 5,
     borderColor: COLOR.sub5,
     borderWidth: 0.5,
     paddingHorizontal: 10,
+    color: COLOR.sub1,
     paddingVertical: 4,
   },
 });
