@@ -2,6 +2,7 @@ import { useLinkProps } from '@react-navigation/native';
 import { GestureResponderEvent } from 'react-native';
 import { SvgProps } from 'react-native-svg';
 import { useCaledarDateStore } from 'store/calendar';
+import PlusIcon from '@assets/svgs/plus.svg';
 import EditShiftTypeIcon from '@assets/svgs/edit-shift-type.svg';
 import DutyPhotoIcon from '@assets/svgs/duty-photo.svg';
 import ShareIcon from '@assets/svgs/share.svg';
@@ -17,6 +18,7 @@ interface SideMenuItem {
 const useSideMenu = () => {
   const [setState] = useCaledarDateStore((state) => [state.setState]);
   const { onPress: onPressLinkRegistDuty } = useLinkProps({ to: { screen: 'RegistDuty' } });
+  const { onPress: onPressShareSchedule } = useLinkProps({ to: { screen: 'ShareSchedule' } });
 
   const closeSideMenu = () => {
     setState('isSideMenuOpen', false);
@@ -25,7 +27,7 @@ const useSideMenu = () => {
   const menuItemList: SideMenuItem[] = useMemo(
     () => [
       {
-        icon: EditShiftTypeIcon,
+        icon: PlusIcon,
         title: '근무 등록',
         onPress: onPressLinkRegistDuty,
       },

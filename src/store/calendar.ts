@@ -14,6 +14,7 @@ interface State {
   onSideMenuClosing: boolean;
   calendar: DateType[];
   isCalendarReady: boolean;
+  isScheduleUpdated: boolean;
   setDateOnThread: (value: string) => void;
 }
 
@@ -34,6 +35,7 @@ export const useCaledarDateStore = createWithEqualityFn<Store>()(
     isPopupOpen: false,
     isDateSelectorOpen: false,
     isCalendarReady: false,
+    isScheduleUpdated: false,
     setState: (state, value) => set((prev) => ({ ...prev, [state]: value })),
     setDateOnThread: (value) => set((prev) => ({ ...prev, date: new Date(value) })),
   })),

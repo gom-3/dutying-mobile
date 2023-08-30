@@ -1,5 +1,4 @@
 import { COLOR } from 'index.style';
-import { useState } from 'react';
 import { View, Text, StyleSheet, Switch, Pressable, Platform } from 'react-native';
 import RepeatIcon from '@assets/svgs/repeat.svg';
 import useRepeat from './index.hook';
