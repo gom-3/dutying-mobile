@@ -1,8 +1,9 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native';
-import Shift from '../../../../components/Shift';
+import Shift from '@components/Shift';
 import { COLOR } from 'index.style';
 import useCalendar from './index.hook';
 import useDeviceCalendar from 'hooks/useDeviceCalendar';
+import { Schedule } from '@hooks/useDeviceCalendar';
 
 export type DateType = {
   date: Date;
@@ -37,15 +38,10 @@ const Calendar = () => {
           {week.map((day) => (
             <Pressable
               key={day.date.getTime()}
-              style={styles.day}
+              style={[styles.day, { height: weeks.length === 6 ? 93 : 115 }]}
               onPress={() => dateClickHandler(day.date)}
             >
-              <View
-                style={[
-                  styles.day,
-                  { backgroundColor: isSameDate(today, day.date) ? COLOR.sub5 : 'white' },
-                ]}
-              >
+              <View style={[styles.day, { height: weeks.length === 6 ? 93 : 115 }]}>
                 <Shift
                   date={day.date.getDate()}
                   shift={day.shift !== undefined ? shiftTypes[day.shift] : undefined}
@@ -55,13 +51,16 @@ const Calendar = () => {
                 />
                 {day.schedules.map((schedule) => (
                   <View
-                    key={schedule.name}
+                    key={schedule.title}
                     style={[
                       styles.scheduleView,
                       {
                         backgroundColor: '#5AF8F84D',
                         top: 27 + (schedule.level - 1) * 24,
-                        width: schedule.isEnd ? '95%' : '100%',
+                        width:
+                          schedule.isStart || day.date.getDay() === 0
+                            ? `${schedule.leftDuration * 100 + 98}%`
+                            : 0,
                         borderTopLeftRadius: schedule.isStart ? 2 : 0,
                         borderBottomLeftRadius: schedule.isStart ? 2 : 0,
                         borderTopRightRadius: schedule.isEnd ? 2 : 0,
@@ -81,7 +80,7 @@ const Calendar = () => {
                     )}
                     {(schedule.isStart || day.date.getDay() === 0) && (
                       <Text numberOfLines={1} style={styles.scheduleText}>
-                        {schedule.name}
+                        {schedule.title}
                       </Text>
                     )}
                   </View>
@@ -128,8 +127,7 @@ const styles = StyleSheet.create({
   },
   day: {
     flex: 1,
-    height: 96,
-    backgroundColor: 'white',
+    // backgroundColor: 'white',
     position: 'relative',
   },
   scheduleView: {

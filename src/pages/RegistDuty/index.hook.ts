@@ -2,13 +2,13 @@ import { DateType } from '@pages/HomePage/components/Calendar';
 import { useShiftTypeStore } from 'store/shift';
 import { useEffect, useState } from 'react';
 import { useCaledarDateStore } from 'store/calendar';
-import { shallow } from 'zustand/shallow';
 
 const useCalendar = () => {
-  const [date, calendar, setState] = useCaledarDateStore(
-    (state) => [state.date, state.calendar, state.setState],
-    shallow,
-  );
+  const [date, calendar, setState] = useCaledarDateStore((state) => [
+    state.date,
+    state.calendar,
+    state.setState,
+  ]);
   const [shiftTypes] = useShiftTypeStore((state) => [state.shiftTypes]);
   const [shiftTypesCount, setShiftTypesCount] = useState(
     Array.from({ length: shiftTypes.length }, () => 0),
@@ -17,7 +17,6 @@ const useCalendar = () => {
   const [weeks, setWeeks] = useState<DateType[][]>([]);
   const [index, setIndex] = useState(3);
   const [selectedDate, setSelectedDate] = useState(new Date());
-  // tempCalendar.findIndex((t) => t && t.date.getDate() === 1)
 
   useEffect(() => {
     setTempCalendar([...calendar]);
@@ -110,7 +109,7 @@ const useCalendar = () => {
       deleteShift,
       isSameDate,
       selectDate,
-      saveRegistDutyChange
+      saveRegistDutyChange,
     },
   };
 };

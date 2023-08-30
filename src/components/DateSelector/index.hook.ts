@@ -1,7 +1,11 @@
 import { useCaledarDateStore } from 'store/calendar';
 
 const useDateSelector = () => {
-  const [date, setState] = useCaledarDateStore((state) => [state.date, state.setState]);
+  const [date, isDateSelectorOpen, setState] = useCaledarDateStore((state) => [
+    state.date,
+    state.isDateSelectorOpen,
+    state.setState,
+  ]);
 
   const closeDateSelector = () => {
     setState('isDateSelectorOpen', false);
@@ -21,7 +25,14 @@ const useDateSelector = () => {
     }
   };
 
-  return { state: { date }, actions: { closeDateSelector, yearClickHandler, monthClickHandler } };
+  const dateViewClickHander = () => {
+    setState('isDateSelectorOpen', !isDateSelectorOpen);
+  };
+
+  return {
+    state: { date, isDateSelectorOpen },
+    actions: { closeDateSelector, yearClickHandler, monthClickHandler, dateViewClickHander },
+  };
 };
 
 export default useDateSelector;

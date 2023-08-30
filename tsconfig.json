@@ -29,6 +29,8 @@
       "@assets": ["assets"],
       "@components/*": ["components/*"],
       "@components": ["components"],
+      "@hooks/*": ["hooks/*"],
+      "@hooks": ["hooks"],
       "@constants/*": ["constants/*"],
       "@constants": ["constants"],
       "@libs/*": ["libs/*"],

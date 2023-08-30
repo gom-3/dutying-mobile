@@ -5,13 +5,16 @@ import { shallow } from 'zustand/shallow';
 import { DateType } from '.';
 import { mockCalendarData } from '@mocks/calendar';
 
+// const mockCalendarData = [{ shift: 0 }];
+
 const memoizedCalendars = new Map();
 
 const useCalendar = () => {
-  const [date, calendar, setState] = useCaledarDateStore(
-    (state) => [state.date, state.calendar, state.setState],
-    shallow,
-  );
+  const [date, calendar, setState] = useCaledarDateStore((state) => [
+    state.date,
+    state.calendar,
+    state.setState,
+  ]);
   const [shiftTypes] = useShiftTypeStore((state) => [state.shiftTypes], shallow);
   const [weeks, setWeeks] = useState<DateType[][]>([]);
   const today = new Date();

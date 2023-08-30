@@ -4,14 +4,26 @@ import useCalendar from './index.hook';
 import { COLOR } from 'index.style';
 import { View, Text, Pressable, StyleSheet } from 'react-native';
 import PageViewContainer from '@components/PageView';
+import useImagePicker from 'hooks/useImagePicker';
+import DateSelector from '@components/DateSelector';
+import PhotoIcon from '@assets/svgs/photo.svg';
 
 const RegistDuty = () => {
   const {
     state: { date, weeks, selectedDate, shiftTypes, shiftTypesCount },
     actions: { insertShift, deleteShift, isSameDate, selectDate },
   } = useCalendar();
+  const {
+    actions: { pickImage },
+  } = useImagePicker();
   return (
     <PageViewContainer>
+      <View style={{ flexDirection: 'row', justifyContent: 'space-between', padding: 22 }}>
+        <DateSelector />
+        <Pressable onPress={pickImage}>
+          <PhotoIcon width={22} height={22} />
+        </Pressable>
+      </View>
       <View style={styles.calendarHeaderView}>
         {days.map((day) => (
           <View key={day} style={styles.dayView}>

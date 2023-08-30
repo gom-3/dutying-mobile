@@ -12,6 +12,13 @@
         {
           "calendarPermission": "The app needs to access your calendar."
         }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "The app accesses your photos to let you share them with your friends.",
+          "cameraPermission": "The app accesses your camera to let you share them with your friends."
+        }
       ]
     ],
     "experiments": {
@@ -22,9 +29,7 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
       "infoPlist": {
@@ -37,10 +42,7 @@
         "foregroundImage": "./src/assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "permissions": [
-        "android.permission.READ_CALENDAR",
-        "android.permission.WRITE_CALENDAR"
-      ],
+      "permissions": ["android.permission.READ_CALENDAR", "android.permission.WRITE_CALENDAR"],
       "package": "com.cksrb63.dutyingmobile"
     },
     "web": {

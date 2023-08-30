@@ -39,15 +39,7 @@ export const mockCalendarData = [
   {
     date: 25,
     shift: 0,
-    schedules: [
-      {
-        name: 'string',
-        color: '#465B7A',
-        startTime: '',
-        endTime: 'string',
-        level: 1,
-      },
-    ],
+    schedules: [],
   },
   {
     date: 26,
