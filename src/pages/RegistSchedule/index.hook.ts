@@ -21,10 +21,6 @@ const useSchedulePopup = () => {
   const [titleText, setTitleText] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const backToPrevPage = () => {
-    navigation.goBack();
-  };
-
   const event: DeviceEvent = {
     alarms,
     recurrenceRule,
@@ -40,7 +36,7 @@ const useSchedulePopup = () => {
   const createEvent = async () => {
     await createEventAsync(calendars[0].id, event);
     setState('isScheduleUpdated', true);
-    backToPrevPage();
+    navigation.goBack();
   };
 
   const openModal = (name: 'date' | 'alarm' | 'reculsive' | 'category') => {
@@ -79,7 +75,6 @@ const useSchedulePopup = () => {
     actions: {
       titleInputChangeHandler,
       createEvent,
-      backToPrevPage,
       openModal,
       closeModal,
     },

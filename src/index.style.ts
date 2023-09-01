@@ -8,6 +8,7 @@ export const COLOR = {
   sub2: '#595961',
   sub25: '#93939D',
   sub3: '#ABABB4',
+  sub4: '#d6d6de',
   sub45: '#E7E7EF',
   sub5: '#f2f2f7',
   bg: '#FDFCFE',

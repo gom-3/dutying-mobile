@@ -13,6 +13,7 @@ import ClockIcon from '@assets/svgs/clock.svg';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import useTimeHook from './index.hook';
 import OutsidePressHandler from 'react-native-outside-press';
+import DatePicker from '@components/DatePicker';
 
 const Time = () => {
   const {
@@ -75,7 +76,6 @@ const Time = () => {
                 onChange={onChange}
               />
             )}
-
             <View style={styles.itemTitleWrapper}>
               <DateSelector mode="date" date={startDate} dateString="startDate" text="시작일" />
               <DateSelector
@@ -96,6 +96,12 @@ const Time = () => {
                 text="종료 시간"
               />
             </View>
+            {/* <DatePicker
+              date={new Date()}
+              dateString="startDate"
+              mode="date"
+              onPress={() => console.log(1)}
+            /> */}
           </View>
         )}
       </OutsidePressHandler>

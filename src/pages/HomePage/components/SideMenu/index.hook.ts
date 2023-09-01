@@ -1,8 +1,8 @@
-import { useLinkProps } from '@react-navigation/native';
+import { useLinkProps, useNavigation } from '@react-navigation/native';
 import { GestureResponderEvent } from 'react-native';
 import { SvgProps } from 'react-native-svg';
 import { useCaledarDateStore } from 'store/calendar';
-import PlusIcon from '@assets/svgs/plus.svg';
+import PlusIcon from '@assets/svgs/plus-box.svg';
 import EditShiftTypeIcon from '@assets/svgs/edit-shift-type.svg';
 import DutyPhotoIcon from '@assets/svgs/duty-photo.svg';
 import ShareIcon from '@assets/svgs/share.svg';
@@ -17,7 +17,9 @@ interface SideMenuItem {
 
 const useSideMenu = () => {
   const [setState] = useCaledarDateStore((state) => [state.setState]);
+  const navigation = useNavigation();
   const { onPress: onPressLinkRegistDuty } = useLinkProps({ to: { screen: 'RegistDuty' } });
+  const { onPress: onPressEditShiftType } = useLinkProps({ to: { screen: 'ShiftType' } });
   const { onPress: onPressShareSchedule } = useLinkProps({ to: { screen: 'ShareSchedule' } });
 
   const closeSideMenu = () => {
@@ -34,7 +36,7 @@ const useSideMenu = () => {
       {
         icon: EditShiftTypeIcon,
         title: '근무 유형 수정',
-        onPress: onPressLinkRegistDuty,
+        onPress: onPressEditShiftType,
       },
       {
         icon: DutyPhotoIcon,

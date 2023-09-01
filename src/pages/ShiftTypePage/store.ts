@@ -1,11 +1,10 @@
-import { shiftList } from '@mocks/calendar';
-import { devtools, persist } from 'zustand/middleware';
+import { devtools } from 'zustand/middleware';
 import { shallow } from 'zustand/shallow';
 import { createWithEqualityFn } from 'zustand/traditional';
 
 interface State {
-  shiftTypes: Shift[];
   currentShift: Shift;
+  isEdit: boolean;
 }
 
 const randomHexColor = () => {
@@ -33,17 +32,15 @@ interface Store extends State {
   initShift: () => void;
 }
 
-export const useShiftTypeStore = createWithEqualityFn<Store>()(
+export const useEditShiftTypeStore = createWithEqualityFn<Store>()(
   devtools(
-    persist(
-      (set, _) => ({
-        shiftTypes: shiftList,
-        currentShift: initialShift(),
-        setState: (state, value) => set((prev) => ({ ...prev, [state]: value })),
-        initShift: () => set((prev) => ({ ...prev, currentShift: initialShift() })),
-      }),
-      { name: 'useShiftTypeStore' },
-    ),
+    (set, _) => ({
+      currentShift: initialShift(),
+      isEdit: false,
+      setState: (state, value) => set((prev) => ({ ...prev, [state]: value })),
+      initShift: () => set((prev) => ({ ...prev, currentShift: initialShift(), isEdit: false })),
+    }),
+    { name: 'useEditShiftTypeStore' },
   ),
   shallow,
 );
