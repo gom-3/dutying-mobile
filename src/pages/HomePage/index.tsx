@@ -8,6 +8,7 @@ import SideMenu from './components/SideMenu';
 import DateSelector from './components/DateSelector';
 import NavigationBar from '@components/NavigationBar';
 import PageViewContainer from '@components/PageView';
+import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 
 export type HomeNavigationProps = NativeStackScreenProps<StackParams, 'Home'>;
 
@@ -22,12 +23,14 @@ const HomePage = ({ navigation }: HomeNavigationProps) => {
   );
   return (
     <PageViewContainer>
-      <Header />
-      <Calendar />
-      <NavigationBar />
-      {/* {isDateSelectorOpen && <DateSelector />} */}
-      {isCardOpen && <ScheduleCard />}
-      {isSideMenuOpen && <SideMenu />}
+      <BottomSheetModalProvider>
+        <Header />
+        <Calendar />
+        <NavigationBar />
+        {/* {isDateSelectorOpen && <DateSelector />} */}
+        {isCardOpen && <ScheduleCard />}
+        {isSideMenuOpen && <SideMenu />}
+      </BottomSheetModalProvider>
     </PageViewContainer>
   );
 };

@@ -20,7 +20,7 @@ const useSideMenu = () => {
   const navigation = useNavigation();
   const { onPress: onPressLinkRegistDuty } = useLinkProps({ to: { screen: 'RegistDuty' } });
   const { onPress: onPressEditShiftType } = useLinkProps({ to: { screen: 'ShiftType' } });
-  const { onPress: onPressShareSchedule } = useLinkProps({ to: { screen: 'ShareSchedule' } });
+  const { onPress: onPressShare } = useLinkProps({ to: { screen: 'Share' } });
 
   const closeSideMenu = () => {
     setState('isSideMenuOpen', false);
@@ -46,7 +46,7 @@ const useSideMenu = () => {
       {
         icon: ShareIcon,
         title: '공유하기',
-        onPress: onPressLinkRegistDuty,
+        onPress: onPressShare,
       },
       {
         icon: DesignIcon,

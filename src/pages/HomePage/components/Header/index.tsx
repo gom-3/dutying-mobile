@@ -6,6 +6,7 @@ import useCalendarHeader from './index.hook';
 import { COLOR } from 'index.style';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import DateSelector from '@components/DateSelector';
+import MonthSelector from '@components/MonthSelector';
 
 const Header = () => {
   const {
@@ -24,7 +25,7 @@ const Header = () => {
             <UnderArrowIcon />
           </View>
         </Pressable> */}
-        <DateSelector />
+        <MonthSelector isYearVisible/>
         <View style={styles.sideMenuView}>
           <View style={styles.bellView}>
             <BellIcon />
@@ -54,7 +55,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
     paddingTop: 15,
     backgroundColor: 'white',
-    zIndex: 3,
+    // zIndex: 3,
   },
   firstLevelView: {
     flexDirection: 'row',

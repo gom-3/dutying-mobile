@@ -15,18 +15,12 @@ const useTimeHook = () => {
   const [value, setValue] = useState(startDate);
   const [dateString, setDateString] = useState<'startDate' | 'endDate'>('startDate');
 
-  const onChange = (_: DateTimePickerEvent, selectedDate: Date | undefined) => {
-    setState(dateString, selectedDate);
-    if (dateString === 'endDate') {
-      if (selectedDate && selectedDate < startDate) {
-        setState('startDate', selectedDate);
-      }
-    }
-    if (dateString === 'startDate') {
-      if (selectedDate && selectedDate > endDate) {
-        setState('endDate', selectedDate);
-      }
-    }
+  const onChangeStartTime = (_: DateTimePickerEvent, selectedDate: Date | undefined) => {
+    setState('startDate', selectedDate);
+  };
+
+  const onChangeEndTime = (_: DateTimePickerEvent, selectedDate: Date | undefined) => {
+    setState('endDate', selectedDate);
   };
 
   const onChangeAndroid = (selectedDate: Date | undefined, dateString: 'startDate' | 'endDate') => {
@@ -64,7 +58,7 @@ const useTimeHook = () => {
 
   return {
     states: { using, startDate, endDate, isOpen, mode, value },
-    actions: { setUsing, setIsOpen,datePressHander, onChange },
+    actions: { setUsing, setIsOpen, datePressHander, onChangeStartTime, onChangeEndTime },
   };
 };
 

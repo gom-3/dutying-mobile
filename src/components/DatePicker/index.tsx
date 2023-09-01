@@ -10,7 +10,7 @@ import { COLOR } from 'index.style';
 interface Props {
   date: Date;
   onChange: (_: DateTimePickerEvent, selectedDate: Date | undefined) => void;
-  mode: 'date' | 'time';
+  mode: 'date' | 'time' | 'datetime';
   text?: string;
   style?: StyleProp<ViewStyle>;
 }
@@ -21,11 +21,12 @@ const DatePicker = ({ date, mode, text, style, onChange }: Props) => {
   const renderBackdrop = useCallback((props: any) => <BottomSheetBackdrop {...props} />, []);
 
   const onPressTime = () => {
+    const androidMode = mode === 'datetime' ? 'date' : mode;
     if (Platform.OS === 'android') {
       DateTimePickerAndroid.open({
         value: date,
         onChange: (_, selectedDate) => onChange(_, selectedDate),
-        mode,
+        mode: androidMode,
       });
     } else {
       ref.current?.present();
@@ -58,7 +59,7 @@ const DatePicker = ({ date, mode, text, style, onChange }: Props) => {
             if (index !== 1) ref.current?.close();
           }}
         >
-          <DateTimePicker mode={mode} display="spinner" value={date} onChange={onChange} />
+          <DateTimePicker minuteInterval={5} mode={mode} display="spinner" value={date} onChange={onChange} />
         </BottomSheetModal>
       )}
     </View>
