@@ -5,7 +5,6 @@ import Header from './components/Header';
 import ScheduleCard from './components/ScheduleCard';
 import { useCaledarDateStore } from 'store/calendar';
 import SideMenu from './components/SideMenu';
-// import SchedulePopup from './components/SchedulePopup';
 import DateSelector from './components/DateSelector';
 import NavigationBar from '@components/NavigationBar';
 import PageViewContainer from '@components/PageView';
@@ -29,7 +28,6 @@ const HomePage = ({ navigation }: HomeNavigationProps) => {
       {/* {isDateSelectorOpen && <DateSelector />} */}
       {isCardOpen && <ScheduleCard />}
       {isSideMenuOpen && <SideMenu />}
-      {/* {isPopupOpen && <SchedulePopup />} */}
     </PageViewContainer>
   );
 };

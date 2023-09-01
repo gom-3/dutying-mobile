@@ -1,5 +1,4 @@
 import {
-  View,
   Text,
   TextInput,
   Pressable,
@@ -8,7 +7,6 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from 'react-native';
-import PrevIcon from '@assets/svgs/back-arrow.svg';
 import CheckIcon from '@assets/svgs/check.svg';
 import { COLOR, screenHeight, screenWidth } from 'index.style';
 import Time from './components/Time';
@@ -18,9 +16,10 @@ import useSchedulePopup from './index.hook';
 import PageViewContainer from '@components/PageView';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import React, { ReactNode, useMemo } from 'react';
+import React, { ReactNode } from 'react';
 import { BottomSheetModal, BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import ModalContext from './components/ModalContext';
+import PageHeader from '@components/PageHeader';
 
 const KeyboradAvoidWrapper = React.forwardRef<ScrollView, { children: ReactNode }>((props, ref) => {
   const { children } = props;
@@ -47,7 +46,7 @@ const KeyboradAvoidWrapper = React.forwardRef<ScrollView, { children: ReactNode 
 const RegistSchedulePage = () => {
   const {
     state: { titleText, ref, startDate, isModalOpen, modalRef },
-    actions: { titleInputChangeHandler, createEvent, backToPrevPage, openModal, closeModal },
+    actions: { titleInputChangeHandler, createEvent, openModal, closeModal },
   } = useSchedulePopup();
 
   return (
@@ -55,19 +54,29 @@ const RegistSchedulePage = () => {
       <BottomSheetModalProvider>
         <SafeAreaView>
           <KeyboradAvoidWrapper ref={ref}>
-            <View style={styles.header}>
-              <Pressable onPress={backToPrevPage}>
-                <PrevIcon />
-              </Pressable>
-              <Text style={styles.headerTitle}>일정 등록</Text>
-              <Pressable>
-                <CheckIcon onPress={createEvent} />
-              </Pressable>
-            </View>
+            <PageHeader
+              title="일정 등록"
+              rightItems={
+                <Pressable onPress={createEvent}>
+                  <CheckIcon />
+                </Pressable>
+              }
+            />
             <Text style={styles.yearText}>{startDate.getFullYear()}</Text>
             <Text style={styles.dateText}>
               {startDate.getMonth() + 1}월 {startDate.getDate()}일
             </Text>
+            <BottomSheetModal
+            ref={modalRef}
+            index={1}
+            snapPoints={[200, 350]}
+            handleComponent={null}
+            onChange={(index) => {
+              if (index !== 1) closeModal();
+            }}
+          >
+            <ModalContext closeModal={closeModal} />
+          </BottomSheetModal>
             <TextInput
               autoFocus={Platform.OS === 'android'}
               value={titleText}
@@ -105,17 +114,7 @@ const RegistSchedulePage = () => {
               }}
             />
           </KeyboradAvoidWrapper>
-          <BottomSheetModal
-            ref={modalRef}
-            index={1}
-            snapPoints={[200, 350]}
-            handleComponent={null}
-            onChange={(index) => {
-              if (index !== 1) closeModal();
-            }}
-          >
-            <ModalContext closeModal={closeModal} />
-          </BottomSheetModal>
+          
           {isModalOpen && (
             <Pressable
               style={{
