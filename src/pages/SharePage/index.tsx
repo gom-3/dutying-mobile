@@ -6,7 +6,6 @@ import { COLOR } from 'index.style';
 import { View, Text, Switch, StyleSheet, Pressable, Modal } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import ImageIcon from '@assets/svgs/image-save.svg';
-import LinkIcon from '@assets/svgs/link.svg';
 import Header from '@pages/HomePage/components/Header';
 import Calendar from '@pages/HomePage/components/Calendar';
 import { useEffect, useRef, useState } from 'react';
@@ -70,11 +69,7 @@ const SharePage = () => {
             <View style={styles.buttonContainer}>
               <Pressable style={styles.button} onPress={() => setIsImageModalVisible(true)}>
                 <ImageIcon />
-                <Text style={styles.buttonText}>이미지로 저장하기</Text>
-              </Pressable>
-              <Pressable style={styles.button}>
-                <LinkIcon />
-                <Text style={styles.buttonText}>링크로 공유하기</Text>
+                <Text style={styles.buttonText}>이미지로 공유하기</Text>
               </Pressable>
             </View>
           </View>
@@ -90,7 +85,7 @@ const SharePage = () => {
                     <FullLogoIcon />
                   </View>
                   <Header isImage />
-                  <Calendar withoutSchedule={true}/>
+                  <Calendar withoutSchedule={!scheduleSwitch}/>
                   {guideSwitch && (
                     <View style={styles.typeItem}>
                       <ShiftTypeGuide />
