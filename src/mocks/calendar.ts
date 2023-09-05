@@ -43,57 +43,46 @@ export const mockCalendarData = [
   {
     date: 25,
     shift: 0,
-    schedules: [],
   },
   {
     date: 26,
     shift: 0,
-    schedules: [],
   },
   {
     date: 27,
     shift: 0,
-    schedules: [],
   },
   {
     date: 28,
     shift: 0,
-    schedules: [],
   },
   {
     date: 29,
     shift: 0,
-    schedules: [],
   },
   {
     date: 30,
     shift: 1,
-    schedules: [],
   },
   {
     date: 1,
     shift: 1,
-    schedules: [],
   },
   {
     date: 2,
     shift: 1,
-    schedules: [],
   },
   {
     date: 3,
     shift: 3,
-    schedules: [],
   },
   {
     date: 4,
     shift: 3,
-    schedules: [],
   },
   {
     date: 5,
     shift: 2,
-    schedules: [],
   },
   {
     date: 6,

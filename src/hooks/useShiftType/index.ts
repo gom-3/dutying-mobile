@@ -8,7 +8,7 @@ const useShiftType = () => {
   const [setState] = useShiftTypeStore((state) => [state.setState]);
 
   useEffect(() => {
-    const shiftTypes = shiftTypesResponse?.map((type) => ({
+    const shiftTypes = shiftTypesResponse?.shiftTypes?.map((type) => ({
       ...type,
       startTime: type.startTime ? new Date(`2023-12-31T${type.startTime}:00`) : undefined,
       endTime: type.endTime ? new Date(`2023-12-31T${type.endTime}:00`) : undefined,

@@ -34,7 +34,7 @@ const ScheduleCard = () => {
             </Text>
             {isToday && <Text style={styles.todayText}>오늘</Text>}
             <View style={styles.cardHeaderView}>
-              {selectedDateData?.shift !== undefined ? (
+              {selectedDateData?.shift ? (
                 <View style={styles.shiftWrapperView}>
                   <View
                     style={[

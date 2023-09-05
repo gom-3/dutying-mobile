@@ -18,7 +18,7 @@ const useCalendarHeader = () => {
     if (calendar) {
       const newArray = Array.from({ length: shiftTypes.length }, () => 0);
       calendar.forEach((cell) => {
-        if (cell.date.getMonth() === date.getMonth() && cell.shift !== undefined) {
+        if (cell.date.getMonth() === date.getMonth() && cell.shift !== null) {
           newArray[cell.shift] = newArray[cell.shift] + 1;
         }
       });

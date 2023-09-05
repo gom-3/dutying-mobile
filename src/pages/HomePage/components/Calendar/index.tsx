@@ -7,7 +7,7 @@ import { Schedule } from '@hooks/useDeviceCalendar';
 
 export type DateType = {
   date: Date;
-  shift: number | undefined;
+  shift: number | null;
   schedules: Schedule[];
 };
 
@@ -48,7 +48,7 @@ const Calendar = ({ withoutSchedule }: Props) => {
               <View style={[styles.day, { height: weeks.length === 6 ? 93 : 115 }]}>
                 <Shift
                   date={day.date.getDate()}
-                  shift={day.shift !== undefined && shiftTypes ? shiftTypes[day.shift] : undefined}
+                  shift={day.shift !== null && shiftTypes ? shiftTypes[day.shift] : undefined}
                   isCurrent={date.getMonth() === day.date.getMonth()}
                   isToday={isSameDate(today, day.date)}
                   fullNameVisibilty={false}
