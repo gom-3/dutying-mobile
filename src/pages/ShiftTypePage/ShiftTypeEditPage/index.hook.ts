@@ -1,22 +1,23 @@
 import { DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import { useState } from 'react';
 import { useEditShiftTypeStore } from '../store';
+import { CreateShiftTypeDTO } from 'api/shift';
 
 interface TypeList {
   text: string;
-  key: Shift['typeDetail'];
+  key: Shift['classification'];
 }
 
 const workTypeList: TypeList[] = [
-  { text: '데이', key: 'day' },
-  { text: '이브닝', key: 'evening' },
-  { text: '나이트', key: 'night' },
-  { text: '그외 근무', key: 'else' },
+  { text: '데이', key: '데이' },
+  { text: '이브닝', key: '이브닝' },
+  { text: '나이트', key: '나이트' },
+  { text: '그외 근무', key: 'ELSE' },
 ];
 
 const offTypeList: TypeList[] = [
-  { text: '오프', key: 'off' },
-  { text: '휴가', key: 'leave' },
+  { text: '오프', key: '오프' },
+  { text: '휴가', key: 'LEAVE' },
 ];
 
 const useShiftTypeEdit = () => {
@@ -27,16 +28,16 @@ const useShiftTypeEdit = () => {
   ]);
   const [usingTime, setUsingTime] = useState(shift.startTime ? true : false);
   const changeStartTime = (_: DateTimePickerEvent, selectedDate: Date | undefined) => {
-    const newShift: Shift = { ...shift, startTime: selectedDate };
+    const newShift: CreateShiftTypeDTO = { ...shift, startTime: selectedDate };
     setState('currentShift', newShift);
   };
   const changeEndTime = (_: DateTimePickerEvent, selectedDate: Date | undefined) => {
-    const newShift: Shift = { ...shift, endTime: selectedDate };
+    const newShift: CreateShiftTypeDTO = { ...shift, endTime: selectedDate };
     setState('currentShift', newShift);
   };
   const onChangeSwith = (value: boolean) => {
     if (value) {
-      const newShift: Shift = shift.startTime
+      const newShift: CreateShiftTypeDTO = shift.startTime
         ? shift
         : {
             ...shift,
@@ -46,22 +47,22 @@ const useShiftTypeEdit = () => {
       setState('currentShift', newShift);
       setUsingTime(true);
     } else {
-      const newShift: Shift = { ...shift, startTime: undefined, endTime: undefined };
+      const newShift: CreateShiftTypeDTO = { ...shift, startTime: undefined, endTime: undefined };
       setState('currentShift', newShift);
       setUsingTime(false);
     }
   };
   const onChangeColor = (color: string) => {
-    const newShift: Shift = { ...shift, color: color };
+    const newShift: CreateShiftTypeDTO = { ...shift, color: color };
     setState('currentShift', newShift);
   };
   const onChangeTextInput = (target: 'name' | 'shortName', value: string) => {
-    const newShift: Shift = { ...shift, [target]: value };
+    const newShift: CreateShiftTypeDTO = { ...shift, [target]: value };
     setState('currentShift', newShift);
   };
-  const onPressShiftType = (type: Shift['typeDetail']) => {
-    const newShift: Shift = { ...shift, typeDetail: type };
-    if (type === 'off' || type === 'leave') {
+  const onPressShiftType = (type: Shift['classification']) => {
+    const newShift: CreateShiftTypeDTO = { ...shift, classification: type };
+    if (type === '오프' || type === 'LEAVE') {
       newShift.startTime = undefined;
       newShift.endTime = undefined;
       setUsingTime(false);

@@ -5,7 +5,6 @@ import Header from './components/Header';
 import ScheduleCard from './components/ScheduleCard';
 import { useCaledarDateStore } from 'store/calendar';
 import SideMenu from './components/SideMenu';
-import DateSelector from './components/DateSelector';
 import NavigationBar from '@components/NavigationBar';
 import PageViewContainer from '@components/PageView';
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';

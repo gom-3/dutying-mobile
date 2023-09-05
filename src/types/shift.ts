@@ -1,9 +1,19 @@
+type AlarmInfo = {
+  accountShiftAlarmId: number;
+  alarmTime: string;
+  isPush: boolean;
+  isDeleted: boolean;
+};
+
 type Shift = {
+  accountShiftTypeId: number;
   name: string;
   shortName: string;
   color: string;
   startTime: Date | undefined;
   endTime: Date | undefined;
-  type: 'work' | 'off';
-  typeDetail: 'day' | 'evening' | 'night' | 'else' | 'off' | 'leave';
+  isDefault: boolean;
+  classification: '데이' | '이브닝' | '나이트' | 'ELSE' | '오프' | 'LEAVE';
+  isAlarm: boolean;
+  alarmInfoList: AlarmInfo[];
 };

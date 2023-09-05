@@ -5,7 +5,6 @@ import { shallow } from 'zustand/shallow';
 import { DateType } from '.';
 import { mockCalendarData } from '@mocks/calendar';
 
-// const mockCalendarData = [{ shift: 0 }];
 
 const memoizedCalendars = new Map();
 
@@ -18,6 +17,7 @@ const useCalendar = () => {
   const [shiftTypes] = useShiftTypeStore((state) => [state.shiftTypes], shallow);
   const [weeks, setWeeks] = useState<DateType[][]>([]);
   const today = new Date();
+
   const dateClickHandler = (date: Date) => {
     setState('date', date);
     setState('isCardOpen', true);

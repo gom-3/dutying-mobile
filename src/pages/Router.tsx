@@ -7,6 +7,7 @@ import RegistSchedulePage from './RegistSchedule';
 import ShiftTypePage from './ShiftTypePage';
 import ShiftTypeEditPage from './ShiftTypePage/ShiftTypeEditPage';
 import SharePage from './SharePage';
+import useShiftType from '@hooks/useShiftType';
 
 export type StackParams = {
   Home: undefined;
@@ -21,6 +22,8 @@ export type StackParams = {
 const Stack = createNativeStackNavigator<StackParams>();
 
 const Router = () => {
+  useShiftType();
+
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Home" screenOptions={{ headerShown: false }}>

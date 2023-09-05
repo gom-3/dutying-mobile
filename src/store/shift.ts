@@ -1,5 +1,5 @@
-import { shiftList } from '@mocks/calendar';
-import { devtools, persist } from 'zustand/middleware';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { createJSONStorage, devtools, persist } from 'zustand/middleware';
 import { shallow } from 'zustand/shallow';
 import { createWithEqualityFn } from 'zustand/traditional';
 
@@ -16,10 +16,10 @@ export const useShiftTypeStore = createWithEqualityFn<Store>()(
   devtools(
     persist(
       (set, _) => ({
-        shiftTypes: shiftList,
+        shiftTypes: [],
         setState: (state, value) => set((prev) => ({ ...prev, [state]: value })),
       }),
-      { name: 'useShiftTypeStore' },
+      { name: 'useShiftTypeStore', storage: createJSONStorage(() => AsyncStorage) },
     ),
   ),
   shallow,

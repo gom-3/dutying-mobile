@@ -27,7 +27,7 @@ const ShiftTypePage = () => {
           <Text style={styles.categoryText}>근무</Text>
         </View>
         {workShiftTypes.map((shiftType) => (
-          <View style={styles.shift}>
+          <View style={styles.shift} key={shiftType.accountShiftTypeId}>
             <View style={[styles.shiftBox, { backgroundColor: shiftType.color }]}>
               <Text style={styles.shoftName}>{shiftType.shortName}</Text>
               <Text style={styles.name}>{shiftType.name}</Text>
@@ -48,7 +48,7 @@ const ShiftTypePage = () => {
           <Text style={styles.categoryText}>오프</Text>
         </View>
         {offShiftTypes.map((shiftType) => (
-          <View style={styles.shift}>
+          <View style={styles.shift} key={shiftType.accountShiftTypeId}>
             <View style={[styles.shiftBox, { backgroundColor: shiftType.color }]}>
               <Text style={styles.shoftName}>{shiftType.shortName}</Text>
               <Text style={styles.name}>{shiftType.name}</Text>

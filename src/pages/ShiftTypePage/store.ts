@@ -1,9 +1,10 @@
+import { CreateShiftTypeDTO } from 'api/shift';
 import { devtools } from 'zustand/middleware';
 import { shallow } from 'zustand/shallow';
 import { createWithEqualityFn } from 'zustand/traditional';
 
 interface State {
-  currentShift: Shift;
+  currentShift: CreateShiftTypeDTO;
   isEdit: boolean;
 }
 
@@ -14,15 +15,17 @@ const randomHexColor = () => {
   return color;
 };
 
-const initialShift = (): Shift => {
+const initialShift = (): CreateShiftTypeDTO => {
   return {
     name: '',
     shortName: '',
     startTime: undefined,
     endTime: undefined,
-    type: 'work',
-    typeDetail: 'else',
+    classification: 'ELSE',
+    isDefault: false,
     color: randomHexColor(),
+    isAlarm: false,
+    alarmInfoList: [],
   };
 };
 
