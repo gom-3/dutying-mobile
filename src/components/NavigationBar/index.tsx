@@ -28,7 +28,6 @@ const NavigationBar = () => {
 const styles = StyleSheet.create({
   navigationContainer: {
     position: 'absolute',
-    zIndex: 4,
     bottom: 0,
   },
   navigationView: {

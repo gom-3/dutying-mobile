@@ -18,7 +18,7 @@ import DatePicker from '@components/DatePicker';
 const Time = () => {
   const {
     states: { using, isOpen, mode, startDate, endDate, value },
-    actions: { setUsing, setIsOpen, datePressHander, onChange },
+    actions: { setUsing, setIsOpen, datePressHander, onChangeStartTime, onChangeEndTime },
   } = useTimeHook();
 
   const DateSelector = ({
@@ -68,40 +68,31 @@ const Time = () => {
         </View>
         {using && (
           <View style={styles.usingView}>
-            {isOpen && (
-              <DateTimePicker
-                mode={mode}
-                display={Platform.OS === 'ios' ? 'spinner' : 'default'}
-                value={value}
-                onChange={onChange}
-              />
-            )}
             <View style={styles.itemTitleWrapper}>
-              <DateSelector mode="date" date={startDate} dateString="startDate" text="시작일" />
-              <DateSelector
-                style={{ marginLeft: 24 }}
+              <DatePicker mode="date" date={startDate} text="시작일" onChange={onChangeStartTime} />
+              <DatePicker
+                style={{ marginLeft: 16 }}
                 mode="date"
                 date={endDate}
-                dateString="endDate"
                 text="종료일"
+                onChange={onChangeEndTime}
               />
             </View>
             <View style={[styles.itemTitleWrapper, { marginTop: 18 }]}>
-              <DateSelector mode="time" date={startDate} dateString="startDate" text="시작 시간" />
-              <DateSelector
-                style={{ marginLeft: 37 }}
-                mode="time"
+              <DatePicker
+                mode="datetime"
+                date={startDate}
+                text="시작 시간"
+                onChange={onChangeStartTime}
+              />
+              <DatePicker
+                mode="datetime"
                 date={endDate}
-                dateString="endDate"
                 text="종료 시간"
+                onChange={onChangeEndTime}
+                style={{ marginLeft: 30 }}
               />
             </View>
-            {/* <DatePicker
-              date={new Date()}
-              dateString="startDate"
-              mode="date"
-              onPress={() => console.log(1)}
-            /> */}
           </View>
         )}
       </OutsidePressHandler>

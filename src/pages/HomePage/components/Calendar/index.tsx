@@ -13,7 +13,11 @@ export type DateType = {
 
 export const days = ['일', '월', '화', '수', '목', '금', '토'];
 
-const Calendar = () => {
+interface Props {
+  withoutSchedule?: boolean;
+}
+
+const Calendar = ({ withoutSchedule }: Props) => {
   const {
     state: { weeks, shiftTypes, date, today },
     actions: { dateClickHandler, isSameDate },
@@ -49,42 +53,43 @@ const Calendar = () => {
                   isToday={isSameDate(today, day.date)}
                   fullNameVisibilty={false}
                 />
-                {day.schedules.map((schedule) => (
-                  <View
-                    key={schedule.title}
-                    style={[
-                      styles.scheduleView,
-                      {
-                        backgroundColor: '#5AF8F84D',
-                        top: 27 + (schedule.level - 1) * 24,
-                        width:
-                          schedule.isStart || day.date.getDay() === 0
-                            ? `${schedule.leftDuration * 100 + 98}%`
-                            : 0,
-                        borderTopLeftRadius: schedule.isStart ? 2 : 0,
-                        borderBottomLeftRadius: schedule.isStart ? 2 : 0,
-                        borderTopRightRadius: schedule.isEnd ? 2 : 0,
-                        borderBottomRightRadius: schedule.isEnd ? 2 : 0,
-                      },
-                    ]}
-                  >
-                    {schedule.isStart && (
-                      <View
-                        style={[
-                          styles.scheduleStartView,
-                          {
-                            backgroundColor: '#5AF8F8',
-                          },
-                        ]}
-                      />
-                    )}
-                    {(schedule.isStart || day.date.getDay() === 0) && (
-                      <Text numberOfLines={1} style={styles.scheduleText}>
-                        {schedule.title}
-                      </Text>
-                    )}
-                  </View>
-                ))}
+                {!withoutSchedule &&
+                  day.schedules.map((schedule) => (
+                    <View
+                      key={schedule.title}
+                      style={[
+                        styles.scheduleView,
+                        {
+                          backgroundColor: '#5AF8F84D',
+                          top: 27 + (schedule.level - 1) * 24,
+                          width:
+                            schedule.isStart || day.date.getDay() === 0
+                              ? `${schedule.leftDuration * 100 + 98}%`
+                              : 0,
+                          borderTopLeftRadius: schedule.isStart ? 2 : 0,
+                          borderBottomLeftRadius: schedule.isStart ? 2 : 0,
+                          borderTopRightRadius: schedule.isEnd ? 2 : 0,
+                          borderBottomRightRadius: schedule.isEnd ? 2 : 0,
+                        },
+                      ]}
+                    >
+                      {schedule.isStart && (
+                        <View
+                          style={[
+                            styles.scheduleStartView,
+                            {
+                              backgroundColor: '#5AF8F8',
+                            },
+                          ]}
+                        />
+                      )}
+                      {(schedule.isStart || day.date.getDay() === 0) && (
+                        <Text numberOfLines={1} style={styles.scheduleText}>
+                          {schedule.title}
+                        </Text>
+                      )}
+                    </View>
+                  ))}
               </View>
             </Pressable>
           ))}

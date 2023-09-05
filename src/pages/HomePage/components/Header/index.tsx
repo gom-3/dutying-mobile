@@ -1,38 +1,36 @@
-import UnderArrowIcon from '@assets/svgs/under-arrow.svg';
 import BellIcon from '@assets/svgs/bell.svg';
 import BurgerIcon from '@assets/svgs/burger.svg';
 import { Pressable, StyleSheet, View, Text } from 'react-native';
 import useCalendarHeader from './index.hook';
 import { COLOR } from 'index.style';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import DateSelector from '@components/DateSelector';
+import MonthSelector from '@components/MonthSelector';
 
-const Header = () => {
+interface Props {
+  isImage?: boolean;
+}
+
+const Header = ({ isImage }: Props) => {
   const {
     state: { date, shiftTypes, shiftTypesCount },
     actions: { setState, dateViewClickHander },
   } = useCalendarHeader();
 
   return (
-    <SafeAreaView style={styles.headerContainer}>
+    <View style={styles.headerContainer}>
       <View style={styles.firstLevelView}>
-        {/* <Pressable onPress={dateViewClickHander}>
-          <View style={styles.dateView}>
-            <Text style={styles.dateText}>
-              {date.getFullYear()}년 {date.getMonth() + 1}월
-            </Text>
-            <UnderArrowIcon />
-          </View>
-        </Pressable> */}
-        <DateSelector />
+        <MonthSelector isYearVisible />
         <View style={styles.sideMenuView}>
-          <View style={styles.bellView}>
-            <BellIcon />
-            <View style={styles.alertDotView} />
-          </View>
-          <Pressable onPress={() => setState('isSideMenuOpen', true)}>
-            <BurgerIcon />
-          </Pressable>
+          {!isImage && (
+            <View style={styles.bellView}>
+              <BellIcon />
+              <View style={styles.alertDotView} />
+            </View>
+          )}
+          {!isImage && (
+            <Pressable onPress={() => setState('isSideMenuOpen', true)}>
+              <BurgerIcon />
+            </Pressable>
+          )}
         </View>
       </View>
       <View style={styles.secondLevelView}>
@@ -45,7 +43,7 @@ const Header = () => {
           </View>
         ))}
       </View>
-    </SafeAreaView>
+    </View>
   );
 };
 
@@ -54,7 +52,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
     paddingTop: 15,
     backgroundColor: 'white',
-    zIndex: 3,
+    // zIndex: 3,
   },
   firstLevelView: {
     flexDirection: 'row',

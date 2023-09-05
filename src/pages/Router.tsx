@@ -6,6 +6,7 @@ import RegistDuty from './RegistDuty';
 import RegistSchedulePage from './RegistSchedule';
 import ShiftTypePage from './ShiftTypePage';
 import ShiftTypeEditPage from './ShiftTypePage/ShiftTypeEditPage';
+import SharePage from './SharePage';
 
 export type StackParams = {
   Home: undefined;
@@ -14,6 +15,7 @@ export type StackParams = {
   RegistSchedule: undefined;
   ShiftType: undefined;
   ShiftTypeEdit: undefined;
+  Share: undefined;
 };
 
 const Stack = createNativeStackNavigator<StackParams>();
@@ -32,6 +34,7 @@ const Router = () => {
         <Stack.Screen name="RegistSchedule" component={RegistSchedulePage} />
         <Stack.Screen name="ShiftType" component={ShiftTypePage} />
         <Stack.Screen name="ShiftTypeEdit" component={ShiftTypeEditPage} />
+        <Stack.Screen name="Share" component={SharePage} />
       </Stack.Navigator>
     </NavigationContainer>
   );

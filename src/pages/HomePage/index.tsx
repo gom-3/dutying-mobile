@@ -8,6 +8,8 @@ import SideMenu from './components/SideMenu';
 import DateSelector from './components/DateSelector';
 import NavigationBar from '@components/NavigationBar';
 import PageViewContainer from '@components/PageView';
+import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export type HomeNavigationProps = NativeStackScreenProps<StackParams, 'Home'>;
 
@@ -22,12 +24,15 @@ const HomePage = ({ navigation }: HomeNavigationProps) => {
   );
   return (
     <PageViewContainer>
-      <Header />
-      <Calendar />
-      <NavigationBar />
-      {/* {isDateSelectorOpen && <DateSelector />} */}
-      {isCardOpen && <ScheduleCard />}
-      {isSideMenuOpen && <SideMenu />}
+      <BottomSheetModalProvider>
+        <SafeAreaView>
+          <Header />
+          <Calendar />
+        </SafeAreaView>
+        <NavigationBar />
+        {isCardOpen && <ScheduleCard />}
+        {isSideMenuOpen && <SideMenu />}
+      </BottomSheetModalProvider>
     </PageViewContainer>
   );
 };

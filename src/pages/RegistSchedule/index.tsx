@@ -66,17 +66,6 @@ const RegistSchedulePage = () => {
             <Text style={styles.dateText}>
               {startDate.getMonth() + 1}월 {startDate.getDate()}일
             </Text>
-            <BottomSheetModal
-            ref={modalRef}
-            index={1}
-            snapPoints={[200, 350]}
-            handleComponent={null}
-            onChange={(index) => {
-              if (index !== 1) closeModal();
-            }}
-          >
-            <ModalContext closeModal={closeModal} />
-          </BottomSheetModal>
             <TextInput
               autoFocus={Platform.OS === 'android'}
               value={titleText}
@@ -114,7 +103,17 @@ const RegistSchedulePage = () => {
               }}
             />
           </KeyboradAvoidWrapper>
-          
+          <BottomSheetModal
+            ref={modalRef}
+            index={1}
+            snapPoints={[200, 350]}
+            handleComponent={null}
+            onChange={(index) => {
+              if (index !== 1) closeModal();
+            }}
+          >
+            <ModalContext closeModal={closeModal} />
+          </BottomSheetModal>
           {isModalOpen && (
             <Pressable
               style={{
