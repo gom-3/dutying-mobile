@@ -74,7 +74,11 @@ const ScheduleCard = () => {
                   <View>
                     <Text style={styles.scheduleNameText}>{schedule.title}</Text>
                     <Text style={styles.scheduleDateText}>
-                      {schedule.startTime.getMonth() + '월 ' + schedule.endTime.getDate() + '일'}
+                      {schedule.startTime.getMonth() +
+                        1 +
+                        '월 ' +
+                        schedule.endTime.getDate() +
+                        '일'}
                     </Text>
                   </View>
                 </View>

@@ -1,5 +1,5 @@
 import PageViewContainer from '@components/PageView';
-import { View, Text, StyleSheet, Pressable } from 'react-native';
+import { View, Text, StyleSheet, Pressable, Platform } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import KakaoLogo from '@assets/svgs/kakao.svg';
 import AppleLogo from '@assets/svgs/apple.svg';
@@ -25,7 +25,11 @@ const LoginPage = () => {
                 <Text style={styles.guideTextHighlight}>간편 로그인</Text>
                 <View style={styles.guidTextUnderline} />
               </View>
-              {/* <Text style={[styles.guideText,{marginTop}]}>후</Text> */}
+              <View>
+                <Text style={[styles.guideText, { marginTop: Platform.OS === 'android' ? 7 : 0 }]}>
+                  후
+                </Text>
+              </View>
             </View>
             <Text style={styles.guideText}>이용 가능합니다.</Text>
           </View>
@@ -44,10 +48,11 @@ const LoginPage = () => {
             </Pressable>
           </View>
           <View style={styles.termTextView}>
-            <Text>
-              버튼을 누르면 <Text>서비스약관</Text>, <Text>개인정보 취급방침</Text>
+            <Text style={styles.termText}>
+              버튼을 누르면 <Text style={styles.termTextHighlight}>서비스약관</Text>,{' '}
+              <Text style={styles.termTextHighlight}>개인정보 취급방침</Text>
             </Text>
-            <Text>수신에 동의하신 것으로 간주합니다.</Text>
+            <Text style={[styles.termText,{marginTop:5}]}>수신에 동의하신 것으로 간주합니다.</Text>
           </View>
         </View>
       </SafeAreaView>
@@ -117,6 +122,17 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'flex-end',
     marginBottom: 10,
+    width:'100%',
+    alignItems:'center'
+  },
+  termText: {
+    color: '#ababb4',
+    fontSize: 12,
+    fontFamily: 'Apple',
+  },
+  termTextHighlight: {
+    textDecorationLine: 'underline',
+    fontFamily: 'Apple500',
   },
 });
 

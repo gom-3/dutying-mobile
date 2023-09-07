@@ -1,8 +1,13 @@
 import { DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import { useState } from 'react';
 import { useEditShiftTypeStore, ShiftWithoutID } from '../store';
-import { useMutation } from '@tanstack/react-query';
-import { addShiftType, ShiftTypeRequestDTO } from '@libs/api/shiftTypes';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import {
+  addShiftType,
+  deleteShiftType,
+  editShiftType,
+  ShiftTypeRequestDTO,
+} from '@libs/api/shiftTypes';
 import { useAccountStore } from 'store/account';
 import { useNavigation } from '@react-navigation/native';
 
@@ -25,21 +30,40 @@ const offTypeList: TypeList[] = [
 
 const useShiftTypeEdit = () => {
   const [userId] = useAccountStore((state) => [state.userId]);
-  const [shift, isEdit, setState] = useEditShiftTypeStore((state) => [
+  const [shift, isEdit, accountShiftTypeId, setState] = useEditShiftTypeStore((state) => [
     state.currentShift,
     state.isEdit,
+    state.accountShiftTypeId,
     state.setState,
   ]);
   const [usingTime, setUsingTime] = useState(shift.startTime ? true : false);
   const navigation = useNavigation();
+  const queryClient = useQueryClient();
+
+  const onSuccessMutate = () => {
+    queryClient.invalidateQueries(['getShiftTypes', userId]);
+    navigation.goBack();
+  };
+
   const { mutate: addShiftTypeMutate } = useMutation(
     (shift: ShiftTypeRequestDTO) => addShiftType(userId, shift),
     {
-      onSuccess: () => navigation.goBack(),
+      onSuccess: onSuccessMutate,
     },
   );
-  // const {mutate:editShiftType} = useMutation();
-  // const {mutate:deleteShiftType} = useMutation();
+  const { mutate: editShiftTypeMutate } = useMutation(
+    ({ shiftId, shift }: { shiftId: number; shift: ShiftTypeRequestDTO }) =>
+      editShiftType(userId, shiftId, shift),
+    {
+      onSuccess: onSuccessMutate,
+    },
+  );
+  const { mutate: deleteShiftTypeMutate } = useMutation(
+    (shiftId: number) => deleteShiftType(userId, shiftId),
+    {
+      onSuccess: onSuccessMutate,
+    },
+  );
 
   const changeStartTime = (_: DateTimePickerEvent, selectedDate: Date | undefined) => {
     const newShift: ShiftWithoutID = { ...shift, startTime: selectedDate };
@@ -83,23 +107,24 @@ const useShiftTypeEdit = () => {
     }
     setState('currentShift', newShift);
   };
-
-  const saveNewShiftType = () => {
-    console.log(1);
+  const onPressDeleteButton = () => {
+    deleteShiftTypeMutate(accountShiftTypeId);
+  };
+  const onPressSaveButton = () => {
     if (shift.name.length > 0 && shift.shortName.length > 0) {
-      console.log(2);
+      const startTime = `${shift.startTime
+        ?.getHours()
+        .toString()
+        .padStart(2, '0')}:${shift.startTime?.getMinutes().toString().padStart(2, '0')}`;
+      const endTime = `${shift.endTime?.getHours().toString().padStart(2, '0')}:${shift.endTime
+        ?.getMinutes()
+        .toString()
+        .padStart(2, '0')}`;
+      const reqDTO: ShiftTypeRequestDTO = { ...shift, startTime, endTime };
       if (!isEdit) {
-        const startTime = `${shift.startTime
-          ?.getHours()
-          .toString()
-          .padStart(2, '0')}:${shift.startTime?.getMinutes().toString().padStart(2, '0')}`;
-        const endTime = `${shift.endTime?.getHours().toString().padStart(2, '0')}:${shift.endTime
-          ?.getMinutes()
-          .toString()
-          .padStart(2, '0')}`;
-        const reqDTO: ShiftTypeRequestDTO = { ...shift, startTime, endTime };
         addShiftTypeMutate(reqDTO);
       } else {
+        editShiftTypeMutate({ shiftId: accountShiftTypeId, shift: reqDTO });
       }
     }
   };
@@ -113,7 +138,8 @@ const useShiftTypeEdit = () => {
       onChangeColor,
       onChangeTextInput,
       onPressShiftType,
-      saveNewShiftType,
+      onPressSaveButton,
+      onPressDeleteButton,
     },
   };
 };

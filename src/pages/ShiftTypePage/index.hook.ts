@@ -31,7 +31,9 @@ const useShiftTypePage = () => {
   };
 
   const onPressEditIcon = (shift: Shift) => {
-    setState('currentShift', shift);
+    const {accountShiftTypeId, ...shiftWithoutAccountShiftTypeId} = shift;
+    setState('currentShift', shiftWithoutAccountShiftTypeId);
+    setState('accountShiftTypeId', shift.accountShiftTypeId);
     setState('isEdit', true);
     navigateToEdit();
   };

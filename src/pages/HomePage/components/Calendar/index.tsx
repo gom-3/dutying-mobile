@@ -49,7 +49,7 @@ const Calendar = ({ withoutSchedule }: Props) => {
               <View style={[styles.day, { height: weeks.length === 6 ? 93 : 115 }]}>
                 <Shift
                   date={day.date.getDate()}
-                  shift={day.shift !== null && shiftTypes ? shiftTypes.get(day.shift) : undefined}
+                  shift={day.shift && shiftTypes.size > 0 ? shiftTypes.get(day.shift) : undefined}
                   isCurrent={date.getMonth() === day.date.getMonth()}
                   isToday={isSameDate(today, day.date)}
                   fullNameVisibilty={false}

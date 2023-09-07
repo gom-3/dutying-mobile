@@ -6,6 +6,7 @@ export type ShiftWithoutID = Omit<Shift, 'accountShiftTypeId'>;
 
 interface State {
   currentShift: ShiftWithoutID;
+  accountShiftTypeId: number;
   isEdit: boolean;
 }
 
@@ -40,6 +41,7 @@ export const useEditShiftTypeStore = createWithEqualityFn<Store>()(
   devtools(
     (set, _) => ({
       currentShift: initialShift(),
+      accountShiftTypeId: 0,
       isEdit: false,
       setState: (state, value) => set((prev) => ({ ...prev, [state]: value })),
       initShift: () => set((prev) => ({ ...prev, currentShift: initialShift(), isEdit: false })),

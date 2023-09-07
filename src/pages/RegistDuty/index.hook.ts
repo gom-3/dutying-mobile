@@ -4,7 +4,13 @@ import { useEffect, useState } from 'react';
 import { useCaledarDateStore } from 'store/calendar';
 import { isSameDate } from '@libs/utils/date';
 import { useNavigation } from '@react-navigation/native';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import {
+  AccountShiftListRequestDTO,
+  AccountShiftRequest,
+  editAccountShiftList,
+} from '@libs/api/shift';
+import { useAccountStore } from 'store/account';
 
 const useRegistDuty = () => {
   const [date, calendar, setState] = useCaledarDateStore((state) => [
@@ -12,6 +18,7 @@ const useRegistDuty = () => {
     state.calendar,
     state.setState,
   ]);
+  const [userId] = useAccountStore((state) => [state.userId]);
   const [shiftTypes] = useShiftTypeStore((state) => [state.shiftTypes]);
   const [shiftTypesCount, setShiftTypesCount] = useState(new Map<number, number>());
   const [tempCalendar, setTempCalendar] = useState<DateType[]>([]);
@@ -21,6 +28,24 @@ const useRegistDuty = () => {
   );
   const [index, setIndex] = useState(0);
   const navigation = useNavigation();
+  const queryClient = useQueryClient();
+
+  const { mutate: editAccountShiftListMutate } = useMutation(
+    (shiftList: AccountShiftListRequestDTO) => editAccountShiftList(userId, shiftList),
+    {
+      onSuccess: () => {
+        setState('isSideMenuOpen', false);
+        setState('calendar', [...tempCalendar]);
+        navigation.goBack();
+        queryClient.invalidateQueries([
+          'getAccountShiftList',
+          userId,
+          date.getFullYear(),
+          date.getMonth(),
+        ]);
+      },
+    },
+  );
 
   useEffect(() => {
     setTempCalendar([...calendar]);
@@ -72,9 +97,22 @@ const useRegistDuty = () => {
   };
 
   const saveRegistDutyChange = () => {
-    setState('isSideMenuOpen', false);
-    setState('calendar', [...tempCalendar]);
-    navigation.goBack();
+    const accountShiftList: AccountShiftRequest[] = [];
+
+    tempCalendar.forEach((date) => {
+      const dateObj = date.date;
+      if (date.shift) {
+        accountShiftList.push({
+          shiftDate: `${dateObj.getFullYear()}-${(dateObj.getMonth() + 1)
+            .toString()
+            .padStart(2, '0')}-${dateObj.getDate().toString().padStart(2, '0')}`,
+          accountShiftTypeId: date.shift,
+        });
+      }
+    });
+    const requestDTO: AccountShiftListRequestDTO = { accountShifts: accountShiftList };
+    console.log(requestDTO);
+    editAccountShiftListMutate(requestDTO);
   };
 
   useEffect(() => {

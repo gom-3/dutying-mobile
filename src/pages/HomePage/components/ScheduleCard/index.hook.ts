@@ -26,7 +26,7 @@ const useScheduleCard = () => {
 
   useEffect(() => {
     findDate();
-  }, [date]);
+  }, [date, calendar]);
 
   const isToday = isSameDate(date, new Date());
 

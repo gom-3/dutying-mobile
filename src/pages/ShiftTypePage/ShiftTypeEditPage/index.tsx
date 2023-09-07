@@ -25,7 +25,8 @@ const ShiftTypeEditPage = () => {
       onChangeColor,
       onChangeTextInput,
       onPressShiftType,
-      saveNewShiftType
+      onPressSaveButton,
+      onPressDeleteButton,
     },
   } = useShiftTypeEdit();
 
@@ -39,11 +40,11 @@ const ShiftTypeEditPage = () => {
             rightItems={
               <View style={styles.headerIcons}>
                 {isEdit && (
-                  <Pressable style={styles.trashIcon}>
+                  <Pressable style={styles.trashIcon} onPress={onPressDeleteButton}>
                     <TrashIcon />
                   </Pressable>
                 )}
-                <Pressable onPress={saveNewShiftType}>
+                <Pressable onPress={onPressSaveButton}>
                   <CheckIcon />
                 </Pressable>
               </View>
@@ -56,14 +57,14 @@ const ShiftTypeEditPage = () => {
             </View>
             <View style={styles.input}>
               <TextInputBox
-                placeholder='데이'
+                placeholder="데이"
                 value={shift.name}
                 maxLength={8}
                 onChangeText={(e) => onChangeTextInput('name', e)}
                 style={styles.nameInput}
               />
               <TextInputBox
-                placeholder='D'
+                placeholder="D"
                 value={shift.shortName}
                 maxLength={2}
                 onChangeText={(e) => onChangeTextInput('shortName', e)}
