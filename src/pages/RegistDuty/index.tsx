@@ -1,108 +1,129 @@
 import { days } from '@pages/HomePage/components/Calendar';
 import Shift from '@components/Shift';
-import useCalendar from './index.hook';
+import useRegistDuty from './index.hook';
 import { COLOR } from 'index.style';
 import { View, Text, Pressable, StyleSheet } from 'react-native';
 import PageViewContainer from '@components/PageView';
 import useImagePicker from 'hooks/useImagePicker';
-import DateSelector from '@components/DateSelector';
 import PhotoIcon from '@assets/svgs/photo.svg';
+import PageHeader from '@components/PageHeader';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import MonthSelector from '@components/MonthSelector';
+import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
+import { isSameDate } from '@libs/utils/date';
+import CheckIcon from '@assets/svgs/check.svg';
+import TrashIcon from '@assets/svgs/trash-color.svg';
 
 const RegistDuty = () => {
   const {
     state: { date, weeks, selectedDate, shiftTypes, shiftTypesCount },
-    actions: { insertShift, deleteShift, isSameDate, selectDate },
-  } = useCalendar();
+    actions: { insertShift, deleteShift, selectDate, saveRegistDutyChange },
+  } = useRegistDuty();
   const {
     actions: { pickImage },
   } = useImagePicker();
   return (
     <PageViewContainer>
-      <View style={{ flexDirection: 'row', justifyContent: 'space-between', padding: 22 }}>
-        <DateSelector />
-        <Pressable onPress={pickImage}>
-          <PhotoIcon width={22} height={22} />
-        </Pressable>
-      </View>
-      <View style={styles.calendarHeaderView}>
-        {days.map((day) => (
-          <View key={day} style={styles.dayView}>
-            <Text
-              style={[
-                styles.dayText,
-                {
-                  color: day === '일' ? 'red' : day === '토' ? 'blue' : 'black',
-                },
-              ]}
-            >
-              {day}
-            </Text>
+      <BottomSheetModalProvider>
+        <SafeAreaView>
+          <PageHeader
+            title="근무 등록"
+            rightItems={
+              <Pressable onPress={saveRegistDutyChange}>
+                <CheckIcon />
+              </Pressable>
+            }
+          />
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between', padding: 22 }}>
+            <MonthSelector />
+            <Pressable onPress={pickImage}>
+              <PhotoIcon width={22} height={22} />
+            </Pressable>
           </View>
-        ))}
-      </View>
-      {weeks.map((week, i) => (
-        <View key={i} style={styles.weekView}>
-          {week.map((day, j) => (
-            <Pressable
-              key={day.date.getTime()}
-              style={{
-                flex: 1,
-                height: 67,
-                backgroundColor: isSameDate(selectedDate, day.date) ? COLOR.sub5 : 'white',
-              }}
-              onPress={() => selectDate(day.date)}
-            >
-              <View
-                style={[
-                  styles.dateView,
-                  {
-                    backgroundColor: isSameDate(selectedDate, day.date) ? COLOR.sub5 : 'white',
-                  },
-                ]}
-              >
+          <View style={styles.calendarHeaderView}>
+            {days.map((day) => (
+              <View key={day} style={styles.dayView}>
                 <Text
                   style={[
-                    styles.dateText,
-                    { opacity: date.getMonth() === day.date.getMonth() ? 1 : 0.3 },
+                    styles.dayText,
+                    {
+                      color: day === '일' ? 'red' : day === '토' ? 'blue' : 'black',
+                    },
                   ]}
                 >
-                  {day.date.getDate()}
+                  {day}
                 </Text>
-                <Shift
-                  date={day.date.getDate()}
-                  shift={day.shift !== undefined ? shiftTypes[day.shift] : undefined}
-                  isCurrent={date.getMonth() === day.date.getMonth()}
-                  isToday={isSameDate(day.date, selectedDate)}
-                  fullNameVisibilty
-                />
               </View>
-            </Pressable>
-          ))}
-        </View>
-      ))}
-      <View style={styles.registView}>
-        <View style={styles.registHeaderView}>
-          <Text style={styles.registHeaderText}>근무 유형 선택</Text>
-          <Pressable onPress={deleteShift}>
-            <View style={styles.deleteShiftView}>
-              <Text style={styles.deleteShiftText}>삭제</Text>
+            ))}
+          </View>
+          {weeks.map((week, i) => (
+            <View key={i} style={styles.weekView}>
+              {week.map((day) => (
+                <Pressable
+                  key={day.date.getTime()}
+                  style={{
+                    flex: 1,
+                    height: 67,
+                    backgroundColor: isSameDate(selectedDate, day.date) ? COLOR.sub5 : 'white',
+                  }}
+                  onPress={() => selectDate(day.date)}
+                >
+                  <View
+                    style={[
+                      styles.dateView,
+                      {
+                        backgroundColor: isSameDate(selectedDate, day.date) ? COLOR.sub5 : 'white',
+                      },
+                    ]}
+                  >
+                    <Text
+                      style={[
+                        styles.dateText,
+                        { opacity: date.getMonth() === day.date.getMonth() ? 1 : 0.3 },
+                      ]}
+                    >
+                      {day.date.getDate()}
+                    </Text>
+                    <Shift
+                      date={day.date.getDate()}
+                      shift={day.shift !== null ? shiftTypes.get(day.shift) : undefined}
+                      isCurrent={date.getMonth() === day.date.getMonth()}
+                      isToday={isSameDate(day.date, selectedDate)}
+                      fullNameVisibilty
+                    />
+                  </View>
+                </Pressable>
+              ))}
             </View>
-          </Pressable>
-        </View>
-        <View style={styles.registShiftItemsView}>
-          {shiftTypes.map((shift, i) => (
-            <Pressable key={shift.name} onPress={() => insertShift(i)}>
-              <View style={styles.shiftItemView}>
-                <Text style={styles.shiftCountText}>{shiftTypesCount[i]}</Text>
-                <View style={[styles.shiftView, { backgroundColor: shift.color }]}>
-                  <Text style={styles.shiftShortNameText}>{shift.shortName}</Text>
-                  <Text style={styles.shiftFullNameText}>{shift.name}</Text>
-                </View>
-              </View>
-            </Pressable>
           ))}
-        </View>
-      </View>
+          <View style={styles.registView}>
+            <View style={styles.registHeaderView}>
+              <Text style={styles.registHeaderText}>근무 유형 선택</Text>
+              <Pressable onPress={deleteShift}>
+                <View style={styles.deleteShiftView}>
+                  <Text style={styles.deleteShiftText}>삭제</Text>
+                  <TrashIcon />
+                </View>
+              </Pressable>
+            </View>
+            <View style={styles.registShiftItemsView}>
+              {Array.from(shiftTypes.values()).map((shift) => (
+                <Pressable key={shift.name} onPress={() => insertShift(shift.accountShiftTypeId)}>
+                  <View style={styles.shiftItemView}>
+                    <Text style={styles.shiftCountText}>
+                      {shiftTypesCount.get(shift.accountShiftTypeId) || 0}
+                    </Text>
+                    <View style={[styles.shiftView, { backgroundColor: shift.color }]}>
+                      <Text style={styles.shiftShortNameText}>{shift.shortName}</Text>
+                      <Text style={styles.shiftFullNameText}>{shift.name}</Text>
+                    </View>
+                  </View>
+                </Pressable>
+              ))}
+            </View>
+          </View>
+        </SafeAreaView>
+      </BottomSheetModalProvider>
     </PageViewContainer>
   );
 };
@@ -141,10 +162,12 @@ const styles = StyleSheet.create({
     paddingVertical: 3,
     borderWidth: 1,
     borderColor: COLOR.main2,
-    borderRadius: 20,
+    borderRadius: 5,
+    alignItems: 'center',
+    flexDirection:'row'
   },
   deleteShiftText: { fontSize: 12, fontFamily: 'Apple', color: COLOR.main2 },
-  registShiftItemsView: { flexDirection: 'row', marginTop: 26 },
+  registShiftItemsView: { flexDirection: 'row', marginTop: 26, justifyContent:'space-between' },
   shiftItemView: { alignItems: 'center', justifyContent: 'center' },
   shiftCountText: { fontFamily: 'Poppins', color: COLOR.sub25, fontSize: 12 },
   shiftView: {
@@ -152,6 +175,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-evenly',
     alignItems: 'center',
     paddingHorizontal: 18,
+    width:80,
     paddingVertical: 3,
     borderRadius: 10,
   },

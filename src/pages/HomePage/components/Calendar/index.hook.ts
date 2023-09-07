@@ -3,11 +3,12 @@ import { useEffect, useState } from 'react';
 import { useCaledarDateStore } from 'store/calendar';
 import { shallow } from 'zustand/shallow';
 import { DateType } from '.';
-import { mockCalendarData } from '@mocks/calendar';
-
-// const mockCalendarData = [{ shift: 0 }];
+import { useQuery } from '@tanstack/react-query';
+import { getAccountShiftList } from '@libs/api/shift';
 
 const memoizedCalendars = new Map();
+
+
 
 const useCalendar = () => {
   const [date, calendar, setState] = useCaledarDateStore((state) => [
@@ -18,6 +19,12 @@ const useCalendar = () => {
   const [shiftTypes] = useShiftTypeStore((state) => [state.shiftTypes], shallow);
   const [weeks, setWeeks] = useState<DateType[][]>([]);
   const today = new Date();
+  const getAccountShiftListKey = ['getAccountShiftList', 1, date.getFullYear(), date.getMonth()];
+
+  const { data: shiftListResponse } = useQuery(getAccountShiftListKey, () =>
+    getAccountShiftList(1, date.getFullYear(), date.getMonth()),
+  );
+  console.log(shiftListResponse);
   const dateClickHandler = (date: Date) => {
     setState('date', date);
     setState('isCardOpen', true);
@@ -35,34 +42,36 @@ const useCalendar = () => {
     const last = new Date(year, month + 1, 0);
     const calendar: DateType[] = [];
     let dateIndex = 0;
-
-    for (let i = first.getDay() - 1; i >= 0; i--) {
-      const date: DateType = {
-        date: new Date(year, month, -i),
-        shift: mockCalendarData[dateIndex] ? mockCalendarData[dateIndex++].shift : undefined,
-        schedules: [],
-      };
-      calendar.push(date);
+    if (shiftListResponse) {
+      const shiftList = shiftListResponse.accountShiftTypeIdList;
+      for (let i = first.getDay() - 1; i >= 0; i--) {
+        const date: DateType = {
+          date: new Date(year, month, -i),
+          shift: shiftList[dateIndex++],
+          schedules: [],
+        };
+        calendar.push(date);
+      }
+      for (let i = 1; i <= last.getDate(); i++) {
+        const date: DateType = {
+          date: new Date(year, month, i),
+          shift: shiftList[dateIndex++],
+          schedules: [],
+        };
+        calendar.push(date);
+      }
+      for (let i = last.getDay(), j = 1; i < 6; i++, j++) {
+        const date: DateType = {
+          date: new Date(year, month + 1, j),
+          shift: shiftList[dateIndex++],
+          schedules: [],
+        };
+        calendar.push(date);
+      }
+      setState('calendar', calendar);
+      setState('isCalendarReady', true);
+      memoizedCalendars.set(key, calendar);
     }
-    for (let i = 1; i <= last.getDate(); i++) {
-      const date: DateType = {
-        date: new Date(year, month, i),
-        shift: mockCalendarData[dateIndex] ? mockCalendarData[dateIndex++].shift : undefined,
-        schedules: [],
-      };
-      calendar.push(date);
-    }
-    for (let i = last.getDay(), j = 1; i < 6; i++, j++) {
-      const date: DateType = {
-        date: new Date(year, month + 1, j),
-        shift: mockCalendarData[dateIndex] ? mockCalendarData[dateIndex++].shift : undefined,
-        schedules: [],
-      };
-      calendar.push(date);
-    }
-    setState('calendar', calendar);
-    setState('isCalendarReady', true);
-    memoizedCalendars.set(key, calendar);
   };
 
   useEffect(() => {
@@ -76,17 +85,11 @@ const useCalendar = () => {
 
   useEffect(() => {
     initCalendar(date.getFullYear(), date.getMonth());
-  }, [date]);
+  }, [date, shiftListResponse]);
 
-  const isSameDate = (date1: Date, date2: Date) => {
-    return (
-      date1.getDate() === date2.getDate() &&
-      date1.getMonth() === date2.getMonth() &&
-      date1.getFullYear() === date2.getFullYear()
-    );
-  };
+  
 
-  return { state: { weeks, shiftTypes, date, today }, actions: { dateClickHandler, isSameDate } };
+  return { state: { weeks, shiftTypes, date, today }, actions: { dateClickHandler } };
 };
 
 export default useCalendar;

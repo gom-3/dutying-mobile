@@ -5,7 +5,9 @@ import { createWithEqualityFn } from 'zustand/traditional';
 
 interface State {
   // shiftTypes: Shift[];
-  shiftTypes: Map<number, Shift>;
+  userId: number;
+  isLoggedIn: boolean;
+  token: string;
 }
 
 interface Store extends State {
@@ -13,11 +15,13 @@ interface Store extends State {
   setState: (key: keyof State, value: any) => void;
 }
 
-export const useShiftTypeStore = createWithEqualityFn<Store>()(
+export const useAccountStore = createWithEqualityFn<Store>()(
   devtools(
     persist(
       (set, _) => ({
-        shiftTypes: new Map<number, Shift>(),
+        userId: 1,
+        isLoggedIn: false,
+        token: '',
         setState: (state, value) => set((prev) => ({ ...prev, [state]: value })),
       }),
       { name: 'useShiftTypeStore', storage: createJSONStorage(() => AsyncStorage) },

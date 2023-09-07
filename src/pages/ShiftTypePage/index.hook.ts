@@ -3,16 +3,25 @@ import { useMemo } from 'react';
 import { useShiftTypeStore } from 'store/shift';
 import { useEditShiftTypeStore } from './store';
 
+const workClassifications = ['DAY', 'EVENING', 'NIGHT', 'OTHER_WORK'];
+const offClassification = ['OFF', 'LEAVE'];
+
 const useShiftTypePage = () => {
   const [initShift, setState] = useEditShiftTypeStore((state) => [state.initShift, state.setState]);
   const [shiftTypes] = useShiftTypeStore((state) => [state.shiftTypes]);
   const { onPress: navigateToEdit } = useLinkProps({ to: { screen: 'ShiftTypeEdit' } });
   const workShiftTypes = useMemo(
-    () => shiftTypes.filter((shiftType) => shiftType.type === 'work'),
+    () =>
+      Array.from(shiftTypes.values()).filter((shiftType) =>
+        workClassifications.includes(shiftType.classification),
+      ),
     [shiftTypes],
   );
   const offShiftTypes = useMemo(
-    () => shiftTypes.filter((shiftType) => shiftType.type === 'off'),
+    () =>
+      Array.from(shiftTypes.values()).filter((shiftType) =>
+        offClassification.includes(shiftType.classification),
+      ),
     [shiftTypes],
   );
 

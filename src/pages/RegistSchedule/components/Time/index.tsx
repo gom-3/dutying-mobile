@@ -1,16 +1,6 @@
 import { COLOR } from 'index.style';
-import {
-  View,
-  Text,
-  StyleSheet,
-  Switch,
-  Pressable,
-  Platform,
-  StyleProp,
-  ViewStyle,
-} from 'react-native';
+import { View, Text, StyleSheet, Switch, Platform } from 'react-native';
 import ClockIcon from '@assets/svgs/clock.svg';
-import DateTimePicker from '@react-native-community/datetimepicker';
 import useTimeHook from './index.hook';
 import OutsidePressHandler from 'react-native-outside-press';
 import DatePicker from '@components/DatePicker';
@@ -20,36 +10,6 @@ const Time = () => {
     states: { using, isOpen, mode, startDate, endDate, value },
     actions: { setUsing, setIsOpen, datePressHander, onChangeStartTime, onChangeEndTime },
   } = useTimeHook();
-
-  const DateSelector = ({
-    date,
-    mode,
-    dateString,
-    text,
-    style,
-  }: {
-    date: Date;
-    mode: 'date' | 'time';
-    dateString: 'startDate' | 'endDate';
-    text: string;
-    style?: StyleProp<ViewStyle>;
-  }) => {
-    return (
-      <Pressable style={style} onPress={() => datePressHander(mode, date, dateString)}>
-        <Text style={styles.usingItemTitle}>{text}</Text>
-        <View style={styles.usingItemWrapper}>
-          <Text style={styles.usingItemText}>
-            {mode === 'date'
-              ? `${date.getMonth() + 1}월 ${date.getDate()}일`
-              : `${date.getHours().toString().padStart(2, '0')}:${date
-                  .getMinutes()
-                  .toString()
-                  .padStart(2, '0')}`}
-          </Text>
-        </View>
-      </Pressable>
-    );
-  };
 
   return (
     <>

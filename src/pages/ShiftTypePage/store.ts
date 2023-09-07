@@ -2,8 +2,10 @@ import { devtools } from 'zustand/middleware';
 import { shallow } from 'zustand/shallow';
 import { createWithEqualityFn } from 'zustand/traditional';
 
+export type ShiftWithoutID = Omit<Shift, 'accountShiftTypeId'>;
+
 interface State {
-  currentShift: Shift;
+  currentShift: ShiftWithoutID;
   isEdit: boolean;
 }
 
@@ -14,15 +16,17 @@ const randomHexColor = () => {
   return color;
 };
 
-const initialShift = (): Shift => {
+const initialShift = (): ShiftWithoutID => {
   return {
     name: '',
     shortName: '',
     startTime: undefined,
     endTime: undefined,
-    type: 'work',
-    typeDetail: 'else',
+    classification: 'OTHER_WORK',
+    isDefault: false,
     color: randomHexColor(),
+    isAlarm: false,
+    alarmInfoList: [],
   };
 };
 

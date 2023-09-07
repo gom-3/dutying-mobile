@@ -25,6 +25,7 @@ const ShiftTypeEditPage = () => {
       onChangeColor,
       onChangeTextInput,
       onPressShiftType,
+      saveNewShiftType
     },
   } = useShiftTypeEdit();
 
@@ -42,7 +43,7 @@ const ShiftTypeEditPage = () => {
                     <TrashIcon />
                   </Pressable>
                 )}
-                <Pressable>
+                <Pressable onPress={saveNewShiftType}>
                   <CheckIcon />
                 </Pressable>
               </View>
@@ -55,12 +56,14 @@ const ShiftTypeEditPage = () => {
             </View>
             <View style={styles.input}>
               <TextInputBox
+                placeholder='데이'
                 value={shift.name}
                 maxLength={8}
                 onChangeText={(e) => onChangeTextInput('name', e)}
                 style={styles.nameInput}
               />
               <TextInputBox
+                placeholder='D'
                 value={shift.shortName}
                 maxLength={2}
                 onChangeText={(e) => onChangeTextInput('shortName', e)}
@@ -76,9 +79,9 @@ const ShiftTypeEditPage = () => {
             <Text style={styles.shiftTypeHeader}>근무</Text>
             <View style={styles.shiftTypes}>
               {workTypeList.map((type) => {
-                const isSelected = shift.typeDetail === type.key;
+                const isSelected = shift.classification === type.key;
                 return (
-                  <Pressable onPress={() => onPressShiftType(type.key)}>
+                  <Pressable key={type.text} onPress={() => onPressShiftType(type.key)}>
                     <Text
                       style={[
                         styles.shiftTypeItem,
@@ -98,9 +101,9 @@ const ShiftTypeEditPage = () => {
             <Text style={styles.shiftTypeHeader}>오프</Text>
             <View style={styles.shiftTypes}>
               {offTypeList.map((type) => {
-                const isSelected = shift.typeDetail === type.key;
+                const isSelected = shift.classification === type.key;
                 return (
-                  <Pressable onPress={() => onPressShiftType(type.key)}>
+                  <Pressable key={type.text} onPress={() => onPressShiftType(type.key)}>
                     <Text
                       style={[
                         styles.shiftTypeItem,
