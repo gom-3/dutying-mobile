@@ -2,24 +2,29 @@ import { DateType } from '@pages/HomePage/components/Calendar';
 import { useShiftTypeStore } from 'store/shift';
 import { useEffect, useState } from 'react';
 import { useCaledarDateStore } from 'store/calendar';
+import { isSameDate } from '@libs/utils/date';
+import { useNavigation } from '@react-navigation/native';
+import { useMutation } from '@tanstack/react-query';
 
-const useCalendar = () => {
+const useRegistDuty = () => {
   const [date, calendar, setState] = useCaledarDateStore((state) => [
     state.date,
     state.calendar,
     state.setState,
   ]);
   const [shiftTypes] = useShiftTypeStore((state) => [state.shiftTypes]);
-  const [shiftTypesCount, setShiftTypesCount] = useState(
-    Array.from({ length: shiftTypes.length }, () => 0),
-  );
+  const [shiftTypesCount, setShiftTypesCount] = useState(new Map<number, number>());
   const [tempCalendar, setTempCalendar] = useState<DateType[]>([]);
   const [weeks, setWeeks] = useState<DateType[][]>([]);
-  const [index, setIndex] = useState(3);
-  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [selectedDate, setSelectedDate] = useState(
+    new Date(date.getFullYear(), date.getMonth(), 1),
+  );
+  const [index, setIndex] = useState(0);
+  const navigation = useNavigation();
 
   useEffect(() => {
     setTempCalendar([...calendar]);
+    setIndex(calendar.findIndex((t) => isSameDate(t.date, selectedDate)));
   }, [calendar]);
 
   useEffect(() => {
@@ -52,19 +57,11 @@ const useCalendar = () => {
   const deleteShift = () => {
     const newValue: DateType = {
       ...tempCalendar[index],
-      shift: undefined,
+      shift: null,
     };
     const newArray = [...tempCalendar];
     newArray[index] = newValue;
     setTempCalendar(newArray);
-  };
-
-  const isSameDate = (date1: Date, date2: Date) => {
-    return (
-      date1.getDate() === date2.getDate() &&
-      date1.getMonth() === date2.getMonth() &&
-      date1.getFullYear() === date2.getFullYear()
-    );
   };
 
   const selectDate = (e: Date) => {
@@ -75,7 +72,9 @@ const useCalendar = () => {
   };
 
   const saveRegistDutyChange = () => {
+    setState('isSideMenuOpen', false);
     setState('calendar', [...tempCalendar]);
+    navigation.goBack();
   };
 
   useEffect(() => {
@@ -86,13 +85,14 @@ const useCalendar = () => {
 
   useEffect(() => {
     if (tempCalendar) {
-      const newArray = Array.from({ length: shiftTypes.length }, () => 0);
-      tempCalendar.forEach((cell) => {
-        if (cell.date.getMonth() === date.getMonth() && cell.shift !== undefined) {
-          newArray[cell.shift] = newArray[cell.shift] + 1;
+      const map = new Map<number, number>();
+      tempCalendar.forEach((date) => {
+        if (date.shift) {
+          const value = map.get(date.shift) || 0;
+          map.set(date.shift, value + 1);
         }
       });
-      setShiftTypesCount(newArray);
+      setShiftTypesCount(map);
     }
   }, [tempCalendar]);
 
@@ -107,11 +107,10 @@ const useCalendar = () => {
     actions: {
       insertShift,
       deleteShift,
-      isSameDate,
       selectDate,
       saveRegistDutyChange,
     },
   };
 };
 
-export default useCalendar;
+export default useRegistDuty;

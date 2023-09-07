@@ -13,14 +13,10 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 export type HomeNavigationProps = NativeStackScreenProps<StackParams, 'Home'>;
 
 const HomePage = ({ navigation }: HomeNavigationProps) => {
-  const [isCardOpen, isSideMenuOpen, isPopupOpen, isDateSelectorOpen] = useCaledarDateStore(
-    (state) => [
-      state.isCardOpen,
-      state.isSideMenuOpen,
-      state.isPopupOpen,
-      state.isDateSelectorOpen,
-    ],
-  );
+  const [isCardOpen, isSideMenuOpen] = useCaledarDateStore((state) => [
+    state.isCardOpen,
+    state.isSideMenuOpen,
+  ]);
   return (
     <PageViewContainer>
       <BottomSheetModalProvider>

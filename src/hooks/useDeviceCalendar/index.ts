@@ -83,7 +83,6 @@ const useDeviceCalendar = () => {
         if (endIndex > newCalendar.length - 1) endIndex = newCalendar.length - 1;
         let index = startIndex;
         while (index <= endIndex) {
-          console.log(index, newCalendar[index].schedules);
           const occupiedLevels = new Set();
           let jump = 0;
           for (let i = index; i <= endIndex; i++) {
@@ -123,7 +122,7 @@ const useDeviceCalendar = () => {
     const { status } = await requestCalendarPermissionsAsync();
 
     if (status === 'granted') {
-      let calendars = await getCalendarsAsync();
+      let calendars = await getCalendarsAsync(EntityTypes.EVENT);
       let deviceDutyingCalendars = calendars.filter((calendar) =>
         calendar.title.startsWith('듀팅'),
       );

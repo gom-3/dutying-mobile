@@ -3,36 +3,30 @@ import { useEffect, useState } from 'react';
 import { useCaledarDateStore } from 'store/calendar';
 
 const useCalendarHeader = () => {
-  const [date, calendar, isDateSelectorOpen, setState] = useCaledarDateStore((state) => [
+  const [date, calendar, setState] = useCaledarDateStore((state) => [
     state.date,
     state.calendar,
-    state.isDateSelectorOpen,
     state.setState,
   ]);
   const [shiftTypes] = useShiftTypeStore((state) => [state.shiftTypes]);
-  const [shiftTypesCount, setShiftTypesCount] = useState(
-    Array.from({ length: shiftTypes.length }, () => 0),
-  );
+  const [shiftTypesCount, setShiftTypesCount] = useState(new Map<number, number>());
 
   useEffect(() => {
     if (calendar) {
-      const newArray = Array.from({ length: shiftTypes.length }, () => 0);
-      calendar.forEach((cell) => {
-        if (cell.date.getMonth() === date.getMonth() && cell.shift !== null) {
-          newArray[cell.shift] = newArray[cell.shift] + 1;
+      const map = new Map<number, number>();
+      calendar.forEach((date) => {
+        if (date.shift) {
+          const value = map.get(date.shift) || 0;
+          map.set(date.shift, value + 1);
         }
       });
-      setShiftTypesCount(newArray);
+      setShiftTypesCount(map);
     }
   }, [calendar]);
 
-  const dateViewClickHander = () => {
-    setState('isDateSelectorOpen', !isDateSelectorOpen);
-  };
-
   return {
-    state: { date, shiftTypes, shiftTypesCount },
-    actions: { setState, dateViewClickHander },
+    states: { date, shiftTypes, shiftTypesCount },
+    actions: { setState },
   };
 };
 

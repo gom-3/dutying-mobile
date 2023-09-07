@@ -4,9 +4,11 @@ import { useCaledarDateStore } from 'store/calendar';
 import { shallow } from 'zustand/shallow';
 import { DateType } from '.';
 import { useQuery } from '@tanstack/react-query';
-import { getAccountShiftList } from 'api/shift';
+import { getAccountShiftList } from '@libs/api/shift';
 
 const memoizedCalendars = new Map();
+
+
 
 const useCalendar = () => {
   const [date, calendar, setState] = useCaledarDateStore((state) => [
@@ -22,7 +24,7 @@ const useCalendar = () => {
   const { data: shiftListResponse } = useQuery(getAccountShiftListKey, () =>
     getAccountShiftList(1, date.getFullYear(), date.getMonth()),
   );
-
+  console.log(shiftListResponse);
   const dateClickHandler = (date: Date) => {
     setState('date', date);
     setState('isCardOpen', true);
@@ -83,17 +85,11 @@ const useCalendar = () => {
 
   useEffect(() => {
     initCalendar(date.getFullYear(), date.getMonth());
-  }, [date]);
+  }, [date, shiftListResponse]);
 
-  const isSameDate = (date1: Date, date2: Date) => {
-    return (
-      date1.getDate() === date2.getDate() &&
-      date1.getMonth() === date2.getMonth() &&
-      date1.getFullYear() === date2.getFullYear()
-    );
-  };
+  
 
-  return { state: { weeks, shiftTypes, date, today }, actions: { dateClickHandler, isSameDate } };
+  return { state: { weeks, shiftTypes, date, today }, actions: { dateClickHandler } };
 };
 
 export default useCalendar;

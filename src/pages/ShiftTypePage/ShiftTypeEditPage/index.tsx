@@ -25,6 +25,7 @@ const ShiftTypeEditPage = () => {
       onChangeColor,
       onChangeTextInput,
       onPressShiftType,
+      saveNewShiftType
     },
   } = useShiftTypeEdit();
 
@@ -42,7 +43,7 @@ const ShiftTypeEditPage = () => {
                     <TrashIcon />
                   </Pressable>
                 )}
-                <Pressable>
+                <Pressable onPress={saveNewShiftType}>
                   <CheckIcon />
                 </Pressable>
               </View>

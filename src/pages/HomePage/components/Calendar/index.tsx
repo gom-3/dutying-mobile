@@ -4,6 +4,7 @@ import { COLOR } from 'index.style';
 import useCalendar from './index.hook';
 import useDeviceCalendar from 'hooks/useDeviceCalendar';
 import { Schedule } from '@hooks/useDeviceCalendar';
+import { isSameDate } from '@libs/utils/date';
 
 export type DateType = {
   date: Date;
@@ -20,7 +21,7 @@ interface Props {
 const Calendar = ({ withoutSchedule }: Props) => {
   const {
     state: { weeks, shiftTypes, date, today },
-    actions: { dateClickHandler, isSameDate },
+    actions: { dateClickHandler },
   } = useCalendar();
 
   useDeviceCalendar();
@@ -48,7 +49,7 @@ const Calendar = ({ withoutSchedule }: Props) => {
               <View style={[styles.day, { height: weeks.length === 6 ? 93 : 115 }]}>
                 <Shift
                   date={day.date.getDate()}
-                  shift={day.shift !== null && shiftTypes ? shiftTypes[day.shift] : undefined}
+                  shift={day.shift !== null && shiftTypes ? shiftTypes.get(day.shift) : undefined}
                   isCurrent={date.getMonth() === day.date.getMonth()}
                   isToday={isSameDate(today, day.date)}
                   fullNameVisibilty={false}

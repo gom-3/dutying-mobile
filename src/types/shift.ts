@@ -13,7 +13,7 @@ type Shift = {
   startTime: Date | undefined;
   endTime: Date | undefined;
   isDefault: boolean;
-  classification: '데이' | '이브닝' | '나이트' | 'ELSE' | '오프' | 'LEAVE';
+  classification: 'DAY' | 'EVENING' | 'NIGHT' | 'OTHER_WORK' | 'OFF' | 'LEAVE' | 'OTHER_LEAVE';
   isAlarm: boolean;
   alarmInfoList: AlarmInfo[];
 };

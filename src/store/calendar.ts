@@ -9,8 +9,6 @@ interface State {
   date: Date;
   isCardOpen: boolean;
   isSideMenuOpen: boolean;
-  isPopupOpen: boolean;
-  isDateSelectorOpen: boolean;
   onSideMenuClosing: boolean;
   calendar: DateType[];
   isCalendarReady: boolean;
@@ -32,8 +30,6 @@ export const useCaledarDateStore = createWithEqualityFn<Store>()(
     onSideMenuClosing: false,
     isSideMenuOpen: false,
     isCardOpen: false,
-    isPopupOpen: false,
-    isDateSelectorOpen: false,
     isCalendarReady: false,
     isScheduleUpdated: false,
     setState: (state, value) => set((prev) => ({ ...prev, [state]: value })),

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { useFonts } from 'expo-font';
 import Router from './src/pages/Router';
@@ -8,6 +8,9 @@ import * as NavigationBar from 'expo-navigation-bar';
 import { AppStateStatus, Platform } from 'react-native';
 import { QueryClient, QueryClientProvider, focusManager, useQuery } from '@tanstack/react-query';
 import { useAppState } from './src/hooks/useAppState';
+import * as SplashScreen from 'expo-splash-screen';
+
+SplashScreen.preventAutoHideAsync();
 
 const onAppStateChange = (status: AppStateStatus) => {
   if (Platform.OS !== 'web') {
@@ -36,9 +39,17 @@ export default function App() {
     Poppins: require('./src/assets/fonts/Poppins-Regular.ttf'),
     Poppins500: require('./src/assets/fonts/Poppins-Medium.ttf'),
     Poppins600: require('./src/assets/fonts/Poppins-Bold.ttf'),
+    Line: require('./src/assets/fonts/LINESeedKR-Rg.ttf'),
+    Line500: require('./src/assets/fonts/LINESeedKR-Bd.ttf'),
   });
 
-  
+  const prepare = useCallback(async () => {
+    if (fontsLoaded) await SplashScreen.hideAsync();
+  }, [fontsLoaded]);
+
+  useEffect(() => {
+    prepare();
+  }, [fontsLoaded]);
 
   if (!fontsLoaded) {
     return null;

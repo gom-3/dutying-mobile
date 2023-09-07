@@ -9,7 +9,7 @@ const ShiftTypeGuide = () => {
     <View style={styles.guideContainer}>
       <Text style={styles.title}>근무 유형별 안내</Text>
       <View style={styles.shiftContainer}>
-        {shfitTypes.map((shiftType) => (
+        {Array.from(shfitTypes.values()).map((shiftType) => (
           <View style={styles.shift}>
             <View style={[styles.shiftBox, { backgroundColor: shiftType.color }]}>
               <Text style={styles.shoftName}>{shiftType.shortName}</Text>

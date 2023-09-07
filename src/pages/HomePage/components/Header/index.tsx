@@ -11,14 +11,14 @@ interface Props {
 
 const Header = ({ isImage }: Props) => {
   const {
-    state: { date, shiftTypes, shiftTypesCount },
-    actions: { setState, dateViewClickHander },
+    states: { date, shiftTypes, shiftTypesCount },
+    actions: { setState },
   } = useCalendarHeader();
 
   return (
     <View style={styles.headerContainer}>
       <View style={styles.firstLevelView}>
-        <MonthSelector isYearVisible />
+        <MonthSelector />
         <View style={styles.sideMenuView}>
           {!isImage && (
             <View style={styles.bellView}>
@@ -34,14 +34,17 @@ const Header = ({ isImage }: Props) => {
         </View>
       </View>
       <View style={styles.secondLevelView}>
-        {shiftTypes.map((shift, i) => (
-          <View key={shift.name} style={styles.shiftView}>
-            <View style={[styles.shiftBoxView, { backgroundColor: shift.color }]}>
-              <Text style={styles.shiftText}>{shift.shortName}</Text>
+        {shiftTypes.size > 0 &&
+          Array.from(shiftTypes.values()).map((shift) => (
+            <View key={shift.name} style={styles.shiftView}>
+              <View style={[styles.shiftBoxView, { backgroundColor: shift.color }]}>
+                <Text style={styles.shiftText}>{shift.shortName}</Text>
+              </View>
+              <Text style={styles.shiftCountText}>
+                {shiftTypesCount.get(shift.accountShiftTypeId) || 0}
+              </Text>
             </View>
-            <Text style={styles.shiftCountText}>{shiftTypesCount[i]}</Text>
-          </View>
-        ))}
+          ))}
       </View>
     </View>
   );
