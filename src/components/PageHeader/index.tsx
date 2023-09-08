@@ -29,7 +29,8 @@ export default PageHeader;
 
 const styles = StyleSheet.create({
   header: {
-    margin: 14,
+    marginHorizontal: 24,
+    marginVertical: 14,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
