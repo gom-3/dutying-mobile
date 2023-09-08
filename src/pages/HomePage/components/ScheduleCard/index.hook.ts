@@ -2,7 +2,13 @@ import { useShiftTypeStore } from 'store/shift';
 import { useEffect, useState } from 'react';
 import { useCaledarDateStore } from 'store/calendar';
 import { DateType } from '../Calendar';
-import { runOnJS, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
+import {
+  runOnJS,
+  useAnimatedStyle,
+  useSharedValue,
+  withDelay,
+  withTiming,
+} from 'react-native-reanimated';
 import { Gesture } from 'react-native-gesture-handler';
 import { screenWidth } from 'index.style';
 import { useLinkProps } from '@react-navigation/native';
@@ -48,12 +54,12 @@ const useScheduleCard = () => {
   const panGesture = Gesture.Pan().onEnd((e) => {
     if (e.translationX < 0) {
       runOnJS(setDateOnThread)(nextDateString);
-      offset.value = withTiming(offset.value + screenWidth * 0.8, { duration: 200 }, () => {
+      offset.value = withTiming(offset.value + screenWidth * 0.84, { duration: 400 }, () => {
         offset.value = 0;
       });
     } else {
       runOnJS(setDateOnThread)(prevDateString);
-      offset.value = withTiming(offset.value - screenWidth * 0.8, { duration: 200 }, () => {
+      offset.value = withTiming(offset.value - screenWidth * 0.84, { duration: 400 }, () => {
         offset.value = 0;
       });
     }

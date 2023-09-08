@@ -29,6 +29,9 @@ const ScheduleCard = () => {
             <View style={styles.cardHeaderView} />
           </View>
           <View style={styles.cardView}>
+            <View style={styles.cardHeaderView} />
+          </View>
+          <View style={styles.cardView}>
             <Text style={styles.dateText}>
               {date.getMonth() + 1}월 {date.getDate()}일 {days[date.getDay()]}
             </Text>
@@ -91,6 +94,9 @@ const ScheduleCard = () => {
           <View style={styles.cardView}>
             <View style={styles.cardHeaderView} />
           </View>
+          <View style={styles.cardView}>
+            <View style={styles.cardHeaderView} />
+          </View>
         </Animated.View>
       </GestureDetector>
     </>
@@ -103,7 +109,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     zIndex: 10,
     top: '25%',
-    left: -screenWidth * 0.76,
+    left: -screenWidth * 1.6,
   },
   cardView: {
     width: screenWidth * 0.8,

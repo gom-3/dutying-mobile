@@ -90,7 +90,7 @@ const useCalendar = () => {
   console.log(calendar);
   useEffect(() => {
     initCalendar(date.getFullYear(), date.getMonth());
-  }, [date, shiftListResponse]);
+  }, [date.getFullYear(), date.getMonth(), shiftListResponse]);
 
   return { state: { weeks, shiftTypes, date, today }, actions: { dateClickHandler } };
 };
