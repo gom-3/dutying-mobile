@@ -22,8 +22,7 @@ const ScheduleCard = () => {
       <GestureDetector gesture={panGesture}>
         <Animated.View
           style={[animatedStyles, styles.scheduleCardContainer]}
-          entering={ZoomInRotate.duration(150)}
-          exiting={ZoomOutRotate.duration(100)}
+          entering={ZoomInRotate.duration(200)}
         >
           <View style={styles.cardView}>
             <View style={styles.cardHeaderView} />
