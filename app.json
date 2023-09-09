@@ -7,6 +7,7 @@
     "icon": "./src/assets/icon.png",
     "userInterfaceStyle": "light",
     "plugins": [
+      "expo-apple-authentication",
       [
         "expo-calendar",
         {
@@ -32,6 +33,7 @@
     },
     "assetBundlePatterns": ["**/*"],
     "ios": {
+      "usesAppleSignIn": true,
       "supportsTablet": true,
       "infoPlist": {
         "NSCalendarsUsageDescription": "The app needs to access your calendar.",

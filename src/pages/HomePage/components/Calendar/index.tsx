@@ -43,10 +43,10 @@ const Calendar = ({ withoutSchedule }: Props) => {
           {week.map((day) => (
             <Pressable
               key={day.date.getTime()}
-              style={[styles.day, { height: weeks.length === 6 ? 93 : 115 }]}
+              style={[styles.day, { height: weeks.length === 6 ? 93 : 109 }]}
               onPress={() => dateClickHandler(day.date)}
             >
-              <View style={[styles.day, { height: weeks.length === 6 ? 93 : 115 }]}>
+              <View style={[styles.day, { height: weeks.length === 6 ? 93 : 109 }]}>
                 <Shift
                   date={day.date.getDate()}
                   shift={day.shift && shiftTypes.size > 0 ? shiftTypes.get(day.shift) : undefined}
@@ -55,42 +55,47 @@ const Calendar = ({ withoutSchedule }: Props) => {
                   fullNameVisibilty={false}
                 />
                 {!withoutSchedule &&
-                  day.schedules.map((schedule) => (
-                    <View
-                      key={schedule.title}
-                      style={[
-                        styles.scheduleView,
-                        {
-                          backgroundColor: '#5AF8F84D',
-                          top: 27 + (schedule.level - 1) * 24,
-                          width:
-                            schedule.isStart || day.date.getDay() === 0
-                              ? `${schedule.leftDuration * 100 + 98}%`
-                              : 0,
-                          borderTopLeftRadius: schedule.isStart ? 2 : 0,
-                          borderBottomLeftRadius: schedule.isStart ? 2 : 0,
-                          borderTopRightRadius: schedule.isEnd ? 2 : 0,
-                          borderBottomRightRadius: schedule.isEnd ? 2 : 0,
-                        },
-                      ]}
-                    >
-                      {schedule.isStart && (
-                        <View
-                          style={[
-                            styles.scheduleStartView,
-                            {
-                              backgroundColor: '#5AF8F8',
-                            },
-                          ]}
-                        />
-                      )}
-                      {(schedule.isStart || day.date.getDay() === 0) && (
-                        <Text numberOfLines={1} style={styles.scheduleText}>
-                          {schedule.title}
-                        </Text>
-                      )}
-                    </View>
-                  ))}
+                  day.schedules.map((schedule, j) => {
+                    if (weeks.length === 6 && schedule.level > 4) return;
+                    if (weeks.length < 6 && schedule.level > 5) return;
+
+                    return (
+                      <View
+                        key={schedule.title}
+                        style={[
+                          styles.scheduleView,
+                          {
+                            backgroundColor: '#5AF8F84D',
+                            top: 27 + (schedule.level - 1) * 16,
+                            width:
+                              schedule.isStart || day.date.getDay() === 0
+                                ? `${schedule.leftDuration * 100 + 98}%`
+                                : 0,
+                            borderTopLeftRadius: schedule.isStart ? 2 : 0,
+                            borderBottomLeftRadius: schedule.isStart ? 2 : 0,
+                            borderTopRightRadius: schedule.isEnd ? 2 : 0,
+                            borderBottomRightRadius: schedule.isEnd ? 2 : 0,
+                          },
+                        ]}
+                      >
+                        {schedule.isStart && (
+                          <View
+                            style={[
+                              styles.scheduleStartView,
+                              {
+                                backgroundColor: '#5AF8F8',
+                              },
+                            ]}
+                          />
+                        )}
+                        {(schedule.isStart || day.date.getDay() === 0) && (
+                          <Text numberOfLines={1} style={styles.scheduleText}>
+                            {schedule.title}
+                          </Text>
+                        )}
+                      </View>
+                    );
+                  })}
               </View>
             </Pressable>
           ))}
@@ -138,7 +143,7 @@ const styles = StyleSheet.create({
   },
   scheduleView: {
     position: 'absolute',
-    height: 20,
+    height: 14,
     flexDirection: 'row',
     alignItems: 'center',
   },
@@ -150,7 +155,7 @@ const styles = StyleSheet.create({
   scheduleText: {
     fontFamily: 'Poppins',
     color: COLOR.sub2,
-    fontSize: 12,
+    fontSize: 10,
     marginLeft: 4,
   },
 });

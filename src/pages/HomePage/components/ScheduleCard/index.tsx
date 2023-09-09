@@ -1,5 +1,5 @@
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
-import Animated, { ZoomInRotate, ZoomOutRotate } from 'react-native-reanimated';
+import Animated, { FadeInDown } from 'react-native-reanimated';
 import { COLOR, screenWidth } from 'index.style';
 import { GestureDetector } from 'react-native-gesture-handler';
 import PencilIcon from '@assets/svgs/pencil.svg';
@@ -22,7 +22,7 @@ const ScheduleCard = () => {
       <GestureDetector gesture={panGesture}>
         <Animated.View
           style={[animatedStyles, styles.scheduleCardContainer]}
-          entering={ZoomInRotate.duration(200)}
+          entering={FadeInDown.duration(100)}
         >
           <View style={styles.cardView}>
             <View style={styles.cardHeaderView} />

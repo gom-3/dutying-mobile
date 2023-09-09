@@ -10,7 +10,7 @@ interface Props {
 
 const PageViewContainer = ({ children }: Props) => {
   const [isLoggedIn] = useAccountStore((state) => [state.isLoggedIn]);
-  const { onPress: redirectToLoginPage } = useLinkProps({ to: { screen: 'Signup' } });
+  const { onPress: redirectToLoginPage } = useLinkProps({ to: { screen: 'Login' } });
 
   useEffect(() => {
     if (!isLoggedIn) setTimeout(()=>redirectToLoginPage(),100);

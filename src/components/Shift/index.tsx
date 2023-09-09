@@ -19,6 +19,7 @@ const Shift = ({ shift, date, isCurrent, isToday, fullNameVisibilty }: Props) =>
         {
           backgroundColor: shift ? backgroundColor : isToday ? COLOR.sub5 : 'white',
           paddingLeft: fullNameVisibilty ? 0 : 8,
+          borderRadius: isToday ? 50 : 5,
         },
       ]}
     >
@@ -40,6 +41,7 @@ const Shift = ({ shift, date, isCurrent, isToday, fullNameVisibilty }: Props) =>
           {date}
         </Text>
       )}
+      {!fullNameVisibilty && isToday && <View style={styles.todayDot} />}
       {!fullNameVisibilty && <Text style={styles.shiftShoftNameText}>{shift?.shortName}</Text>}
     </View>
   );
@@ -51,7 +53,6 @@ const styles = StyleSheet.create({
     paddingLeft: 8,
     paddingVertical: 4,
     margin: 1,
-    borderRadius: 5,
     position: 'relative',
   },
   shiftDateText: {
@@ -61,8 +62,17 @@ const styles = StyleSheet.create({
   },
   shiftShoftNameText: { color: 'white', position: 'absolute', top: 3, right: 4, fontSize: 9 },
   shiftFullNameView: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center' },
-  shiftInitialText: { color: 'white', fontFamily: 'Poppins500', fontSize: 14, height:20 },
+  shiftInitialText: { color: 'white', fontFamily: 'Poppins500', fontSize: 14, height: 20 },
   shiftFullNameText: { color: 'white', fontFamily: 'Apple', fontSize: 10 },
+  todayDot: {
+    backgroundColor: COLOR.main1,
+    width: 4,
+    height: 4,
+    position: 'absolute',
+    left: 0,
+    top: 0,
+    borderRadius: 100,
+  },
 });
 
 export default Shift;

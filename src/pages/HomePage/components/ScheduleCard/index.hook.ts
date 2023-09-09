@@ -48,12 +48,12 @@ const useScheduleCard = () => {
   const panGesture = Gesture.Pan().onEnd((e) => {
     if (e.translationX < -35) {
       runOnJS(setDateOnThread)(nextDateString);
-      offset.value = withTiming(offset.value + screenWidth * 0.84, { duration: 400 }, () => {
+      offset.value = withTiming(offset.value + screenWidth * 0.84, { duration: 360 }, () => {
         offset.value = 0;
       });
     } else if (e.translationX > 35) {
       runOnJS(setDateOnThread)(prevDateString);
-      offset.value = withTiming(offset.value - screenWidth * 0.84, { duration: 400 }, () => {
+      offset.value = withTiming(offset.value - screenWidth * 0.84, { duration: 360 }, () => {
         offset.value = 0;
       });
     }
