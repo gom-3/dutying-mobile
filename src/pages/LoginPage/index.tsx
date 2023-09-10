@@ -19,13 +19,11 @@ const LoginPage = () => {
     // setState('isLoggedIn', true);
     // onPress();
     setLoginUrl('https://www.naver.com');
-    console.log(2);
   };
 
   const handleWebViewNavigationStateChange = (newNavigationState: any) => {
     const { url } = newNavigationState;
     // setLoginUrl(null);
-    console.log(loginUrl, 3);
   };
 
   const onPressAppleLogin = async () => {
@@ -35,7 +33,6 @@ const LoginPage = () => {
         AppleAuthentication.AppleAuthenticationScope.EMAIL,
       ],
     });
-    console.log(credential);
   };
 
   return (

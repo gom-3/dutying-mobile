@@ -87,7 +87,7 @@ const useCalendar = () => {
       setWeeks(weeks);
     }
   }, [calendar]);
-  console.log(calendar);
+
   useEffect(() => {
     initCalendar(date.getFullYear(), date.getMonth());
   }, [date.getFullYear(), date.getMonth(), shiftListResponse]);

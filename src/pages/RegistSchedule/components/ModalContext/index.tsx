@@ -3,8 +3,9 @@ import ExitIcon from '@assets/svgs/exit.svg';
 import CheckIcon from '@assets/svgs/check.svg';
 import { useScheduleStore } from 'store/schedule';
 import { COLOR } from 'index.style';
-import { Alarm, Frequency, RecurrenceRule } from 'expo-calendar';
-import { days } from '@pages/HomePage/components/Calendar';
+import { Alarm, RecurrenceRule } from 'expo-calendar';
+import { useMemo } from 'react';
+import { alarmList, getRecurrenceRuleList } from '@libs/utils/event';
 
 interface Props {
   closeModal: () => void;
@@ -21,23 +22,7 @@ const ModalContext = ({ closeModal }: Props) => {
     ],
   );
 
-  const alarmList = [
-    { text: '정각', time: 0 },
-    { text: '10분 전', time: -10 },
-    { text: '30분 전', time: -30 },
-    { text: '1시간 전', time: -60 },
-    { text: '1일 전', time: 0 },
-  ];
-
-  const repeatList = [
-    { text: '매일', frequency: Frequency.DAILY },
-    { text: `매주 ${days[startDate.getDay()]}요일`, frequency: Frequency.WEEKLY },
-    { text: `매월 ${startDate.getDate()}일`, frequency: Frequency.MONTHLY },
-    {
-      text: `매년 ${startDate.getMonth() + 1}월 ${startDate.getDate()}일`,
-      frequency: Frequency.YEARLY,
-    },
-  ];
+  const recurrenceRuleList = useMemo(() => getRecurrenceRuleList(startDate), [startDate]);
 
   const setAlarm = (text: string, time: number) => {
     const alarm: Alarm = { relativeOffset: time };
@@ -70,7 +55,11 @@ const ModalContext = ({ closeModal }: Props) => {
           <CheckIcon onPress={closeModal} />
         </View>
         {alarmList.map((alarm) => (
-          <TouchableOpacity style={styles.item} onPress={() => setAlarm(alarm.text, alarm.time)}>
+          <TouchableOpacity
+            key={alarm.text}
+            style={styles.item}
+            onPress={() => setAlarm(alarm.text, alarm.time)}
+          >
             <Text
               style={[
                 styles.itemText,
@@ -99,18 +88,18 @@ const ModalContext = ({ closeModal }: Props) => {
           <Text>반복</Text>
           <CheckIcon onPress={closeModal} />
         </View>
-        {repeatList.map((repeat) => (
+        {recurrenceRuleList.map((recurrenceRule) => (
           <TouchableOpacity
             style={styles.item}
-            onPress={() => setRepeat(repeat.text, repeat.frequency)}
+            onPress={() => setRepeat(recurrenceRule.text, recurrenceRule.frequency)}
           >
             <Text
               style={[
                 styles.itemText,
-                { color: recurrenceRuleText === repeat.text ? COLOR.sub1 : COLOR.sub25 },
+                { color: recurrenceRuleText === recurrenceRule.text ? COLOR.sub1 : COLOR.sub25 },
               ]}
             >
-              {repeat.text}
+              {recurrenceRule.text}
             </Text>
           </TouchableOpacity>
         ))}
@@ -125,6 +114,7 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    alignItems: 'center',
     marginBottom: 18,
   },
   item: {

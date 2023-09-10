@@ -44,6 +44,7 @@ const useRegistDuty = () => {
           date.getMonth(),
         ]);
       },
+      
     },
   );
 
@@ -111,7 +112,6 @@ const useRegistDuty = () => {
       }
     });
     const requestDTO: AccountShiftListRequestDTO = { accountShifts: accountShiftList };
-    console.log(requestDTO);
     editAccountShiftListMutate(requestDTO);
   };
 

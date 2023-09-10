@@ -5,3 +5,5 @@ export const isSameDate = (date1: Date, date2: Date) => {
     date1.getFullYear() === date2.getFullYear()
   );
 };
+
+export const days = ['일', '월', '화', '수', '목', '금', '토'];

@@ -6,13 +6,14 @@ import {
   ScrollView,
   KeyboardAvoidingView,
   Platform,
+  View,
 } from 'react-native';
 import CheckIcon from '@assets/svgs/check.svg';
 import { COLOR, screenHeight, screenWidth } from 'index.style';
 import Time from './components/Time';
 import Alarm from './components/Alarm';
 import Repeat from './components/Repeat';
-import useSchedulePopup from './index.hook';
+import useRegistSchedule from './index.hook';
 import PageViewContainer from '@components/PageView';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
@@ -20,6 +21,8 @@ import React, { ReactNode } from 'react';
 import { BottomSheetModal, BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import ModalContext from './components/ModalContext';
 import PageHeader from '@components/PageHeader';
+import { useRoute } from '@react-navigation/native';
+import TrashIcon from '@assets/svgs/trash.svg';
 
 const KeyboradAvoidWrapper = React.forwardRef<ScrollView, { children: ReactNode }>((props, ref) => {
   const { children } = props;
@@ -44,10 +47,21 @@ const KeyboradAvoidWrapper = React.forwardRef<ScrollView, { children: ReactNode 
 });
 
 const RegistSchedulePage = () => {
+  const route = useRoute<any>();
+  const { params } = route;
+  const isEdit = params ? params.isEdit : false;
   const {
-    state: { titleText, ref, startDate, isModalOpen, modalRef },
-    actions: { titleInputChangeHandler, createEvent, openModal, closeModal },
-  } = useSchedulePopup();
+    state: { title, ref, startDate, isModalOpen, modalRef, notes },
+    actions: {
+      titleChangeHandler,
+      createEvent,
+      updateEvent,
+      deleteEvent,
+      openModal,
+      notesChangeHandler,
+      closeModal,
+    },
+  } = useRegistSchedule(isEdit);
 
   return (
     <PageViewContainer>
@@ -55,11 +69,19 @@ const RegistSchedulePage = () => {
         <SafeAreaView>
           <KeyboradAvoidWrapper ref={ref}>
             <PageHeader
-              title="일정 등록"
+              title={isEdit ? '일정 수정' : '일정 등록'}
+              titleMargin={isEdit ? 38 : 0}
               rightItems={
-                <Pressable onPress={createEvent}>
-                  <CheckIcon />
-                </Pressable>
+                <View style={styles.headerIcons}>
+                  {isEdit && (
+                    <Pressable style={styles.trashIcon} onPress={deleteEvent}>
+                      <TrashIcon />
+                    </Pressable>
+                  )}
+                  <Pressable onPress={isEdit ? updateEvent : createEvent}>
+                    <CheckIcon />
+                  </Pressable>
+                </View>
               }
             />
             <Text style={styles.yearText}>{startDate.getFullYear()}</Text>
@@ -68,8 +90,8 @@ const RegistSchedulePage = () => {
             </Text>
             <TextInput
               autoFocus={Platform.OS === 'android'}
-              value={titleText}
-              onChangeText={titleInputChangeHandler}
+              value={title}
+              onChangeText={titleChangeHandler}
               style={styles.title}
               placeholder="제목"
               placeholderTextColor={COLOR.sub3}
@@ -101,6 +123,8 @@ const RegistSchedulePage = () => {
                 borderRadius: 5,
                 minHeight: 169,
               }}
+              value={notes}
+              onChangeText={notesChangeHandler}
             />
           </KeyboradAvoidWrapper>
           <BottomSheetModal
@@ -133,6 +157,12 @@ const RegistSchedulePage = () => {
 };
 
 const styles = StyleSheet.create({
+  headerIcons: {
+    flexDirection: 'row',
+  },
+  trashIcon: {
+    marginRight: 14,
+  },
   container: {
     backgroundColor: 'white',
     height: screenHeight,

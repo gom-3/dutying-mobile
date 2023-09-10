@@ -1,5 +1,4 @@
 import { COLOR } from 'index.style';
-import { useState } from 'react';
 import { View, Text, StyleSheet, Switch, Pressable, Platform } from 'react-native';
 import AlarmClockIcon from '@assets/svgs/clock-alarm.svg';
 import useAlarm from './index.hook';
@@ -10,8 +9,8 @@ interface Props {
 
 const Alarm = ({ openModal }: Props) => {
   const {
-    states: { using, alarmText },
-    actions: { setUsing },
+    states: { isAlarmUsing, alarmText },
+    actions: { setIsAlarmUsing },
   } = useAlarm(openModal);
 
   return (
@@ -24,11 +23,11 @@ const Alarm = ({ openModal }: Props) => {
         <Switch
           trackColor={{ true: COLOR.main1 }}
           thumbColor="white"
-          value={using}
-          onValueChange={(value) => setUsing(value)}
+          value={isAlarmUsing}
+          onValueChange={setIsAlarmUsing}
         />
       </View>
-      {using && (
+      {isAlarmUsing && (
         <View style={styles.usingView}>
           <Pressable onPress={openModal}>
             <View style={styles.usingItemWrapper}>

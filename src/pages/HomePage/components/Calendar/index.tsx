@@ -4,15 +4,13 @@ import { COLOR } from 'index.style';
 import useCalendar from './index.hook';
 import useDeviceCalendar from 'hooks/useDeviceCalendar';
 import { Schedule } from '@hooks/useDeviceCalendar';
-import { isSameDate } from '@libs/utils/date';
+import { days, isSameDate } from '@libs/utils/date';
 
 export type DateType = {
   date: Date;
   shift: number | null;
   schedules: Schedule[];
 };
-
-export const days = ['일', '월', '화', '수', '목', '금', '토'];
 
 interface Props {
   withoutSchedule?: boolean;

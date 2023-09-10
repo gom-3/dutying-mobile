@@ -8,7 +8,7 @@ const useShiftType = () => {
   const [userId] = useAccountStore((state) => [state.userId]);
   const { data: shiftTypesResponse } = useQuery(['getShiftTypes', userId], () => getShiftTypes(1));
   const [setState] = useShiftTypeStore((state) => [state.setState]);
-  console.log(shiftTypesResponse);
+
   useEffect(() => {
     const shiftTypes = new Map<number, Shift>();
     shiftTypesResponse?.shiftTypes?.filter((type) =>

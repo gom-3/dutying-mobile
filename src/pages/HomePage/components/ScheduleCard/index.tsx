@@ -13,7 +13,7 @@ const days = ['일', '월', '화', '수', '목', '금', '토'];
 const ScheduleCard = () => {
   const {
     state: { animatedStyles, panGesture, date, selectedDateData, shiftTypes, isToday },
-    actions: { backDropPressHandler, addButtonPressHandler },
+    actions: { backDropPressHandler, addButtonPressHandler, editButtonPressHandler },
   } = useScheduleCard();
 
   return (
@@ -64,26 +64,28 @@ const ScheduleCard = () => {
             </View>
             <ScrollView style={{ padding: 24 }}>
               {selectedDateData?.schedules.map((schedule) => (
-                <View key={schedule.title} style={styles.scheduleView}>
-                  <View
-                    style={[
-                      styles.scheduleColorView,
-                      {
-                        backgroundColor: '#5AF8F8',
-                      },
-                    ]}
-                  />
-                  <View>
-                    <Text style={styles.scheduleNameText}>{schedule.title}</Text>
-                    <Text style={styles.scheduleDateText}>
-                      {schedule.startTime.getMonth() +
-                        1 +
-                        '월 ' +
-                        schedule.endTime.getDate() +
-                        '일'}
-                    </Text>
+                <Pressable key={schedule.id} onPress={() => editButtonPressHandler(schedule)}>
+                  <View key={schedule.title} style={styles.scheduleView}>
+                    <View
+                      style={[
+                        styles.scheduleColorView,
+                        {
+                          backgroundColor: '#5AF8F8',
+                        },
+                      ]}
+                    />
+                    <View>
+                      <Text style={styles.scheduleNameText}>{schedule.title}</Text>
+                      <Text style={styles.scheduleDateText}>
+                        {schedule.startTime.getMonth() +
+                          1 +
+                          '월 ' +
+                          schedule.endTime.getDate() +
+                          '일'}
+                      </Text>
+                    </View>
                   </View>
-                </View>
+                </Pressable>
               ))}
             </ScrollView>
             <Pressable style={styles.addButtonIcon} onPress={addButtonPressHandler}>

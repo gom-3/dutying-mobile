@@ -9,8 +9,8 @@ interface Props {
 
 const Repeat = ({ openModal }: Props) => {
   const {
-    states: { using, recurrenceRuleText },
-    actions: { setUsing },
+    states: { isRecurrenceUsing, recurrenceRuleText },
+    actions: { setIsRecurrenceUsing },
   } = useRepeat(openModal);
 
   return (
@@ -23,11 +23,11 @@ const Repeat = ({ openModal }: Props) => {
         <Switch
           trackColor={{ true: COLOR.main1 }}
           thumbColor="white"
-          value={using}
-          onValueChange={(value) => setUsing(value)}
+          value={isRecurrenceUsing}
+          onValueChange={setIsRecurrenceUsing}
         />
       </View>
-      {using && (
+      {isRecurrenceUsing && (
         <View style={styles.usingView}>
           <Pressable onPress={openModal}>
             <View style={styles.usingItemWrapper}>

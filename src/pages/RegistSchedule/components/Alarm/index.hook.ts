@@ -1,14 +1,17 @@
-import { useEffect, useState } from 'react';
 import { useScheduleStore } from 'store/schedule';
 
 const useAlarm = (openModal: () => void) => {
-  const [using, setUsing] = useState(false);
-  const [alarmText] = useScheduleStore((state) => [state.alarmText]);
+  const [isAlarmUsing, alarmText, setState] = useScheduleStore((state) => [
+    state.isAlarmUsing,
+    state.alarmText,
+    state.setState,
+  ]);
+  const setIsAlarmUsing = (value: boolean) => {
+    setState('isAlarmUsing', value);
+    if (value) openModal();
+  };
 
-  useEffect(() => {
-    if (using) openModal();
-  }, [using]);
-  return { states: { using, alarmText }, actions: { setUsing } };
+  return { states: { isAlarmUsing, alarmText }, actions: { setIsAlarmUsing } };
 };
 
 export default useAlarm;

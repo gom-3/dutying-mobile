@@ -1,4 +1,3 @@
-import { days } from '@pages/HomePage/components/Calendar';
 import Shift from '@components/Shift';
 import useRegistDuty from './index.hook';
 import { COLOR } from 'index.style';
@@ -10,7 +9,7 @@ import PageHeader from '@components/PageHeader';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import MonthSelector from '@components/MonthSelector';
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
-import { isSameDate } from '@libs/utils/date';
+import { days, isSameDate } from '@libs/utils/date';
 import CheckIcon from '@assets/svgs/check.svg';
 import TrashIcon from '@assets/svgs/trash-color.svg';
 
@@ -164,10 +163,10 @@ const styles = StyleSheet.create({
     borderColor: COLOR.main2,
     borderRadius: 5,
     alignItems: 'center',
-    flexDirection:'row'
+    flexDirection: 'row',
   },
   deleteShiftText: { fontSize: 12, fontFamily: 'Apple', color: COLOR.main2 },
-  registShiftItemsView: { flexDirection: 'row', marginTop: 26, justifyContent:'space-between' },
+  registShiftItemsView: { flexDirection: 'row', marginTop: 26, justifyContent: 'space-between' },
   shiftItemView: { alignItems: 'center', justifyContent: 'center' },
   shiftCountText: { fontFamily: 'Poppins', color: COLOR.sub25, fontSize: 12 },
   shiftView: {
@@ -175,7 +174,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-evenly',
     alignItems: 'center',
     paddingHorizontal: 18,
-    width:80,
+    width: 80,
     paddingVertical: 3,
     borderRadius: 10,
   },

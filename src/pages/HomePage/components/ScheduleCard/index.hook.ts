@@ -7,6 +7,8 @@ import { Gesture } from 'react-native-gesture-handler';
 import { screenWidth } from 'index.style';
 import { useLinkProps } from '@react-navigation/native';
 import { isSameDate } from '@libs/utils/date';
+import { useScheduleStore } from 'store/schedule';
+import { Schedule } from '@hooks/useDeviceCalendar';
 
 const useScheduleCard = () => {
   const [date, calendar, setDateOnThread, setState] = useCaledarDateStore((state) => [
@@ -15,10 +17,16 @@ const useScheduleCard = () => {
     state.setDateOnThread,
     state.setState,
   ]);
+  const [initStateCreate, initStateEdit] = useScheduleStore((state) => [
+    state.initStateCreate,
+    state.initStateEdit,
+  ]);
   const [shiftTypes] = useShiftTypeStore((state) => [state.shiftTypes]);
   const [selectedDateData, setSelectedDateData] = useState<DateType>();
   const { onPress: onPressAddScheduleButton } = useLinkProps({ to: { screen: 'RegistSchedule' } });
-
+  const { onPress: onPressEditScheduleButton } = useLinkProps({
+    to: { screen: 'RegistSchedule', params: { isEdit: true } },
+  });
   const findDate = () => {
     const thisDate = calendar.find((cell) => isSameDate(cell.date, date));
     setSelectedDateData(thisDate);
@@ -64,12 +72,18 @@ const useScheduleCard = () => {
   };
 
   const addButtonPressHandler = () => {
+    initStateCreate(date);
     onPressAddScheduleButton();
+  };
+
+  const editButtonPressHandler = (schedule: Schedule) => {
+    initStateEdit(schedule);
+    onPressEditScheduleButton();
   };
 
   return {
     state: { animatedStyles, panGesture, date, selectedDateData, shiftTypes, isToday },
-    actions: { backDropPressHandler, addButtonPressHandler },
+    actions: { backDropPressHandler, addButtonPressHandler, editButtonPressHandler },
   };
 };
 
