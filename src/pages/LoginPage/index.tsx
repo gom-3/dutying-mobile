@@ -38,13 +38,13 @@ const LoginPage = () => {
   return (
     <PageViewContainer>
       {loginUrl && (
-          <WebView
-            style={styles.webview}
-            source={{ uri: loginUrl }}
-            onNavigationStateChange={handleWebViewNavigationStateChange}
-            javaScriptEnabled={true}
-          />
-        )}
+        <WebView
+          style={styles.webview}
+          source={{ uri: loginUrl }}
+          onNavigationStateChange={handleWebViewNavigationStateChange}
+          javaScriptEnabled={true}
+        />
+      )}
       <SafeAreaView>
         {!loginUrl && (
           <View style={styles.pageContainer}>
@@ -71,12 +71,14 @@ const LoginPage = () => {
                   <Text style={styles.kakaoLoginText}>카카오톡으로 시작하기</Text>
                 </View>
               </Pressable>
-              <Pressable onPress={onPressAppleLogin}>
-                <View style={styles.appleLoginButton}>
-                  <AppleLogo />
-                  <Text style={styles.appleLoginText}>Apple Id로 시작하기</Text>
-                </View>
-              </Pressable>
+              {Platform.OS === 'ios' && (
+                <Pressable onPress={onPressAppleLogin}>
+                  <View style={styles.appleLoginButton}>
+                    <AppleLogo />
+                    <Text style={styles.appleLoginText}>Apple Id로 시작하기</Text>
+                  </View>
+                </Pressable>
+              )}
             </View>
             <View style={styles.termTextView}>
               <Text style={styles.termText}>
@@ -98,7 +100,7 @@ const styles = StyleSheet.create({
   webview: {
     width: screenWidth,
     height: screenHeight,
-    marginTop:20
+    marginTop: 20,
   },
   guidTextWrapper: {
     flex: 1,

@@ -5,6 +5,7 @@ import { COLOR } from 'index.style';
 import { BottomSheetBackdrop, BottomSheetModal } from '@gorhom/bottom-sheet';
 import { useCallback } from 'react';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import BottomSheetHeader from '@components/BottomSheetHeader';
 
 interface Props {
   isImage?: boolean;
@@ -23,13 +24,17 @@ const MonthSelector = ({ isImage, style }: Props) => {
       <Pressable onPress={onPressMonthSelector}>
         <View style={styles.datePresenterView}>
           <Text style={styles.datePresenterText}>
-            <Text style={{fontFamily:'Poppins600'}}>{(date.getMonth() + 1).toString().padStart(2,'0')}</Text>월
+            <Text style={{ fontFamily: 'Poppins600' }}>
+              {(date.getMonth() + 1).toString().padStart(2, '0')}
+            </Text>
+            월
           </Text>
           {!isImage && <UnderArrowIcon />}
         </View>
       </Pressable>
       {Platform.OS === 'ios' && (
         <BottomSheetModal
+          style={{ padding: 14 }}
           ref={ref}
           index={1}
           snapPoints={[100, 300]}
@@ -39,8 +44,12 @@ const MonthSelector = ({ isImage, style }: Props) => {
             if (index !== 1) ref.current?.close();
           }}
         >
+          <BottomSheetHeader
+            style={{ marginBottom: 0 }}
+            onPressCheck={() => ref.current?.close()}
+            onPressExit={() => ref.current?.close()}
+          />
           <DateTimePicker
-            style={{marginTop:30}}
             maximumDate={new Date(2025, 0, 1)}
             minimumDate={new Date(2020, 0, 1)}
             mode="date"

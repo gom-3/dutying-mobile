@@ -6,6 +6,7 @@ import DateTimePicker, {
   DateTimePickerEvent,
 } from '@react-native-community/datetimepicker';
 import { COLOR } from 'index.style';
+import BottomSheetHeader from '@components/BottomSheetHeader';
 
 interface Props {
   date: Date;
@@ -50,6 +51,7 @@ const DatePicker = ({ date, mode, text, style, onChange }: Props) => {
       </Pressable>
       {Platform.OS === 'ios' && (
         <BottomSheetModal
+          style={{ padding: 14 }}
           ref={ref}
           index={1}
           snapPoints={[100, 300]}
@@ -59,7 +61,18 @@ const DatePicker = ({ date, mode, text, style, onChange }: Props) => {
             if (index !== 1) ref.current?.close();
           }}
         >
-          <DateTimePicker minuteInterval={5} mode={mode} display="spinner" value={date} onChange={onChange} />
+          <BottomSheetHeader
+            style={{marginBottom:0}}
+            onPressCheck={() => ref.current?.close()}
+            onPressExit={() => ref.current?.close()}
+          />
+          <DateTimePicker
+            minuteInterval={5}
+            mode={mode}
+            display="spinner"
+            value={date}
+            onChange={onChange}
+          />
         </BottomSheetModal>
       )}
     </View>

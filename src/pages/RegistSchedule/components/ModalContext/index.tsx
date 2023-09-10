@@ -1,11 +1,10 @@
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import ExitIcon from '@assets/svgs/exit.svg';
-import CheckIcon from '@assets/svgs/check.svg';
 import { useScheduleStore } from 'store/schedule';
 import { COLOR } from 'index.style';
 import { Alarm, RecurrenceRule } from 'expo-calendar';
 import { useMemo } from 'react';
 import { alarmList, getRecurrenceRuleList } from '@libs/utils/event';
+import BottomSheetHeader from '@components/BottomSheetHeader';
 
 interface Props {
   closeModal: () => void;
@@ -49,11 +48,7 @@ const ModalContext = ({ closeModal }: Props) => {
   else if (modalName === 'alarm')
     return (
       <View style={styles.container}>
-        <View style={styles.header}>
-          <ExitIcon onPress={closeModal} />
-          <Text>알람</Text>
-          <CheckIcon onPress={closeModal} />
-        </View>
+        <BottomSheetHeader title="알람" onPressExit={closeModal} onPressCheck={closeModal} />
         {alarmList.map((alarm) => (
           <TouchableOpacity
             key={alarm.text}
@@ -63,7 +58,11 @@ const ModalContext = ({ closeModal }: Props) => {
             <Text
               style={[
                 styles.itemText,
-                { color: alarmText === alarm.text ? COLOR.sub1 : COLOR.sub25 },
+                {
+                  color: alarmText === alarm.text ? COLOR.main1 : COLOR.sub2,
+                  fontFamily: alarmText === alarm.text ? 'Apple600' : 'Apple',
+                  textDecorationLine: alarmText === alarm.text ? 'underline' : 'none',
+                },
               ]}
             >
               {alarm.text}
@@ -83,20 +82,22 @@ const ModalContext = ({ closeModal }: Props) => {
   else
     return (
       <View style={styles.container}>
-        <View style={styles.header}>
-          <ExitIcon onPress={closeModal} />
-          <Text>반복</Text>
-          <CheckIcon onPress={closeModal} />
-        </View>
+        <BottomSheetHeader title="반복" onPressExit={closeModal} onPressCheck={closeModal} />
         {recurrenceRuleList.map((recurrenceRule) => (
           <TouchableOpacity
+            key={recurrenceRule.text}
             style={styles.item}
             onPress={() => setRepeat(recurrenceRule.text, recurrenceRule.frequency)}
           >
             <Text
               style={[
                 styles.itemText,
-                { color: recurrenceRuleText === recurrenceRule.text ? COLOR.sub1 : COLOR.sub25 },
+                {
+                  color: recurrenceRuleText === recurrenceRule.text ? COLOR.main1 : COLOR.sub2,
+                  fontFamily: recurrenceRuleText === recurrenceRule.text ? 'Apple600' : 'Apple',
+                  textDecorationLine:
+                    recurrenceRuleText === recurrenceRule.text ? 'underline' : 'none',
+                },
               ]}
             >
               {recurrenceRule.text}
@@ -111,12 +112,6 @@ const styles = StyleSheet.create({
   container: {
     padding: 14,
   },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 18,
-  },
   item: {
     width: '100%',
     paddingHorizontal: 14,
@@ -124,7 +119,7 @@ const styles = StyleSheet.create({
   },
   itemText: {
     fontSize: 16,
-    fontFamily: 'Apple',
+    fontFamily: 'Apple500',
   },
 });
 
