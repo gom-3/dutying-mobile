@@ -18,7 +18,7 @@ const Header = ({ isImage }: Props) => {
   return (
     <View style={styles.headerContainer}>
       <View style={styles.firstLevelView}>
-        <MonthSelector />
+        <MonthSelector isImage={isImage} />
         <View style={styles.sideMenuView}>
           {!isImage && (
             <View style={styles.bellView}>

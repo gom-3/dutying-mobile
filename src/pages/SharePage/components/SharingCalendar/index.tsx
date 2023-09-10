@@ -1,8 +1,7 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import Shift from '@components/Shift';
 import { COLOR } from 'index.style';
-import useCalendar from './index.hook';
-import useDeviceCalendar from 'hooks/useDeviceCalendar';
+import useCalendar from '../../../HomePage/components/Calendar/index.hook';
 import { Schedule } from '@hooks/useDeviceCalendar';
 import { days, isSameDate } from '@libs/utils/date';
 
@@ -14,23 +13,19 @@ export type DateType = {
 
 interface Props {
   withoutSchedule?: boolean;
-  isSharing?: boolean;
 }
 
-const Calendar = ({ withoutSchedule, isSharing }: Props) => {
+const Calendar = ({ withoutSchedule }: Props) => {
   const {
     state: { weeks, shiftTypes, date, today },
     actions: { dateClickHandler },
   } = useCalendar();
 
-  if (!isSharing) {
-    useDeviceCalendar();
-  }
   return (
     <View style={styles.calendar}>
       <View style={styles.calendarHeader}>
         {days.map((day) => (
-          <View key={day} style={styles.calendarHeaderDay}>
+          <View key={`${day}share`} style={styles.calendarHeaderDay}>
             <Text
               style={day === '일' ? styles.sunday : day === '토' ? styles.saturday : styles.weekday}
             >
@@ -43,7 +38,7 @@ const Calendar = ({ withoutSchedule, isSharing }: Props) => {
         <View key={i} style={styles.week}>
           {week.map((day) => (
             <Pressable
-              key={day.date.getTime()}
+              key={`${day.date.getTime()}share`}
               style={[styles.day, { height: weeks.length === 6 ? 93 : 109 }]}
               onPress={() => dateClickHandler(day.date)}
             >
@@ -61,7 +56,7 @@ const Calendar = ({ withoutSchedule, isSharing }: Props) => {
                     if (weeks.length < 6 && schedule.level > 5) return;
                     return (
                       <View
-                        key={schedule.title}
+                        key={`${schedule.title}share`}
                         style={[
                           styles.scheduleView,
                           {

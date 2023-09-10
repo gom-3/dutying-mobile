@@ -58,7 +58,6 @@ export const useScheduleStore = createWithEqualityFn<Store>()(
       }),
     initStateEdit: (schedule) =>
       set((prev) => {
-        console.log(schedule);
         const startDate: Date =
           typeof schedule.startDate === 'string'
             ? new Date(schedule.startDate)

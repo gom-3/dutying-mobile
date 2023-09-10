@@ -7,11 +7,11 @@ import { useCallback } from 'react';
 import DateTimePicker from '@react-native-community/datetimepicker';
 
 interface Props {
-  isYearVisible?: boolean;
+  isImage?: boolean;
   style?: StyleProp<ViewStyle>;
 }
 
-const MonthSelector = ({ isYearVisible, style }: Props) => {
+const MonthSelector = ({ isImage, style }: Props) => {
   const {
     states: { date, ref },
     actions: { onChangeDate, onPressMonthSelector },
@@ -25,7 +25,7 @@ const MonthSelector = ({ isYearVisible, style }: Props) => {
           <Text style={styles.datePresenterText}>
             <Text style={{fontFamily:'Poppins600'}}>{(date.getMonth() + 1).toString().padStart(2,'0')}</Text>월
           </Text>
-          <UnderArrowIcon />
+          {!isImage && <UnderArrowIcon />}
         </View>
       </Pressable>
       {Platform.OS === 'ios' && (

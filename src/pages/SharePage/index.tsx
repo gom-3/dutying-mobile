@@ -13,6 +13,7 @@ import ViewShot from 'react-native-view-shot';
 import FullLogoIcon from '@assets/svgs/logo-full.svg';
 import * as Sharing from 'expo-sharing';
 import ShiftTypeGuide from './components/ShiftTypeGuide';
+import SharingCalendar from './components/SharingCalendar';
 
 const SharePage = () => {
   const [isImageModalVisible, setIsImageModalVisible] = useState(false);
@@ -85,12 +86,12 @@ const SharePage = () => {
                     <FullLogoIcon />
                   </View>
                   <Header isImage />
-                  <Calendar withoutSchedule={!scheduleSwitch}/>
-                  {guideSwitch && (
+                  <SharingCalendar withoutSchedule={!scheduleSwitch} />
+                  {/* {guideSwitch && (
                     <View style={styles.typeItem}>
                       <ShiftTypeGuide />
                     </View>
-                  )}
+                  )} */}
                 </ViewShot>
               </SafeAreaView>
             </SafeAreaProvider>
