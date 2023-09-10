@@ -27,6 +27,9 @@ const useScheduleCard = () => {
   const { onPress: onPressEditScheduleButton } = useLinkProps({
     to: { screen: 'RegistSchedule', params: { isEdit: true } },
   });
+  const { onPress: onPressRegistShiftButton } = useLinkProps({
+    to: { screen: 'RegistDuty', params: { dateFrom: date.toISOString() } },
+  });
   const findDate = () => {
     const thisDate = calendar.find((cell) => isSameDate(cell.date, date));
     setSelectedDateData(thisDate);
@@ -71,19 +74,28 @@ const useScheduleCard = () => {
     setState('isCardOpen', false);
   };
 
-  const addButtonPressHandler = () => {
+  const editShiftPressHandler = () => {
+    onPressRegistShiftButton();
+  };
+
+  const addSchedulePressHandler = () => {
     initStateCreate(date);
     onPressAddScheduleButton();
   };
 
-  const editButtonPressHandler = (schedule: Schedule) => {
+  const editSchedulePressHandler = (schedule: Schedule) => {
     initStateEdit(schedule);
     onPressEditScheduleButton();
   };
 
   return {
     state: { animatedStyles, panGesture, date, selectedDateData, shiftTypes, isToday },
-    actions: { backDropPressHandler, addButtonPressHandler, editButtonPressHandler },
+    actions: {
+      editShiftPressHandler,
+      backDropPressHandler,
+      addSchedulePressHandler,
+      editSchedulePressHandler,
+    },
   };
 };
 

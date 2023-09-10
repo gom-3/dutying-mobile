@@ -12,7 +12,7 @@ import {
 } from '@libs/api/shift';
 import { useAccountStore } from 'store/account';
 
-const useRegistDuty = () => {
+const useRegistDuty = (dateFrom?: string) => {
   const [date, calendar, setState] = useCaledarDateStore((state) => [
     state.date,
     state.calendar,
@@ -24,7 +24,7 @@ const useRegistDuty = () => {
   const [tempCalendar, setTempCalendar] = useState<DateType[]>([]);
   const [weeks, setWeeks] = useState<DateType[][]>([]);
   const [selectedDate, setSelectedDate] = useState(
-    new Date(date.getFullYear(), date.getMonth(), 1),
+    dateFrom ? new Date(dateFrom) : new Date(date.getFullYear(), date.getMonth(), 1),
   );
   const [index, setIndex] = useState(0);
   const navigation = useNavigation();
@@ -44,7 +44,6 @@ const useRegistDuty = () => {
           date.getMonth(),
         ]);
       },
-      
     },
   );
 

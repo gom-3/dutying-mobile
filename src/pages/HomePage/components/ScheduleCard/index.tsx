@@ -13,7 +13,12 @@ const days = ['일', '월', '화', '수', '목', '금', '토'];
 const ScheduleCard = () => {
   const {
     state: { animatedStyles, panGesture, date, selectedDateData, shiftTypes, isToday },
-    actions: { backDropPressHandler, addButtonPressHandler, editButtonPressHandler },
+    actions: {
+      backDropPressHandler,
+      addSchedulePressHandler,
+      editSchedulePressHandler,
+      editShiftPressHandler,
+    },
   } = useScheduleCard();
 
   return (
@@ -53,18 +58,22 @@ const ScheduleCard = () => {
                   </Text>
                 </View>
               ) : (
-                <Pressable>
+                <Pressable onPress={editShiftPressHandler}>
                   <View style={styles.shiftWrapperView}>
                     <AddShiftIcon />
                     <Text style={styles.registShiftText}>근무를 등록해주세요.</Text>
                   </View>
                 </Pressable>
               )}
-              {selectedDateData?.shift !== undefined && <PencilIcon />}
+              {selectedDateData?.shift && (
+                <Pressable onPress={editShiftPressHandler}>
+                  <PencilIcon />
+                </Pressable>
+              )}
             </View>
             <ScrollView style={{ padding: 24 }}>
               {selectedDateData?.schedules.map((schedule) => (
-                <Pressable key={schedule.id} onPress={() => editButtonPressHandler(schedule)}>
+                <Pressable key={schedule.id} onPress={() => editSchedulePressHandler(schedule)}>
                   <View key={schedule.title} style={styles.scheduleView}>
                     <View
                       style={[
@@ -88,7 +97,7 @@ const ScheduleCard = () => {
                 </Pressable>
               ))}
             </ScrollView>
-            <Pressable style={styles.addButtonIcon} onPress={addButtonPressHandler}>
+            <Pressable style={styles.addButtonIcon} onPress={addSchedulePressHandler}>
               <AddButtonIcon />
             </Pressable>
           </View>

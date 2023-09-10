@@ -12,12 +12,16 @@ import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { days, isSameDate } from '@libs/utils/date';
 import CheckIcon from '@assets/svgs/check.svg';
 import TrashIcon from '@assets/svgs/trash-color.svg';
+import { useRoute } from '@react-navigation/native';
 
 const RegistDuty = () => {
+  const route = useRoute<any>();
+  const { params } = route;
+  const dateFrom = params ? params.dateFrom : undefined;
   const {
     state: { date, weeks, selectedDate, shiftTypes, shiftTypesCount },
     actions: { insertShift, deleteShift, selectDate, saveRegistDutyChange },
-  } = useRegistDuty();
+  } = useRegistDuty(dateFrom);
   const {
     actions: { pickImage },
   } = useImagePicker();
