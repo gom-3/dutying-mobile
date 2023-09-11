@@ -31,7 +31,7 @@ interface Store extends State {
 const initialState: State = {
   id: '',
   title: '',
-  isAllday: true,
+  isAllday: false,
   isAlarmUsing: false,
   alarms: [],
   alarmText: '정각',
@@ -63,9 +63,7 @@ export const useScheduleStore = createWithEqualityFn<Store>()(
             ? new Date(schedule.startDate)
             : schedule.startDate;
         const endDate: Date =
-          typeof schedule.startDate === 'string'
-            ? new Date(schedule.startDate)
-            : schedule.startDate;
+          typeof schedule.endDate === 'string' ? new Date(schedule.endDate) : schedule.endDate;
         let alarmText = '정각';
         if (schedule.alarms[0]) {
           const found = alarmList.find((item) => item.time === schedule.alarms[0].relativeOffset);
@@ -81,6 +79,7 @@ export const useScheduleStore = createWithEqualityFn<Store>()(
         }
         return {
           ...prev,
+          isAllday: schedule.allDay,
           id: schedule.id,
           title: schedule.title,
           isAlarmUsing: schedule.alarms.length > 0,

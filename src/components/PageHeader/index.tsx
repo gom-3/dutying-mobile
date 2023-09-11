@@ -35,6 +35,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
   },
-  headerTitle: { fontFamily: 'Apple', fontSize: 16, color: COLOR.sub2 },
+  headerTitle: { fontFamily: 'Apple500', fontSize: 16, color: COLOR.sub1 },
   blank: { width: 24 },
 });

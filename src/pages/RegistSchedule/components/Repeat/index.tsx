@@ -49,7 +49,7 @@ const styles = StyleSheet.create({
     marginVertical: Platform.OS === 'ios' ? 10 : 0,
   },
   itemTitleWrapper: { flexDirection: 'row' },
-  itemTitle: { marginLeft: 8, fontFamily: 'Apple', fontSize: 16, color: COLOR.sub25 },
+  itemTitle: { marginLeft: 8, fontFamily: 'Apple', fontSize: 16, color: COLOR.sub2 },
   usingView: { marginHorizontal: 24, marginVertical: 0 },
   usingItemWrapper: { flexDirection: 'row' },
   usingItemText: {

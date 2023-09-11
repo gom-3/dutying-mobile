@@ -61,58 +61,58 @@ const useDeviceCalendar = () => {
       const startIndex = first.getDay() + eventStartDate.getDate() - 1;
       let level;
       if (event.allDay) {
-        const schedules = [...newCalendar[startIndex].schedules];
-        const occupiedLevels = new Set(schedules.map((schedule) => schedule.level));
+        // start
+        // const schedules = [...newCalendar[startIndex].schedules];
+        // const occupiedLevels = new Set(schedules.map((schedule) => schedule.level));
+        // level = 1;
+        // while (occupiedLevels.has(level)) {
+        //   level++;
+        // }
+        // const schedule: Schedule = {
+        //   ...event,
+        //   startTime: eventStartDate,
+        //   endTime: eventEndDate,
+        //   level,
+        //   isStart: true,
+        //   isEnd: true,
+        //   leftDuration: 0,
+        // };
+        // schedules.push(schedule);
+        // newCalendar[startIndex].schedules = schedules;
+      }
+      let endIndex = first.getDay() + eventEndDate.getDate() - 1;
+      if (endIndex > newCalendar.length - 1) endIndex = newCalendar.length - 1;
+      let index = startIndex;
+      while (index <= endIndex) {
+        const occupiedLevels = new Set();
+        let jump = 0;
+        for (let i = index; i <= endIndex; i++) {
+          const schedules = newCalendar[i].schedules;
+          jump++;
+          schedules.forEach((schedule) => occupiedLevels.add(schedule.level));
+          if (newCalendar[i].date.getDay() == 6) break;
+        }
+
         level = 1;
         while (occupiedLevels.has(level)) {
           level++;
         }
-        const schedule: Schedule = {
-          ...event,
-          startTime: eventStartDate,
-          endTime: eventEndDate,
-          level,
-          isStart: true,
-          isEnd: true,
-          leftDuration: 0,
-        };
-        schedules.push(schedule);
-        newCalendar[startIndex].schedules = schedules;
-      } else {
-        let endIndex = first.getDay() + eventEndDate.getDate() - 1;
-        if (endIndex > newCalendar.length - 1) endIndex = newCalendar.length - 1;
-        let index = startIndex;
-        while (index <= endIndex) {
-          const occupiedLevels = new Set();
-          let jump = 0;
-          for (let i = index; i <= endIndex; i++) {
-            const schedules = newCalendar[i].schedules;
-            jump++;
-            schedules.forEach((schedule) => occupiedLevels.add(schedule.level));
-            if (newCalendar[i].date.getDay() == 6) break;
-          }
 
-          level = 1;
-          while (occupiedLevels.has(level)) {
-            level++;
-          }
-
-          for (let i = index; i < index + jump; i++) {
-            const schedule: Schedule = {
-              ...event,
-              startTime: eventStartDate,
-              endTime: eventEndDate,
-              level,
-              isStart: eventStartDate.getDate() === newCalendar[i].date.getDate(),
-              isEnd: eventEndDate.getDate() === newCalendar[i].date.getDate(),
-              leftDuration: endIndex - i,
-            };
-            const schedules = [...newCalendar[i].schedules];
-            schedules.push(schedule);
-            newCalendar[i].schedules = schedules;
-          }
-          index = index + jump;
+        for (let i = index; i < index + jump; i++) {
+          const schedule: Schedule = {
+            ...event,
+            startTime: eventStartDate,
+            endTime: eventEndDate,
+            level,
+            isStart: eventStartDate.getDate() === newCalendar[i].date.getDate(),
+            isEnd: eventEndDate.getDate() === newCalendar[i].date.getDate(),
+            leftDuration: endIndex - i,
+          };
+          const schedules = [...newCalendar[i].schedules];
+          schedules.push(schedule);
+          newCalendar[i].schedules = schedules;
         }
+        index = index + jump;
       }
     });
     setState('calendar', newCalendar);

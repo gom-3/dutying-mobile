@@ -9,16 +9,27 @@ import * as AppleAuthentication from 'expo-apple-authentication';
 import { useState } from 'react';
 import { WebView } from 'react-native-webview';
 import { screenHeight, screenWidth } from 'index.style';
+import * as KakaoLogins from "@react-native-seoul/kakao-login";
 
 const LoginPage = () => {
   const { onPress } = useLinkProps({ to: { screen: 'Home' } });
   const [setState] = useAccountStore((state) => [state.setState]);
   const [loginUrl, setLoginUrl] = useState<string | null>(null);
 
-  const onPressKakaoLogin = () => {
+  const onPressKakaoLogin = async () => {
     // setState('isLoggedIn', true);
     // onPress();
-    setLoginUrl('https://www.naver.com');
+    setLoginUrl(
+      'https://api.dutying.net/oauth2/authorization/kakao?redirectUrl=http://localhost:3000/',
+    );
+  };
+
+  const onPressAppleLogin = () => {
+    // setState('isLoggedIn', true);
+    // onPress();
+    setLoginUrl(
+      'https://api.dutying.net/oauth2/authorization/apple?redirectUrl=http://localhost:3000/',
+    );
   };
 
   const handleWebViewNavigationStateChange = (newNavigationState: any) => {
@@ -26,14 +37,14 @@ const LoginPage = () => {
     // setLoginUrl(null);
   };
 
-  const onPressAppleLogin = async () => {
-    const credential = await AppleAuthentication.signInAsync({
-      requestedScopes: [
-        AppleAuthentication.AppleAuthenticationScope.FULL_NAME,
-        AppleAuthentication.AppleAuthenticationScope.EMAIL,
-      ],
-    });
-  };
+  // const onPressAppleLogin = async () => {
+  //   const credential = await AppleAuthentication.signInAsync({
+  //     requestedScopes: [
+  //       AppleAuthentication.AppleAuthenticationScope.FULL_NAME,
+  //       AppleAuthentication.AppleAuthenticationScope.EMAIL,
+  //     ],
+  //   });
+  // };
 
   return (
     <PageViewContainer>
@@ -99,7 +110,7 @@ const LoginPage = () => {
 const styles = StyleSheet.create({
   webview: {
     width: screenWidth,
-    height: screenHeight,
+    height: screenHeight*0.8,
     marginTop: 20,
   },
   guidTextWrapper: {

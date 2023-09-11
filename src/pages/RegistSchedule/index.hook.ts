@@ -14,9 +14,10 @@ const useRegistSchedule = (isEdit?: boolean) => {
   const ref = useRef<ScrollView | null>(null);
   const modalRef = useRef<BottomSheetModal>(null);
   const [setState] = useCaledarDateStore((state) => [state.setState]);
-  const [id, title, alarms, recurrenceRule, startDate, endDate, notes, setScheduleState] =
+  const [id, isAllday, title, alarms, recurrenceRule, startDate, endDate, notes, setScheduleState] =
     useScheduleStore((state) => [
       state.id,
+      state.isAllday,
       state.title,
       state.alarms,
       state.recurrenceRule,
@@ -29,6 +30,7 @@ const useRegistSchedule = (isEdit?: boolean) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const event: DeviceEvent = {
+    allDay: isAllday,
     alarms,
     recurrenceRule,
     title,

@@ -84,10 +84,7 @@ const RegistSchedulePage = () => {
                 </View>
               }
             />
-            <Text style={styles.yearText}>{startDate.getFullYear()}</Text>
-            <Text style={styles.dateText}>
-              {startDate.getMonth() + 1}월 {startDate.getDate()}일
-            </Text>
+            
             <TextInput
               autoFocus={Platform.OS === 'android'}
               value={title}
