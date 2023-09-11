@@ -15,12 +15,10 @@ export type ShiftTypeRequestDTO = Omit<Shift, 'accountShiftTypeId' | 'startTime'
 };
 
 export const getShiftTypes = async (userId: number) => {
-  console.log(userId);
   return (await axiosInstance.get<ShiftTypesResponseDTO>(`/account/${userId}/shift-types`)).data;
 };
 
 export const addShiftType = async (userId: number, shift: ShiftTypeRequestDTO) => {
-  console.log(userId,shift);
   return (await axiosInstance.post<ShiftTypeResponseDTO>(`/account/${userId}/shift-types`, shift))
     .data;
 };
@@ -36,4 +34,8 @@ export const editShiftType = async (
       shift,
     )
   ).data;
+};
+
+export const deleteShiftType = async (userId: number, shiftId: number) => {
+  return await axiosInstance.delete(`/account/${userId}/shift-types/${shiftId}`);
 };

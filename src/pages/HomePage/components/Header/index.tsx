@@ -11,20 +11,22 @@ interface Props {
 
 const Header = ({ isImage }: Props) => {
   const {
-    states: { date, shiftTypes, shiftTypesCount },
-    actions: { setState },
+    states: { shiftTypes, shiftTypesCount },
+    actions: { setState, navigateToNotification },
   } = useCalendarHeader();
 
   return (
     <View style={styles.headerContainer}>
       <View style={styles.firstLevelView}>
-        <MonthSelector />
+        <MonthSelector isImage={isImage} />
         <View style={styles.sideMenuView}>
           {!isImage && (
-            <View style={styles.bellView}>
-              <BellIcon />
-              <View style={styles.alertDotView} />
-            </View>
+            <Pressable onPress={navigateToNotification}>
+              <View style={styles.bellView}>
+                <BellIcon />
+                <View style={styles.alertDotView} />
+              </View>
+            </Pressable>
           )}
           {!isImage && (
             <Pressable onPress={() => setState('isSideMenuOpen', true)}>

@@ -85,7 +85,7 @@ const SharePage = () => {
                     <FullLogoIcon />
                   </View>
                   <Header isImage />
-                  <Calendar withoutSchedule={!scheduleSwitch}/>
+                  <Calendar withoutSchedule={!scheduleSwitch} isSharing />
                   {guideSwitch && (
                     <View style={styles.typeItem}>
                       <ShiftTypeGuide />

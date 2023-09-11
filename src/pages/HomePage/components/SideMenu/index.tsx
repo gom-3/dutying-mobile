@@ -18,8 +18,8 @@ const SideMenu = () => {
       <BackDrop clickHandler={closeSideMenu} />
       <Animated.View
         style={styles.sideMenuContainer}
-        entering={SlideInRight.duration(300)}
-        exiting={SlideOutRight.duration(300)}
+        entering={SlideInRight.duration(350)}
+        exiting={SlideOutRight.duration(350)}
       >
         <Pressable onPress={closeSideMenu}>
           <ExitIcon style={styles.exitIcon} />

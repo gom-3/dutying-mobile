@@ -5,12 +5,12 @@ import { shallow } from 'zustand/shallow';
 import { DateType } from '.';
 import { useQuery } from '@tanstack/react-query';
 import { getAccountShiftList } from '@libs/api/shift';
+import { useAccountStore } from 'store/account';
 
 const memoizedCalendars = new Map();
 
-
-
 const useCalendar = () => {
+  const [userId] = useAccountStore((state) => [state.userId]);
   const [date, calendar, setState] = useCaledarDateStore((state) => [
     state.date,
     state.calendar,
@@ -19,12 +19,17 @@ const useCalendar = () => {
   const [shiftTypes] = useShiftTypeStore((state) => [state.shiftTypes], shallow);
   const [weeks, setWeeks] = useState<DateType[][]>([]);
   const today = new Date();
-  const getAccountShiftListKey = ['getAccountShiftList', 1, date.getFullYear(), date.getMonth()];
+  const getAccountShiftListKey = [
+    'getAccountShiftList',
+    userId,
+    date.getFullYear(),
+    date.getMonth(),
+  ];
 
   const { data: shiftListResponse } = useQuery(getAccountShiftListKey, () =>
-    getAccountShiftList(1, date.getFullYear(), date.getMonth()),
+    getAccountShiftList(userId, date.getFullYear(), date.getMonth()),
   );
-  console.log(shiftListResponse);
+
   const dateClickHandler = (date: Date) => {
     setState('date', date);
     setState('isCardOpen', true);
@@ -33,10 +38,10 @@ const useCalendar = () => {
   const initCalendar = (year: number, month: number) => {
     const key = `${year}-${month}`;
 
-    if (memoizedCalendars.has(key)) {
-      setState('calendar', memoizedCalendars.get(key));
-      return;
-    }
+    // if (memoizedCalendars.has(key)) {
+    //   setState('calendar', memoizedCalendars.get(key));
+    //   return;
+    // }
 
     const first = new Date(year, month, 1);
     const last = new Date(year, month + 1, 0);
@@ -85,9 +90,7 @@ const useCalendar = () => {
 
   useEffect(() => {
     initCalendar(date.getFullYear(), date.getMonth());
-  }, [date, shiftListResponse]);
-
-  
+  }, [date.getFullYear(), date.getMonth(), shiftListResponse]);
 
   return { state: { weeks, shiftTypes, date, today }, actions: { dateClickHandler } };
 };

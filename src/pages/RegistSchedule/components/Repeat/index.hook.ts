@@ -1,14 +1,18 @@
-import { useEffect, useState } from 'react';
 import { useScheduleStore } from 'store/schedule';
 
 const useRepeat = (openModal: () => void) => {
-  const [using, setUsing] = useState(false);
-  const [recurrenceRuleText] = useScheduleStore((state) => [state.recurrenceRuleText]);
+  const [isRecurrenceUsing, recurrenceRuleText, setState] = useScheduleStore((state) => [
+    state.isRecurrenceUsing,
+    state.recurrenceRuleText,
+    state.setState,
+  ]);
 
-  useEffect(() => {
-    if (using) openModal();
-  }, [using]);
-  return { states: { using, recurrenceRuleText }, actions: { setUsing } };
+  const setIsRecurrenceUsing = (value: boolean) => {
+    setState('isRecurrenceUsing', value);
+    if (value) openModal();
+  };
+
+  return { states: { isRecurrenceUsing, recurrenceRuleText }, actions: { setIsRecurrenceUsing } };
 };
 
 export default useRepeat;

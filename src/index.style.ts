@@ -3,6 +3,7 @@ import { Dimensions } from 'react-native';
 export const COLOR = {
   main1: '#844AFF',
   main2: '#b08bff',
+  main3: '#ceb6ff',
   main4: '#EDE4FF',
   sub1: '#242428',
   sub2: '#595961',

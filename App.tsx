@@ -36,6 +36,7 @@ export default function App() {
   const [fontsLoaded] = useFonts({
     Apple: require('./src/assets/fonts/AppleSDGothicNeoR.ttf'),
     Apple500: require('./src/assets/fonts/AppleSDGothicNeoM.ttf'),
+    Apple600: require('./src/assets/fonts/AppleSDGothicNeoB.ttf'),
     Poppins: require('./src/assets/fonts/Poppins-Regular.ttf'),
     Poppins500: require('./src/assets/fonts/Poppins-Medium.ttf'),
     Poppins600: require('./src/assets/fonts/Poppins-Bold.ttf'),

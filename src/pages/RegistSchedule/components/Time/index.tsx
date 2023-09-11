@@ -7,8 +7,14 @@ import DatePicker from '@components/DatePicker';
 
 const Time = () => {
   const {
-    states: { using, isOpen, mode, startDate, endDate, value },
-    actions: { setUsing, setIsOpen, datePressHander, onChangeStartTime, onChangeEndTime },
+    states: { isAllday, isOpen, mode, startDate, endDate, value },
+    actions: {
+      changeSwitchHandler,
+      setIsOpen,
+      datePressHander,
+      onChangeStartTime,
+      onChangeEndTime,
+    },
   } = useTimeHook();
 
   return (
@@ -19,25 +25,30 @@ const Time = () => {
             <ClockIcon />
             <Text style={styles.itemTitle}>시간 설정</Text>
           </View>
-          <Switch
-            trackColor={{ true: COLOR.main1 }}
-            thumbColor="white"
-            value={using}
-            onValueChange={(value) => setUsing(value)}
-          />
+          <View style={styles.itemTitleWrapper}>
+            <Text style={[styles.allDayText, { color: isAllday ? COLOR.main2 : COLOR.sub25 }]}>
+              하루종일
+            </Text>
+            <Switch
+              trackColor={{ true: COLOR.main1 }}
+              thumbColor="white"
+              value={isAllday}
+              onValueChange={changeSwitchHandler}
+            />
+          </View>
         </View>
-        {using && (
-          <View style={styles.usingView}>
-            <View style={styles.itemTitleWrapper}>
-              <DatePicker mode="date" date={startDate} text="시작일" onChange={onChangeStartTime} />
-              <DatePicker
-                style={{ marginLeft: 16 }}
-                mode="date"
-                date={endDate}
-                text="종료일"
-                onChange={onChangeEndTime}
-              />
-            </View>
+        <View style={styles.usingView}>
+          <View style={styles.itemTitleWrapper}>
+            <DatePicker mode="date" date={startDate} text="시작일" onChange={onChangeStartTime} />
+            <DatePicker
+              style={{ marginLeft: 16 }}
+              mode="date"
+              date={endDate}
+              text="종료일"
+              onChange={onChangeEndTime}
+            />
+          </View>
+          {!isAllday && (
             <View style={[styles.itemTitleWrapper, { marginTop: 18 }]}>
               <DatePicker
                 mode="datetime"
@@ -53,8 +64,8 @@ const Time = () => {
                 style={{ marginLeft: 30 }}
               />
             </View>
-          </View>
-        )}
+          )}
+        </View>
       </OutsidePressHandler>
     </>
   );
@@ -68,8 +79,8 @@ const styles = StyleSheet.create({
     marginHorizontal: 24,
     marginVertical: Platform.OS === 'ios' ? 10 : 0,
   },
-  itemTitleWrapper: { flexDirection: 'row' },
-  itemTitle: { marginLeft: 8, fontFamily: 'Apple', fontSize: 16, color: COLOR.sub25 },
+  itemTitleWrapper: { flexDirection: 'row', alignItems: 'center' },
+  itemTitle: { marginLeft: 8, fontFamily: 'Apple', fontSize: 16, color: COLOR.sub2 },
   usingView: { marginHorizontal: 24, marginVertical: 0 },
   usingItemTitle: { fontFamily: 'Apple', fontSize: 10, color: COLOR.sub3 },
   usingItemWrapper: { flexDirection: 'row' },
@@ -81,6 +92,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     color: COLOR.sub1,
     paddingVertical: 4,
+  },
+  allDayText: {
+    fontFamily: 'Apple500',
+    fontSize: 14,
+    marginRight: 16,
   },
 });
 

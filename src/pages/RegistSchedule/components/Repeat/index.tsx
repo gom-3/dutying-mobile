@@ -9,8 +9,8 @@ interface Props {
 
 const Repeat = ({ openModal }: Props) => {
   const {
-    states: { using, recurrenceRuleText },
-    actions: { setUsing },
+    states: { isRecurrenceUsing, recurrenceRuleText },
+    actions: { setIsRecurrenceUsing },
   } = useRepeat(openModal);
 
   return (
@@ -23,11 +23,11 @@ const Repeat = ({ openModal }: Props) => {
         <Switch
           trackColor={{ true: COLOR.main1 }}
           thumbColor="white"
-          value={using}
-          onValueChange={(value) => setUsing(value)}
+          value={isRecurrenceUsing}
+          onValueChange={setIsRecurrenceUsing}
         />
       </View>
-      {using && (
+      {isRecurrenceUsing && (
         <View style={styles.usingView}>
           <Pressable onPress={openModal}>
             <View style={styles.usingItemWrapper}>
@@ -49,7 +49,7 @@ const styles = StyleSheet.create({
     marginVertical: Platform.OS === 'ios' ? 10 : 0,
   },
   itemTitleWrapper: { flexDirection: 'row' },
-  itemTitle: { marginLeft: 8, fontFamily: 'Apple', fontSize: 16, color: COLOR.sub25 },
+  itemTitle: { marginLeft: 8, fontFamily: 'Apple', fontSize: 16, color: COLOR.sub2 },
   usingView: { marginHorizontal: 24, marginVertical: 0 },
   usingItemWrapper: { flexDirection: 'row' },
   usingItemText: {

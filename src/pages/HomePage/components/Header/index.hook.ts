@@ -1,15 +1,17 @@
 import { useShiftTypeStore } from 'store/shift';
 import { useEffect, useState } from 'react';
 import { useCaledarDateStore } from 'store/calendar';
+import { useLinkProps } from '@react-navigation/native';
 
 const useCalendarHeader = () => {
-  const [date, calendar, setState] = useCaledarDateStore((state) => [
-    state.date,
-    state.calendar,
-    state.setState,
-  ]);
+  const [calendar, setState] = useCaledarDateStore((state) => [state.calendar, state.setState]);
   const [shiftTypes] = useShiftTypeStore((state) => [state.shiftTypes]);
   const [shiftTypesCount, setShiftTypesCount] = useState(new Map<number, number>());
+  const { onPress } = useLinkProps({ to: { screen: 'Notification' } });
+
+  const navigateToNotification = () => {
+    onPress();
+  };
 
   useEffect(() => {
     if (calendar) {
@@ -25,8 +27,8 @@ const useCalendarHeader = () => {
   }, [calendar]);
 
   return {
-    states: { date, shiftTypes, shiftTypesCount },
-    actions: { setState },
+    states: { shiftTypes, shiftTypesCount },
+    actions: { setState, navigateToNotification },
   };
 };
 

@@ -29,11 +29,12 @@ export default PageHeader;
 
 const styles = StyleSheet.create({
   header: {
-    margin: 14,
+    marginHorizontal: 24,
+    marginVertical: 14,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
   },
-  headerTitle: { fontFamily: 'Apple', fontSize: 16, color: COLOR.sub2 },
+  headerTitle: { fontFamily: 'Apple500', fontSize: 16, color: COLOR.sub1 },
   blank: { width: 24 },
 });

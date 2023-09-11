@@ -10,7 +10,7 @@ const ShiftTypeGuide = () => {
       <Text style={styles.title}>근무 유형별 안내</Text>
       <View style={styles.shiftContainer}>
         {Array.from(shfitTypes.values()).map((shiftType) => (
-          <View style={styles.shift}>
+          <View key={shiftType.accountShiftTypeId} style={styles.shift}>
             <View style={[styles.shiftBox, { backgroundColor: shiftType.color }]}>
               <Text style={styles.shoftName}>{shiftType.shortName}</Text>
               <Text style={styles.name}>{shiftType.name}</Text>
@@ -51,7 +51,6 @@ const styles = StyleSheet.create({
     width: '50%',
     marginTop: 8,
     flexDirection: 'row',
-    // justifyContent: 'space-between',
     alignItems: 'center',
   },
   shiftBox: {

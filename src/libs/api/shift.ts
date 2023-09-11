@@ -21,3 +21,16 @@ export const getAccountShiftList = async (userId: number, year: number, month: n
     )
   ).data;
 };
+
+export type AccountShiftRequest = Pick<Shift, 'accountShiftTypeId'> & { shiftDate: string };
+
+export type AccountShiftListRequestDTO = {
+  accountShifts: AccountShiftRequest[];
+};
+
+export const editAccountShiftList = async (
+  userId: number,
+  shiftList: AccountShiftListRequestDTO,
+) => {
+  await axiosInstance.patch(`/account/${userId}/shifts/list`, shiftList);
+};
