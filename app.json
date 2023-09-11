@@ -8,6 +8,7 @@
     "userInterfaceStyle": "light",
     "plugins": [
       "expo-apple-authentication",
+      "@react-native-firebase/app",
       [
         "expo-calendar",
         {
@@ -23,10 +24,11 @@
         }
       ],
       [
-        "@react-native-seoul/kakao-login",
+        "expo-build-properties",
         {
-          "kakaoAppKey": "04742f7877802bb2f2124ad0e7fec2f8",
-          "kotlinVersion": "1.5.10"
+          "ios": {
+            "useFrameworks": "static"
+          }
         }
       ]
     ],
@@ -40,6 +42,7 @@
     },
     "assetBundlePatterns": ["**/*"],
     "ios": {
+      "googleServicesFile": "./GoogleService-Info.plist",
       "usesAppleSignIn": true,
       "supportsTablet": true,
       "infoPlist": {
@@ -53,7 +56,8 @@
         "backgroundColor": "#ffffff"
       },
       "permissions": ["android.permission.READ_CALENDAR", "android.permission.WRITE_CALENDAR"],
-      "package": "com.cksrb63.dutyingmobile"
+      "package": "com.cksrb63.dutyingmobile",
+      "googleServicesFile": "./google-services.json"
     },
     "web": {
       "favicon": "./src/assets/favicon.png"
