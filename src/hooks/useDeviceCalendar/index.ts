@@ -22,6 +22,7 @@ export type Schedule = Event & {
   startTime: Date;
   endTime: Date;
   leftDuration: number;
+  color: string;
 };
 
 const useDeviceCalendar = () => {
@@ -64,6 +65,8 @@ const useDeviceCalendar = () => {
       const eventStartDate = new Date(event.startDate);
       const eventEndDate = new Date(event.endDate);
       const startIndex = first.getDay() + eventStartDate.getDate() - 1;
+      const color =
+        dutyingCalendars.find((calendar) => calendar.id === event.calendarId)?.color || '#5AF8F8';
       let level;
       if (event.allDay) {
         // start
@@ -109,6 +112,7 @@ const useDeviceCalendar = () => {
             startTime: eventStartDate,
             endTime: eventEndDate,
             level,
+            color: color,
             isStart: eventStartDate.getDate() === newCalendar[i].date.getDate(),
             isEnd: eventEndDate.getDate() === newCalendar[i].date.getDate(),
             leftDuration: endIndex - i,
@@ -128,7 +132,6 @@ const useDeviceCalendar = () => {
 
     if (status === 'granted') {
       let calendars = await getCalendarsAsync(EntityTypes.EVENT);
-      console.log(calendars);
       const newMap: { [key: string]: boolean } = {};
       calendars.forEach((key) => {
         if (!newMap[key.id]) {
@@ -151,9 +154,9 @@ const useDeviceCalendar = () => {
     }
   };
 
-  useEffect(()=>{
+  useEffect(() => {
     getPermissionFromDevice();
-  },[]);
+  }, []);
 
   useEffect(() => {
     if (isCalendarChanged) {

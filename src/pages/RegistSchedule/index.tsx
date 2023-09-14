@@ -23,28 +23,31 @@ import ModalContext from './components/ModalContext';
 import PageHeader from '@components/PageHeader';
 import { useRoute } from '@react-navigation/native';
 import TrashIcon from '@assets/svgs/trash.svg';
+import Category from './components/Category';
 
-const KeyboradAvoidWrapper = React.forwardRef<ScrollView, { children: ReactNode }>((props, ref) => {
-  const { children } = props;
-  if (Platform.OS === 'android')
-    return (
-      <KeyboardAvoidingView behavior="height">
-        <ScrollView style={styles.container} ref={ref}>
+export const KeyboradAvoidWrapper = React.forwardRef<ScrollView, { children: ReactNode }>(
+  (props, ref) => {
+    const { children } = props;
+    if (Platform.OS === 'android')
+      return (
+        <KeyboardAvoidingView behavior="height">
+          <ScrollView style={styles.container} ref={ref}>
+            {children}
+          </ScrollView>
+        </KeyboardAvoidingView>
+      );
+    else
+      return (
+        <KeyboardAwareScrollView
+          extraScrollHeight={50}
+          resetScrollToCoords={{ x: 0, y: 0 }}
+          style={styles.container}
+        >
           {children}
-        </ScrollView>
-      </KeyboardAvoidingView>
-    );
-  else
-    return (
-      <KeyboardAwareScrollView
-        extraScrollHeight={50}
-        resetScrollToCoords={{ x: 0, y: 0 }}
-        style={styles.container}
-      >
-        {children}
-      </KeyboardAwareScrollView>
-    );
-});
+        </KeyboardAwareScrollView>
+      );
+  },
+);
 
 const RegistSchedulePage = () => {
   const route = useRoute<any>();
@@ -84,7 +87,7 @@ const RegistSchedulePage = () => {
                 </View>
               }
             />
-            
+
             <TextInput
               autoFocus={Platform.OS === 'android'}
               value={title}
@@ -93,6 +96,7 @@ const RegistSchedulePage = () => {
               placeholder="제목"
               placeholderTextColor={COLOR.sub3}
             />
+            {!isEdit && <Category />}
             <Time />
             <Alarm openModal={() => openModal('alarm')} />
             <Repeat openModal={() => openModal('reculsive')} />

@@ -14,19 +14,30 @@ const useRegistSchedule = (isEdit?: boolean) => {
   const ref = useRef<ScrollView | null>(null);
   const modalRef = useRef<BottomSheetModal>(null);
   const [setState] = useCaledarDateStore((state) => [state.setState]);
-  const [id, isAllday, title, alarms, recurrenceRule, startDate, endDate, notes, setScheduleState] =
-    useScheduleStore((state) => [
-      state.id,
-      state.isAllday,
-      state.title,
-      state.alarms,
-      state.recurrenceRule,
-      state.startDate,
-      state.endDate,
-      state.notes,
-      state.setState,
-    ]);
-  const [calendars] = useDeviceCalendarStore((state) => [state.calendars]);
+  const [
+    id,
+    calendarId,
+    isAllday,
+    title,
+    alarms,
+    recurrenceRule,
+    startDate,
+    endDate,
+    notes,
+    setScheduleState,
+  ] = useScheduleStore((state) => [
+    state.id,
+    state.calendarId,
+    state.isAllday,
+    state.title,
+    state.alarms,
+    state.recurrenceRule,
+    state.startDate,
+    state.endDate,
+    state.notes,
+    state.setState,
+  ]);
+  const [calendars] = useDeviceCalendarStore((state) => [state.dutyingCalendars]);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const event: DeviceEvent = {
@@ -48,7 +59,7 @@ const useRegistSchedule = (isEdit?: boolean) => {
   };
 
   const createEvent = async () => {
-    await createEventAsync(calendars[0].id, event);
+    await createEventAsync(calendarId, event);
     setState('isScheduleUpdated', true);
     navigation.goBack();
   };
