@@ -12,6 +12,7 @@ import LoginPage from './LoginPage';
 import SignupPage from './SignupPage';
 import Notification from './NotificationPage';
 import OnboardingPage from './OnboardingPage';
+import DeviceCalendarPage from './DeviceCalendarPage';
 
 export type StackParams = {
   Login: undefined;
@@ -25,6 +26,7 @@ export type StackParams = {
   Share: undefined;
   Notification: undefined;
   Onboarding: undefined;
+  DeviceCalendar: undefined;
 };
 
 const Stack = createNativeStackNavigator<StackParams>();
@@ -54,6 +56,7 @@ const Router = () => {
           component={OnboardingPage}
           options={{ gestureEnabled: false }}
         />
+        <Stack.Screen name="DeviceCalendar" component={DeviceCalendarPage} />
       </Stack.Navigator>
     </NavigationContainer>
   );

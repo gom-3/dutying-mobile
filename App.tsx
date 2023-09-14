@@ -9,7 +9,7 @@ import { AppStateStatus, Platform } from 'react-native';
 import { QueryClient, QueryClientProvider, focusManager, useQuery } from '@tanstack/react-query';
 import { useAppState } from './src/hooks/useAppState';
 import * as SplashScreen from 'expo-splash-screen';
-
+import useDeviceCalendar from './src/hooks/useDeviceCalendar';
 SplashScreen.preventAutoHideAsync();
 
 const onAppStateChange = (status: AppStateStatus) => {
@@ -23,6 +23,7 @@ const queryClient = new QueryClient({
 });
 
 export default function App() {
+  useDeviceCalendar();
   useEffect(() => {
     if (Platform.OS === 'android') {
       NavigationBar.setBackgroundColorAsync('white');

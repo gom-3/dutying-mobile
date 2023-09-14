@@ -34,11 +34,14 @@ const useDeviceCalendar = () => {
       state.setState,
     ],
   );
-  const [deviceCalendar, dutyingCalendars, setDeivceCalendar] = useDeviceCalendarStore((state) => [
-    state.calendars,
-    state.dutyingCalendars,
-    state.setState,
-  ]);
+  const [deviceCalendar, calendarLinks, dutyingCalendars, isCalendarChanged, setDeivceCalendar] =
+    useDeviceCalendarStore((state) => [
+      state.calendars,
+      state.calendarLink,
+      state.dutyingCalendars,
+      state.isChanged,
+      state.setState,
+    ]);
 
   const getEventFromDevice = async () => {
     const year = date.getFullYear();
@@ -47,8 +50,10 @@ const useDeviceCalendar = () => {
     const last = new Date(year, month + 1, 0);
     // const startDate = new Date(year, month, -(first.getDay() - 1)); 전달 까지 범위 확대
     // const endDate = new Date(year, month + 1, 6 - last.getDay()); 다음달 까지 범위 확대
-
-    const events = await getEventsAsync(['1', '2', '3', '5'], first, last);
+    const idList = deviceCalendar
+      .filter((calendar) => calendarLinks[calendar.id])
+      .map((calendar) => calendar.id);
+    const events = await getEventsAsync(idList, first, last);
     const newCalendar = [...calendar];
 
     if (isScheduleUpdated) {
@@ -123,28 +128,39 @@ const useDeviceCalendar = () => {
 
     if (status === 'granted') {
       let calendars = await getCalendarsAsync(EntityTypes.EVENT);
+      console.log(calendars);
+      const newMap: { [key: string]: boolean } = {};
+      calendars.forEach((key) => {
+        if (!newMap[key.id]) {
+          newMap[key.id] = true;
+        }
+      });
+      setDeivceCalendar('calendarLink', newMap);
       let deviceDutyingCalendars = calendars.filter((calendar) =>
         calendar.title.startsWith('듀팅'),
       );
-      if (dutyingCalendars.length === 0 && deviceDutyingCalendars.length === 0) {
+      if (deviceDutyingCalendars.length === 0) {
         await createCalendarAsync(newCalendars[0]);
         await createCalendarAsync(newCalendars[1]);
         calendars = await getCalendarsAsync();
         deviceDutyingCalendars = calendars.filter((calendar) => calendar.title.startsWith('듀팅'));
         setDeivceCalendar('dutyingCalendars', deviceDutyingCalendars);
       }
-      const deviceCalendars = calendars.map((calendar) => ({
-        id: calendar.id,
-        name: calendar.name,
-        isLinked: true,
-      }));
-      setDeivceCalendar('calendars', deviceCalendars);
+      setDeivceCalendar('dutyingCalendars', deviceDutyingCalendars);
+      setDeivceCalendar('calendars', calendars);
     }
   };
 
-  useEffect(() => {
+  useEffect(()=>{
     getPermissionFromDevice();
-  }, []);
+  },[]);
+
+  useEffect(() => {
+    if (isCalendarChanged) {
+      getPermissionFromDevice();
+      setDeivceCalendar('isChanged', false);
+    }
+  }, [isCalendarChanged]);
 
   useEffect(() => {
     if (isCalendarReady || isScheduleUpdated) {

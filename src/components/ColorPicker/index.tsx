@@ -10,6 +10,7 @@ import ColorPickers, {
   HueCircular,
   PreviewText,
 } from 'reanimated-color-picker';
+import PlusIcon from '@assets/svgs/plus-gray.svg';
 
 interface Props {
   color: string;
@@ -30,7 +31,9 @@ const ColorPicker = ({ color, onChange }: Props) => {
   return (
     <View>
       <Pressable onPress={() => ref.current?.present()}>
-        <View style={[styles.color, { backgroundColor: color }]} />
+        <View style={[styles.color, { backgroundColor: color }]}>
+          {color === 'white' && <PlusIcon />}
+        </View>
       </Pressable>
       <BottomSheetModal
         ref={ref}
@@ -75,8 +78,10 @@ const styles = StyleSheet.create({
     height: 54,
     marginTop: 16,
     borderRadius: 5,
-    borderColor: COLOR.sub5,
+    borderColor: COLOR.sub4,
     borderWidth: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   pickerContainer: {
     alignSelf: 'center',
