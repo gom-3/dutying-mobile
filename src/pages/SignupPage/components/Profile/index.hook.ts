@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { images } from '@assets/images';
+import { images } from '@assets/images/profiles';
 import { useSignupStore } from '@pages/SignupPage/store';
 import useImagePicker from '@hooks/useImagePicker';
 

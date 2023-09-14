@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "115851284073",
+    "project_id": "dutying-mobile",
+    "storage_bucket": "dutying-mobile.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:115851284073:android:757304a1c56a1f42f01cf8",
+        "android_client_info": {
+          "package_name": "com.gom3.dutying"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBOCjPrzjwoF5wXaeHbzY8cw_5CcZNGBkA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

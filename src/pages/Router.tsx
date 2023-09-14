@@ -11,6 +11,7 @@ import useShiftType from '@hooks/useShiftType';
 import LoginPage from './LoginPage';
 import SignupPage from './SignupPage';
 import Notification from './NotificationPage';
+import OnboardingPage from './OnboardingPage';
 
 export type StackParams = {
   Login: undefined;
@@ -23,6 +24,7 @@ export type StackParams = {
   ShiftTypeEdit: undefined;
   Share: undefined;
   Notification: undefined;
+  Onboarding: undefined;
 };
 
 const Stack = createNativeStackNavigator<StackParams>();
@@ -33,9 +35,9 @@ const Router = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Home" screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="Login" component={LoginPage} />
+        <Stack.Screen name="Login" component={LoginPage} options={{ gestureEnabled: false }} />
         <Stack.Screen name="Signup" component={SignupPage} />
-        <Stack.Screen name="Home" component={HomePage} />
+        <Stack.Screen name="Home" component={HomePage} options={{ gestureEnabled: false }} />
         <Stack.Screen
           name="Group"
           component={GroupPage}
@@ -46,7 +48,12 @@ const Router = () => {
         <Stack.Screen name="ShiftType" component={ShiftTypePage} />
         <Stack.Screen name="ShiftTypeEdit" component={ShiftTypeEditPage} />
         <Stack.Screen name="Share" component={SharePage} />
-        <Stack.Screen name='Notification' component={Notification} />
+        <Stack.Screen name="Notification" component={Notification} />
+        <Stack.Screen
+          name="Onboarding"
+          component={OnboardingPage}
+          options={{ gestureEnabled: false }}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );

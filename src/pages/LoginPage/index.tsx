@@ -1,35 +1,47 @@
 import PageViewContainer from '@components/PageView';
-import { View, Text, StyleSheet, Pressable, Platform } from 'react-native';
+import { View, Text, StyleSheet, Pressable, Platform, BackHandler } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import KakaoLogo from '@assets/svgs/kakao.svg';
 import AppleLogo from '@assets/svgs/apple.svg';
 import { useLinkProps } from '@react-navigation/native';
 import { useAccountStore } from 'store/account';
 import * as AppleAuthentication from 'expo-apple-authentication';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { WebView } from 'react-native-webview';
 import { screenHeight, screenWidth } from 'index.style';
-import * as KakaoLogins from "@react-native-seoul/kakao-login";
+import { KakaoOAuthToken, KakaoProfile, login, getProfile } from '@react-native-seoul/kakao-login';
 
 const LoginPage = () => {
   const { onPress } = useLinkProps({ to: { screen: 'Home' } });
   const [setState] = useAccountStore((state) => [state.setState]);
   const [loginUrl, setLoginUrl] = useState<string | null>(null);
 
+  useEffect(() => {
+    const backAction = () => true;
+    const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction);
+
+    return backHandler.remove();
+  }, []);
+
   const onPressKakaoLogin = async () => {
     // setState('isLoggedIn', true);
     // onPress();
-    setLoginUrl(
-      'https://api.dutying.net/oauth2/authorization/kakao?redirectUrl=http://localhost:3000/',
-    );
+    // setLoginUrl(
+    //   'https://api.dutying.net/oauth2/authorization/kakao?redirectUrl=http://localhost:3000/',
+    // );
+    const token: KakaoOAuthToken = await login();
+    const profile: KakaoProfile = await getProfile();
+    console.log(token);
+    console.log(profile);
+    setState('isLoggedIn', true);
+    onPress();
   };
 
-  const onPressAppleLogin = () => {
+  const onPressAppleLogin = async () => {
+    const token = await AppleAuthentication.signInAsync();
+    console.log(token);
     // setState('isLoggedIn', true);
     // onPress();
-    setLoginUrl(
-      'https://api.dutying.net/oauth2/authorization/apple?redirectUrl=http://localhost:3000/',
-    );
   };
 
   const handleWebViewNavigationStateChange = (newNavigationState: any) => {
@@ -110,7 +122,7 @@ const LoginPage = () => {
 const styles = StyleSheet.create({
   webview: {
     width: screenWidth,
-    height: screenHeight*0.8,
+    height: screenHeight * 0.8,
     marginTop: 20,
   },
   guidTextWrapper: {
