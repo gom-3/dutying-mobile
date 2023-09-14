@@ -7,9 +7,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:115851284073:android:bfae7ae848a6d1d5f01cf8",
+        "mobilesdk_app_id": "1:115851284073:android:757304a1c56a1f42f01cf8",
         "android_client_info": {
-          "package_name": "com.cksrb63.dutyingmobile"
+          "package_name": "com.gom3.dutying"
         }
       },
       "oauth_client": [],

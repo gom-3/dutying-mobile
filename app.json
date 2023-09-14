@@ -30,6 +30,14 @@
             "useFrameworks": "static"
           }
         }
+      ],
+      [
+        "@react-native-seoul/kakao-login",
+        {
+          "kakaoAppKey": "1bcf231af91f55cd3ca892cce7dce246",
+          "overrideKakaoSDKVersion": "2.11.1",
+          "kotlinVersion": "1.9.0"
+        }
       ]
     ],
     "experiments": {
@@ -47,16 +55,21 @@
       "supportsTablet": true,
       "infoPlist": {
         "NSCalendarsUsageDescription": "The app needs to access your calendar.",
-        "NSRemindersUsageDescription": "Allow $(PRODUCT_NAME) to access your reminders"
-      }
+        "NSRemindersUsageDescription": "The app needs to access your reminders."
+      },
+      "bundleIdentifier": "com.gom3.dutying"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./src/assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "permissions": ["android.permission.READ_CALENDAR", "android.permission.WRITE_CALENDAR"],
-      "package": "com.cksrb63.dutyingmobile",
+      "permissions": [
+        "android.permission.READ_CALENDAR",
+        "android.permission.WRITE_CALENDAR",
+        "android.permission.RECORD_AUDIO"
+      ],
+      "package": "com.gom3.dutying",
       "googleServicesFile": "./google-services.json"
     },
     "web": {
