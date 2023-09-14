@@ -1,4 +1,4 @@
-import { images } from '@assets/images';
+import { images } from '@assets/images/profiles';
 import { devtools } from 'zustand/middleware';
 import { shallow } from 'zustand/shallow';
 import { createWithEqualityFn } from 'zustand/traditional';

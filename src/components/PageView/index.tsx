@@ -6,14 +6,15 @@ import { useAccountStore } from 'store/account';
 
 interface Props {
   children: ReactNode;
+  withoutLogin?: boolean;
 }
 
-const PageViewContainer = ({ children }: Props) => {
+const PageViewContainer = ({ children, withoutLogin }: Props) => {
   const [isLoggedIn] = useAccountStore((state) => [state.isLoggedIn]);
-  const { onPress: redirectToLoginPage } = useLinkProps({ to: { screen: 'Login' } });
+  const { onPress: redirectToLoginPage } = useLinkProps({ to: { screen: 'Onboarding' } });
 
   useEffect(() => {
-    if (isLoggedIn) setTimeout(()=>redirectToLoginPage(),100);
+    if (isLoggedIn && !withoutLogin) setTimeout(() => redirectToLoginPage(), 100);
   }, [isLoggedIn]);
 
   return <View style={styles.container}>{children}</View>;

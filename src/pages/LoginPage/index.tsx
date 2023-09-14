@@ -1,12 +1,12 @@
 import PageViewContainer from '@components/PageView';
-import { View, Text, StyleSheet, Pressable, Platform } from 'react-native';
+import { View, Text, StyleSheet, Pressable, Platform, BackHandler } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import KakaoLogo from '@assets/svgs/kakao.svg';
 import AppleLogo from '@assets/svgs/apple.svg';
 import { useLinkProps } from '@react-navigation/native';
 import { useAccountStore } from 'store/account';
 import * as AppleAuthentication from 'expo-apple-authentication';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { WebView } from 'react-native-webview';
 import { screenHeight, screenWidth } from 'index.style';
 import { KakaoOAuthToken, KakaoProfile, login, getProfile } from '@react-native-seoul/kakao-login';
@@ -15,6 +15,13 @@ const LoginPage = () => {
   const { onPress } = useLinkProps({ to: { screen: 'Home' } });
   const [setState] = useAccountStore((state) => [state.setState]);
   const [loginUrl, setLoginUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    const backAction = () => true;
+    const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction);
+
+    return backHandler.remove();
+  }, []);
 
   const onPressKakaoLogin = async () => {
     // setState('isLoggedIn', true);
@@ -35,7 +42,6 @@ const LoginPage = () => {
     console.log(token);
     // setState('isLoggedIn', true);
     // onPress();
-    
   };
 
   const handleWebViewNavigationStateChange = (newNavigationState: any) => {
