@@ -7,6 +7,7 @@ import { alarmList, getRecurrenceRuleList } from '@libs/utils/event';
 
 interface State {
   id: string;
+  calendarId: string;
   title: string;
   isAllday: boolean;
   isAlarmUsing: boolean;
@@ -30,6 +31,7 @@ interface Store extends State {
 
 const initialState: State = {
   id: '',
+  calendarId: '',
   title: '',
   isAllday: false,
   isAlarmUsing: false,
@@ -81,6 +83,7 @@ export const useScheduleStore = createWithEqualityFn<Store>()(
           ...prev,
           isAllday: schedule.allDay,
           id: schedule.id,
+          calendarId: schedule.calendarId,
           title: schedule.title,
           isAlarmUsing: schedule.alarms.length > 0,
           alarms: schedule.alarms,

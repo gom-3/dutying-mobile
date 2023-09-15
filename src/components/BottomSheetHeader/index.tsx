@@ -1,21 +1,24 @@
-import { View, Text, StyleSheet, StyleProp, ViewStyle } from 'react-native';
+import { View, Text, StyleSheet, StyleProp, ViewStyle, Pressable } from 'react-native';
 import ExitIcon from '@assets/svgs/exit.svg';
 import CheckIcon from '@assets/svgs/check.svg';
 import { COLOR } from 'index.style';
 
 interface Props {
   onPressExit: () => void;
-  onPressCheck: () => void;
   title?: string;
   style?: StyleProp<ViewStyle>;
+  rightItems?: JSX.Element;
+  titleMargin?: number;
 }
 
-const BottomSheetHeader = ({ style, title, onPressExit, onPressCheck }: Props) => {
+const BottomSheetHeader = ({ style, title, onPressExit, rightItems, titleMargin }: Props) => {
   return (
     <View style={[styles.header, style]}>
-      <ExitIcon onPress={onPressExit} />
-      <Text style={styles.title}>{title}</Text>
-      <CheckIcon onPress={onPressCheck} />
+      <Pressable onPress={onPressExit}>
+        <ExitIcon />
+      </Pressable>
+      <Text style={[styles.title, { marginLeft: titleMargin ? titleMargin : 0 }]}>{title}</Text>
+      {rightItems ?? <View style={styles.blank} />}
     </View>
   );
 };
@@ -32,6 +35,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: COLOR.sub2,
   },
+  blank: { width: 24 },
 });
 
 export default BottomSheetHeader;

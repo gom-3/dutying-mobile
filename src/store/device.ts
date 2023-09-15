@@ -4,17 +4,20 @@ import { createWithEqualityFn } from 'zustand/traditional';
 import { Calendar } from 'expo-calendar';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-type DeviceCalendar = Pick<Calendar, 'id' | 'name'> & { isLinked: boolean };
-
 interface State {
-  calendars: DeviceCalendar[];
+  calendars: Calendar[];
+  calendarLink: {
+    [key: string]: boolean;
+  };
   dutyingCalendars: Calendar[];
   permission: boolean;
+  isChanged: boolean;
 }
 
 interface Store extends State {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   setState: (key: keyof State, value: any) => void;
+  setLink: (key: string, value: any) => void;
 }
 
 export const useDeviceCalendarStore = createWithEqualityFn<Store>()(
@@ -22,8 +25,12 @@ export const useDeviceCalendarStore = createWithEqualityFn<Store>()(
     persist(
       (set, _) => ({
         calendars: [],
+        calendarLink: {},
         dutyingCalendars: [],
         permission: true,
+        isChanged: true,
+        setLink: (key, value) =>
+          set((state) => ({ calendarLink: { ...state.calendarLink, [key]: value } })),
         setState: (state, value) => set((prev) => ({ ...prev, [state]: value })),
       }),
       { name: 'useDevcieCalendarStore', storage: createJSONStorage(() => AsyncStorage) },

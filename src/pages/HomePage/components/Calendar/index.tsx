@@ -2,9 +2,9 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
 import Shift from '@components/Shift';
 import { COLOR } from 'index.style';
 import useCalendar from './index.hook';
-import useDeviceCalendar from 'hooks/useDeviceCalendar';
 import { Schedule } from '@hooks/useDeviceCalendar';
 import { days, isSameDate } from '@libs/utils/date';
+import { hexToRgba } from '@libs/utils/color';
 
 export type DateType = {
   date: Date;
@@ -23,9 +23,6 @@ const Calendar = ({ withoutSchedule, isSharing }: Props) => {
     actions: { dateClickHandler },
   } = useCalendar();
 
-  if (!isSharing) {
-    useDeviceCalendar();
-  }
   return (
     <View style={styles.calendar}>
       <View style={styles.calendarHeader}>
@@ -65,7 +62,7 @@ const Calendar = ({ withoutSchedule, isSharing }: Props) => {
                         style={[
                           styles.scheduleView,
                           {
-                            backgroundColor: '#5AF8F84D',
+                            backgroundColor: hexToRgba(schedule.color, 0.3),
                             top: 27 + (schedule.level - 1) * 16,
                             width:
                               schedule.isStart || day.date.getDay() === 0
@@ -83,7 +80,7 @@ const Calendar = ({ withoutSchedule, isSharing }: Props) => {
                             style={[
                               styles.scheduleStartView,
                               {
-                                backgroundColor: '#5AF8F8',
+                                backgroundColor: schedule.color,
                               },
                             ]}
                           />

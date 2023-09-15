@@ -48,7 +48,7 @@ const ModalContext = ({ closeModal }: Props) => {
   else if (modalName === 'alarm')
     return (
       <View style={styles.container}>
-        <BottomSheetHeader title="알람" onPressExit={closeModal} onPressCheck={closeModal} />
+        <BottomSheetHeader title="알람" onPressExit={closeModal} />
         {alarmList.map((alarm) => (
           <TouchableOpacity
             key={alarm.text}
@@ -82,7 +82,7 @@ const ModalContext = ({ closeModal }: Props) => {
   else
     return (
       <View style={styles.container}>
-        <BottomSheetHeader title="반복" onPressExit={closeModal} onPressCheck={closeModal} />
+        <BottomSheetHeader title="반복" onPressExit={closeModal} />
         {recurrenceRuleList.map((recurrenceRule) => (
           <TouchableOpacity
             key={recurrenceRule.text}

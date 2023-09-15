@@ -79,7 +79,7 @@ const ScheduleCard = () => {
                       style={[
                         styles.scheduleColorView,
                         {
-                          backgroundColor: '#5AF8F8',
+                          backgroundColor: schedule.color,
                         },
                       ]}
                     />

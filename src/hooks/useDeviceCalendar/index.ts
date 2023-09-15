@@ -12,7 +12,6 @@ import {
   CalendarType,
   EntityTypes,
   CalendarAccessLevel,
-  deleteCalendarAsync,
 } from 'expo-calendar';
 
 export type Schedule = Event & {
@@ -22,6 +21,7 @@ export type Schedule = Event & {
   startTime: Date;
   endTime: Date;
   leftDuration: number;
+  color: string;
 };
 
 const useDeviceCalendar = () => {
@@ -34,11 +34,14 @@ const useDeviceCalendar = () => {
       state.setState,
     ],
   );
-  const [deviceCalendar, dutyingCalendars, setDeivceCalendar] = useDeviceCalendarStore((state) => [
-    state.calendars,
-    state.dutyingCalendars,
-    state.setState,
-  ]);
+  const [deviceCalendar, calendarLinks, dutyingCalendars, isCalendarChanged, setDeivceCalendar] =
+    useDeviceCalendarStore((state) => [
+      state.calendars,
+      state.calendarLink,
+      state.dutyingCalendars,
+      state.isChanged,
+      state.setState,
+    ]);
 
   const getEventFromDevice = async () => {
     const year = date.getFullYear();
@@ -47,8 +50,11 @@ const useDeviceCalendar = () => {
     const last = new Date(year, month + 1, 0);
     // const startDate = new Date(year, month, -(first.getDay() - 1)); 전달 까지 범위 확대
     // const endDate = new Date(year, month + 1, 6 - last.getDay()); 다음달 까지 범위 확대
-
-    const events = await getEventsAsync(['1', '2', '3', '5'], first, last);
+    const idList = deviceCalendar
+      .filter((calendar) => calendarLinks[calendar.id])
+      .map((calendar) => calendar.id);
+    console.log(idList);
+    const events = await getEventsAsync(idList, first, last);
     const newCalendar = [...calendar];
 
     if (isScheduleUpdated) {
@@ -59,6 +65,8 @@ const useDeviceCalendar = () => {
       const eventStartDate = new Date(event.startDate);
       const eventEndDate = new Date(event.endDate);
       const startIndex = first.getDay() + eventStartDate.getDate() - 1;
+      const color =
+        dutyingCalendars.find((calendar) => calendar.id === event.calendarId)?.color || '#5AF8F8';
       let level;
       if (event.allDay) {
         // start
@@ -104,6 +112,7 @@ const useDeviceCalendar = () => {
             startTime: eventStartDate,
             endTime: eventEndDate,
             level,
+            color: color,
             isStart: eventStartDate.getDate() === newCalendar[i].date.getDate(),
             isEnd: eventEndDate.getDate() === newCalendar[i].date.getDate(),
             leftDuration: endIndex - i,
@@ -123,22 +132,25 @@ const useDeviceCalendar = () => {
 
     if (status === 'granted') {
       let calendars = await getCalendarsAsync(EntityTypes.EVENT);
+      const newMap: { [key: string]: boolean } = { ...calendarLinks };
+      calendars.forEach((key) => {
+        if (newMap[key.id] === undefined) {
+          newMap[key.id] = true;
+        }
+      });
+      setDeivceCalendar('calendarLink', newMap);
       let deviceDutyingCalendars = calendars.filter((calendar) =>
         calendar.title.startsWith('듀팅'),
       );
-      if (dutyingCalendars.length === 0 && deviceDutyingCalendars.length === 0) {
+      if (deviceDutyingCalendars.length === 0) {
         await createCalendarAsync(newCalendars[0]);
         await createCalendarAsync(newCalendars[1]);
         calendars = await getCalendarsAsync();
         deviceDutyingCalendars = calendars.filter((calendar) => calendar.title.startsWith('듀팅'));
         setDeivceCalendar('dutyingCalendars', deviceDutyingCalendars);
       }
-      const deviceCalendars = calendars.map((calendar) => ({
-        id: calendar.id,
-        name: calendar.name,
-        isLinked: true,
-      }));
-      setDeivceCalendar('calendars', deviceCalendars);
+      setDeivceCalendar('dutyingCalendars', deviceDutyingCalendars);
+      setDeivceCalendar('calendars', calendars);
     }
   };
 
@@ -147,12 +159,19 @@ const useDeviceCalendar = () => {
   }, []);
 
   useEffect(() => {
+    if (isCalendarChanged) {
+      getPermissionFromDevice();
+      setDeivceCalendar('isChanged', false);
+    }
+  }, [isCalendarChanged]);
+
+  useEffect(() => {
     if (isCalendarReady || isScheduleUpdated) {
       getEventFromDevice();
       setState('isCalendarReady', false);
       setState('isScheduleUpdated', false);
     }
-  }, [isCalendarReady, isScheduleUpdated]);
+  }, [isCalendarReady, isScheduleUpdated, isCalendarChanged]);
 
   return;
 };
