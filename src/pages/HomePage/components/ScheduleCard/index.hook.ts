@@ -1,8 +1,13 @@
 import { useShiftTypeStore } from 'store/shift';
-import { useEffect, useState } from 'react';
 import { useCaledarDateStore } from 'store/calendar';
-import { DateType } from '../Calendar';
-import { runOnJS, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
+import {
+  runOnJS,
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+  withDelay,
+  withSequence,
+} from 'react-native-reanimated';
 import { Gesture } from 'react-native-gesture-handler';
 import { screenWidth } from 'index.style';
 import { useLinkProps } from '@react-navigation/native';
@@ -22,7 +27,6 @@ const useScheduleCard = () => {
     state.initStateEdit,
   ]);
   const [shiftTypes] = useShiftTypeStore((state) => [state.shiftTypes]);
-  const [selectedDateData, setSelectedDateData] = useState<DateType>();
   const { onPress: onPressAddScheduleButton } = useLinkProps({ to: { screen: 'RegistSchedule' } });
   const { onPress: onPressEditScheduleButton } = useLinkProps({
     to: { screen: 'RegistSchedule', params: { isEdit: true } },
@@ -30,14 +34,8 @@ const useScheduleCard = () => {
   const { onPress: onPressRegistShiftButton } = useLinkProps({
     to: { screen: 'RegistDuty', params: { dateFrom: date.toISOString() } },
   });
-  const findDate = () => {
-    const thisDate = calendar.find((cell) => isSameDate(cell.date, date));
-    setSelectedDateData(thisDate);
-  };
 
-  useEffect(() => {
-    findDate();
-  }, [date, calendar]);
+  const selectedDateData =  calendar.find((cell) => isSameDate(cell.date, date));
 
   const isToday = isSameDate(date, new Date());
 
@@ -50,6 +48,7 @@ const useScheduleCard = () => {
   const prevDateString = prevDate.toISOString();
 
   const offset = useSharedValue(0);
+
   const animatedStyles = useAnimatedStyle(() => {
     return {
       transform: [{ translateX: -offset.value }],
@@ -58,15 +57,19 @@ const useScheduleCard = () => {
 
   const panGesture = Gesture.Pan().onEnd((e) => {
     if (e.translationX < -35) {
-      runOnJS(setDateOnThread)(nextDateString);
-      offset.value = withTiming(offset.value + screenWidth * 0.84, { duration: 360 }, () => {
-        offset.value = 0;
-      });
+      offset.value = withSequence(
+        withTiming(offset.value + screenWidth * 0.84, { duration: 300 }, () => {
+          runOnJS(setDateOnThread)(nextDateString);
+        }),
+        withDelay(150, withTiming(0, { duration: 0 })),
+      );
     } else if (e.translationX > 35) {
-      runOnJS(setDateOnThread)(prevDateString);
-      offset.value = withTiming(offset.value - screenWidth * 0.84, { duration: 360 }, () => {
-        offset.value = 0;
-      });
+      offset.value = withSequence(
+        withTiming(offset.value - screenWidth * 0.84, { duration: 300 }, () => {
+          runOnJS(setDateOnThread)(prevDateString);
+        }),
+        withDelay(150, withTiming(0, { duration: 0 })),
+      );
     }
   });
 
