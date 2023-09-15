@@ -37,15 +37,7 @@ const ModalContext = ({ closeModal }: Props) => {
     closeModal();
   };
 
-  if (modalName === 'date')
-    return (
-      <View>
-        <View>
-          <Text>시간 설정</Text>
-        </View>
-      </View>
-    );
-  else if (modalName === 'alarm')
+  if (modalName === 'alarm')
     return (
       <View style={styles.container}>
         <BottomSheetHeader title="알람" onPressExit={closeModal} />
@@ -69,14 +61,6 @@ const ModalContext = ({ closeModal }: Props) => {
             </Text>
           </TouchableOpacity>
         ))}
-      </View>
-    );
-  else if (modalName === 'category')
-    return (
-      <View>
-        <View>
-          <Text>알람</Text>
-        </View>
       </View>
     );
   else

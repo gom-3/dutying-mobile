@@ -46,7 +46,6 @@ const MonthSelector = ({ isImage, style }: Props) => {
         >
           <BottomSheetHeader
             style={{ marginBottom: 0 }}
-            onPressCheck={() => ref.current?.close()}
             onPressExit={() => ref.current?.close()}
           />
           <DateTimePicker

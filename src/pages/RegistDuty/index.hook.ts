@@ -1,14 +1,15 @@
 import { DateType } from '@pages/HomePage/components/Calendar';
 import { useShiftTypeStore } from 'store/shift';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useCaledarDateStore } from 'store/calendar';
 import { isSameDate } from '@libs/utils/date';
 import { useNavigation } from '@react-navigation/native';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   AccountShiftListRequestDTO,
   AccountShiftRequest,
   editAccountShiftList,
+  getAccountShiftList,
 } from '@libs/api/shift';
 import { useAccountStore } from 'store/account';
 
@@ -20,13 +21,16 @@ const useRegistDuty = (dateFrom?: string) => {
   ]);
   const [userId] = useAccountStore((state) => [state.userId]);
   const [shiftTypes] = useShiftTypeStore((state) => [state.shiftTypes]);
-  const [shiftTypesCount, setShiftTypesCount] = useState(new Map<number, number>());
-  const [tempCalendar, setTempCalendar] = useState<DateType[]>([...calendar]);
-  const [weeks, setWeeks] = useState<DateType[][]>([]);
-  const [selectedDate, setSelectedDate] = useState(
-    dateFrom ? new Date(dateFrom) : new Date(date.getFullYear(), date.getMonth(), 1),
+  const [tempCalendar, setTempCalendar] = useState<DateType[]>(calendar);
+
+  const [index, setIndex] = useState(
+    calendar.findIndex((t) =>
+      isSameDate(
+        t.date,
+        dateFrom ? new Date(dateFrom) : new Date(date.getFullYear(), date.getMonth(), 1),
+      ),
+    ),
   );
-  const [index, setIndex] = useState(calendar.findIndex((t) => isSameDate(t.date, selectedDate)));
   const navigation = useNavigation();
   const queryClient = useQueryClient();
 
@@ -47,16 +51,73 @@ const useRegistDuty = (dateFrom?: string) => {
     },
   );
 
-  useEffect(() => {
-    if (tempCalendar[index]) setSelectedDate(tempCalendar[index].date);
-  }, [index]);
+  const getAccountShiftListKey = [
+    'getAccountShiftList',
+    userId,
+    date.getFullYear(),
+    date.getMonth(),
+  ];
 
-  const initCalendar = () => {
+  const { data: shiftListResponse } = useQuery(getAccountShiftListKey, () =>
+    getAccountShiftList(userId, date.getFullYear(), date.getMonth()),
+  );
+
+  const registCalendar = useMemo(() => {
+    const year = date.getFullYear();
+    const month = date.getMonth();
+    const first = new Date(year, month, 1);
+    const last = new Date(year, month + 1, 0);
+    const calendar: DateType[] = [];
+    let dateIndex = 0;
+    if (shiftListResponse) {
+      const shiftList = shiftListResponse.accountShiftTypeIdList;
+      for (let i = first.getDay() - 1; i >= 0; i--) {
+        const date: DateType = {
+          date: new Date(year, month, -i),
+          shift: shiftList[dateIndex++],
+          schedules: [],
+        };
+        calendar.push(date);
+      }
+      for (let i = 1; i <= last.getDate(); i++) {
+        const date: DateType = {
+          date: new Date(year, month, i),
+          shift: shiftList[dateIndex++],
+          schedules: [],
+        };
+        calendar.push(date);
+      }
+      for (let i = last.getDay(), j = 1; i < 6; i++, j++) {
+        const date: DateType = {
+          date: new Date(year, month + 1, j),
+          shift: shiftList[dateIndex++],
+          schedules: [],
+        };
+        calendar.push(date);
+      }
+    }
+    return calendar;
+  }, [shiftListResponse]);
+
+  const selectedDate = tempCalendar[index] && tempCalendar[index].date;
+
+  const weeks = useMemo(() => {
     const weeks = [];
     const temp = [...tempCalendar];
     while (temp.length > 0) weeks.push(temp.splice(0, 7));
-    setWeeks(weeks);
-  };
+    return weeks;
+  }, [tempCalendar]);
+
+  const shiftTypesCount = useMemo(() => {
+    const map = new Map<number, number>();
+    tempCalendar.forEach((date) => {
+      if (date.shift) {
+        const value = map.get(date.shift) || 0;
+        map.set(date.shift, value + 1);
+      }
+    });
+    return map;
+  }, [tempCalendar]);
 
   const insertShift = (shift: number) => {
     const newValue: DateType = {
@@ -65,7 +126,7 @@ const useRegistDuty = (dateFrom?: string) => {
     };
     const newArray = [...tempCalendar];
     newArray[index] = newValue;
-    setTempCalendar([...newArray]);
+    setTempCalendar(newArray);
     if (
       tempCalendar[index + 1] &&
       tempCalendar[index + 1].date.getMonth() === tempCalendar[index].date.getMonth()
@@ -82,6 +143,12 @@ const useRegistDuty = (dateFrom?: string) => {
     const newArray = [...tempCalendar];
     newArray[index] = newValue;
     setTempCalendar(newArray);
+    if (
+      tempCalendar[index + 1] &&
+      tempCalendar[index + 1].date.getMonth() === tempCalendar[index].date.getMonth()
+    ) {
+      setIndex(index + 1);
+    }
   };
 
   const selectDate = (e: Date) => {
@@ -109,18 +176,8 @@ const useRegistDuty = (dateFrom?: string) => {
   };
 
   useEffect(() => {
-    if (tempCalendar) {
-      initCalendar();
-      const map = new Map<number, number>();
-      tempCalendar.forEach((date) => {
-        if (date.shift) {
-          const value = map.get(date.shift) || 0;
-          map.set(date.shift, value + 1);
-        }
-      });
-      setShiftTypesCount(map);
-    }
-  }, [tempCalendar]);
+    setTempCalendar(registCalendar);
+  }, [registCalendar]);
 
   return {
     state: {

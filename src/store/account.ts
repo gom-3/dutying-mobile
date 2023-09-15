@@ -4,10 +4,11 @@ import { shallow } from 'zustand/shallow';
 import { createWithEqualityFn } from 'zustand/traditional';
 
 interface State {
-  // shiftTypes: Shift[];
   userId: number;
   isLoggedIn: boolean;
   token: string;
+  name: string;
+  profile: string;
 }
 
 interface Store extends State {
@@ -22,6 +23,8 @@ export const useAccountStore = createWithEqualityFn<Store>()(
         userId: 1,
         isLoggedIn: false,
         token: '',
+        name: '',
+        profile: '',
         setState: (state, value) => set((prev) => ({ ...prev, [state]: value })),
       }),
       { name: 'useShiftTypeStore', storage: createJSONStorage(() => AsyncStorage) },

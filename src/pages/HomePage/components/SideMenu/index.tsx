@@ -29,7 +29,7 @@ const SideMenu = () => {
             <ProfileIcon />
             <Text style={styles.profileText}>조성연</Text>
           </View>
-          <SettingIcon />
+          {/* <SettingIcon /> */}
         </View>
         <View style={styles.deviderView} />
         {menuItemList.map((item) => (

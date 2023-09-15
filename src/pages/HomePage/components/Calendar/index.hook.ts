@@ -1,15 +1,18 @@
 import { useShiftTypeStore } from 'store/shift';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useCaledarDateStore } from 'store/calendar';
 import { shallow } from 'zustand/shallow';
 import { DateType } from '.';
 import { useQuery } from '@tanstack/react-query';
 import { getAccountShiftList } from '@libs/api/shift';
 import { useAccountStore } from 'store/account';
+import {
+  HandlerStateChangeEvent,
+  PanGestureHandlerEventPayload,
+  State,
+} from 'react-native-gesture-handler';
 
-const memoizedCalendars = new Map();
-
-const useCalendar = () => {
+const useCalendar = (isRender?: boolean) => {
   const [userId] = useAccountStore((state) => [state.userId]);
   const [date, calendar, setState] = useCaledarDateStore((state) => [
     state.date,
@@ -17,7 +20,6 @@ const useCalendar = () => {
     state.setState,
   ]);
   const [shiftTypes] = useShiftTypeStore((state) => [state.shiftTypes], shallow);
-  const [weeks, setWeeks] = useState<DateType[][]>([]);
   const today = new Date();
   const getAccountShiftListKey = [
     'getAccountShiftList',
@@ -36,13 +38,6 @@ const useCalendar = () => {
   };
 
   const initCalendar = (year: number, month: number) => {
-    const key = `${year}-${month}`;
-
-    // if (memoizedCalendars.has(key)) {
-    //   setState('calendar', memoizedCalendars.get(key));
-    //   return;
-    // }
-
     const first = new Date(year, month, 1);
     const last = new Date(year, month + 1, 0);
     const calendar: DateType[] = [];
@@ -74,25 +69,39 @@ const useCalendar = () => {
         calendar.push(date);
       }
       setState('calendar', calendar);
-      setState('isCalendarReady', true);
-      memoizedCalendars.set(key, calendar);
+      setState('isScheduleUpdated', true);
     }
   };
 
-  useEffect(() => {
-    if (calendar.length > 0) {
-      const tempCalendar = [...calendar];
-      const weeks = [];
-      while (tempCalendar.length > 0) weeks.push(tempCalendar.splice(0, 7));
-      setWeeks(weeks);
+  const weeks = useMemo(() => {
+    const weeks: DateType[][] = [];
+    if (isRender) {
+      const temp = [...calendar];
+      while (temp.length > 0) weeks.push(temp.splice(0, 7));
     }
+    return weeks;
   }, [calendar]);
 
   useEffect(() => {
     initCalendar(date.getFullYear(), date.getMonth());
   }, [date.getFullYear(), date.getMonth(), shiftListResponse]);
 
-  return { state: { weeks, shiftTypes, date, today }, actions: { dateClickHandler } };
+  const onHandlerStateChange = (event: HandlerStateChangeEvent<PanGestureHandlerEventPayload>) => {
+    if (event.nativeEvent.oldState === State.ACTIVE) {
+      if (event.nativeEvent.translationX > 100) {
+        const prevMonth = new Date(date.getFullYear(), date.getMonth() - 1, 1);
+        setState('date', prevMonth);
+      } else if (event.nativeEvent.translationX < -100) {
+        const nextMonth = new Date(date.getFullYear(), date.getMonth() + 1, 1);
+        setState('date', nextMonth);
+      }
+    }
+  };
+
+  return {
+    state: { weeks, shiftTypes, date, today },
+    actions: { dateClickHandler, onHandlerStateChange },
+  };
 };
 
 export default useCalendar;
