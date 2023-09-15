@@ -21,12 +21,12 @@ const useRegistDuty = (dateFrom?: string) => {
   const [userId] = useAccountStore((state) => [state.userId]);
   const [shiftTypes] = useShiftTypeStore((state) => [state.shiftTypes]);
   const [shiftTypesCount, setShiftTypesCount] = useState(new Map<number, number>());
-  const [tempCalendar, setTempCalendar] = useState<DateType[]>([]);
+  const [tempCalendar, setTempCalendar] = useState<DateType[]>([...calendar]);
   const [weeks, setWeeks] = useState<DateType[][]>([]);
   const [selectedDate, setSelectedDate] = useState(
     dateFrom ? new Date(dateFrom) : new Date(date.getFullYear(), date.getMonth(), 1),
   );
-  const [index, setIndex] = useState(0);
+  const [index, setIndex] = useState(calendar.findIndex((t) => isSameDate(t.date, selectedDate)));
   const navigation = useNavigation();
   const queryClient = useQueryClient();
 
@@ -48,11 +48,6 @@ const useRegistDuty = (dateFrom?: string) => {
   );
 
   useEffect(() => {
-    setTempCalendar([...calendar]);
-    setIndex(calendar.findIndex((t) => isSameDate(t.date, selectedDate)));
-  }, [calendar]);
-
-  useEffect(() => {
     if (tempCalendar[index]) setSelectedDate(tempCalendar[index].date);
   }, [index]);
 
@@ -71,11 +66,11 @@ const useRegistDuty = (dateFrom?: string) => {
     const newArray = [...tempCalendar];
     newArray[index] = newValue;
     setTempCalendar([...newArray]);
-    if (tempCalendar[index + 1].date.getMonth() === tempCalendar[index].date.getMonth()) {
+    if (
+      tempCalendar[index + 1] &&
+      tempCalendar[index + 1].date.getMonth() === tempCalendar[index].date.getMonth()
+    ) {
       setIndex(index + 1);
-      setSelectedDate(
-        new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate() + 1),
-      );
     }
   };
 
@@ -91,7 +86,6 @@ const useRegistDuty = (dateFrom?: string) => {
 
   const selectDate = (e: Date) => {
     if (e.getMonth() === date.getMonth()) {
-      setSelectedDate(e);
       setIndex(tempCalendar.findIndex((t) => isSameDate(t.date, e)));
     }
   };
@@ -115,13 +109,8 @@ const useRegistDuty = (dateFrom?: string) => {
   };
 
   useEffect(() => {
-    if (tempCalendar.length > 0) {
-      initCalendar();
-    }
-  }, [tempCalendar]);
-
-  useEffect(() => {
     if (tempCalendar) {
+      initCalendar();
       const map = new Map<number, number>();
       tempCalendar.forEach((date) => {
         if (date.shift) {

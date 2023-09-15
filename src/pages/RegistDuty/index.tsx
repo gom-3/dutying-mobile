@@ -3,8 +3,6 @@ import useRegistDuty from './index.hook';
 import { COLOR } from 'index.style';
 import { View, Text, Pressable, StyleSheet } from 'react-native';
 import PageViewContainer from '@components/PageView';
-import useImagePicker from 'hooks/useImagePicker';
-import PhotoIcon from '@assets/svgs/photo.svg';
 import PageHeader from '@components/PageHeader';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import MonthSelector from '@components/MonthSelector';
@@ -22,9 +20,7 @@ const RegistDuty = () => {
     state: { date, weeks, selectedDate, shiftTypes, shiftTypesCount },
     actions: { insertShift, deleteShift, selectDate, saveRegistDutyChange },
   } = useRegistDuty(dateFrom);
-  const {
-    actions: { pickImage },
-  } = useImagePicker();
+
   return (
     <PageViewContainer>
       <BottomSheetModalProvider>
@@ -39,9 +35,7 @@ const RegistDuty = () => {
           />
           <View style={{ flexDirection: 'row', justifyContent: 'space-between', padding: 22 }}>
             <MonthSelector />
-            <Pressable onPress={pickImage}>
-              <PhotoIcon width={22} height={22} />
-            </Pressable>
+            
           </View>
           <View style={styles.calendarHeaderView}>
             {days.map((day) => (
