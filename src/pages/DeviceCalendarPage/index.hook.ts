@@ -7,9 +7,10 @@ import {
   EntityTypes,
   createCalendarAsync,
   updateCalendarAsync,
-  deleteCalendarAsync
+  deleteCalendarAsync,
 } from 'expo-calendar';
 import { useRef, useState } from 'react';
+import { useCaledarDateStore } from 'store/calendar';
 import { useDeviceCalendarStore } from 'store/device';
 
 const useDeviceCalendarPage = () => {
@@ -23,6 +24,8 @@ const useDeviceCalendarPage = () => {
     ],
   );
 
+  const [setScheduleState] = useCaledarDateStore((state) => [state.setState]);
+
   const [name, setName] = useState('');
   const [color, setColor] = useState('');
   const [isEdit, setIsEdit] = useState(false);
@@ -34,6 +37,7 @@ const useDeviceCalendarPage = () => {
 
   const pressLinkHandler = (id: string) => {
     setLink(id, !calendarLink[id]);
+    setScheduleState('isScheduleUpdated', true);
   };
 
   const changeTextHandler = (text: string) => {
@@ -96,7 +100,7 @@ const useDeviceCalendarPage = () => {
       openModalCreateMode,
       openModalEditMode,
       createCalendar,
-      deleteCalendar
+      deleteCalendar,
     },
   };
 };

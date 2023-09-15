@@ -12,7 +12,6 @@ import {
   CalendarType,
   EntityTypes,
   CalendarAccessLevel,
-  deleteCalendarAsync,
 } from 'expo-calendar';
 
 export type Schedule = Event & {
@@ -54,6 +53,7 @@ const useDeviceCalendar = () => {
     const idList = deviceCalendar
       .filter((calendar) => calendarLinks[calendar.id])
       .map((calendar) => calendar.id);
+    console.log(idList);
     const events = await getEventsAsync(idList, first, last);
     const newCalendar = [...calendar];
 
@@ -132,9 +132,9 @@ const useDeviceCalendar = () => {
 
     if (status === 'granted') {
       let calendars = await getCalendarsAsync(EntityTypes.EVENT);
-      const newMap: { [key: string]: boolean } = {};
+      const newMap: { [key: string]: boolean } = { ...calendarLinks };
       calendars.forEach((key) => {
-        if (!newMap[key.id]) {
+        if (newMap[key.id] === undefined) {
           newMap[key.id] = true;
         }
       });
@@ -171,7 +171,7 @@ const useDeviceCalendar = () => {
       setState('isCalendarReady', false);
       setState('isScheduleUpdated', false);
     }
-  }, [isCalendarReady, isScheduleUpdated]);
+  }, [isCalendarReady, isScheduleUpdated, isCalendarChanged]);
 
   return;
 };
