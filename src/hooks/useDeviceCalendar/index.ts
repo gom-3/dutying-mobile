@@ -47,6 +47,7 @@ const useDeviceCalendar = () => {
     const month = date.getMonth();
     const first = new Date(year, month, 1);
     const last = new Date(year, month + 1, 0);
+
     const idList = deviceCalendar
       .filter((calendar) => calendarLinks[calendar.id])
       .map((calendar) => calendar.id);
@@ -106,10 +107,12 @@ const useDeviceCalendar = () => {
     if (status === 'granted') {
       let calendars = await getCalendarsAsync(EntityTypes.EVENT);
 
+
       /**
        * 디바이스에서 캘린더들을 가져와 기존 zustand에 calendarLinks에 등록되지 않은 캘린더면 새로 등록하고 true 값을 넣는다.
        * 이것은 새로 생긴 캘린더들은 기본적으로 듀팅 캘린더에 연동되는 것을 의미한다. 이미 이전에 정의된 캘린더는 그대로 둔다.
        * */
+
       const newMap: { [key: string]: boolean } = { ...calendarLinks };
       calendars.forEach((key) => {
         if (newMap[key.id] === undefined) {
@@ -122,6 +125,7 @@ const useDeviceCalendar = () => {
        * 듀팅- 접두사로 시작하는 캘린더들은 듀팅 캘린더로 구분된다. 디바이스에서 가져온 캘린더들 중에
        * 만약 듀팅 캘린더가 한개도 없을 시 사전에 정의된 2종류의 듀팅 캘린더가 디바이스에 추가된다.
        */
+
       let deviceDutyingCalendars = calendars.filter((calendar) =>
         calendar.title.startsWith('듀팅'),
       );

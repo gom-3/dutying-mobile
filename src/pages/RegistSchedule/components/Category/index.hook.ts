@@ -13,7 +13,6 @@ const useCategory = () => {
   useEffect(() => {
     if (calendarId === '') setState('calendarId', deviceCalendar[0].id);
   }, []);
-
   const selectedCalendar = useMemo(
     () => deviceCalendar.find((calendar) => calendar.id === calendarId) || deviceCalendar[0],
     [calendarId],

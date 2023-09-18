@@ -14,7 +14,7 @@ const PageViewContainer = ({ children, withoutLogin }: Props) => {
   const { onPress: redirectToLoginPage } = useLinkProps({ to: { screen: 'Login' } });
 
   useEffect(() => {
-    if (isLoggedIn && !withoutLogin) setTimeout(() => redirectToLoginPage(), 100);
+    // if (!isLoggedIn && !withoutLogin) setTimeout(() => redirectToLoginPage(), 100);
   }, [isLoggedIn]);
 
   return <View style={styles.container}>{children}</View>;

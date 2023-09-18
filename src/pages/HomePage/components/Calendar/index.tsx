@@ -13,6 +13,7 @@ import {
   State,
 } from 'react-native-gesture-handler';
 
+
 export type DateType = {
   date: Date;
   shift: number | null;
