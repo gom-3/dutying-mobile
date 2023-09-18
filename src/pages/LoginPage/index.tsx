@@ -8,11 +8,28 @@ import { useAccountStore } from 'store/account';
 import * as AppleAuthentication from 'expo-apple-authentication';
 import { useEffect } from 'react';
 import { screenHeight, screenWidth } from 'index.style';
-import { KakaoOAuthToken, KakaoProfile, login, getProfile } from '@react-native-seoul/kakao-login';
+import { KakaoOAuthToken, getProfile, login, logout, unlink } from '@react-native-seoul/kakao-login';
+import { useMutation } from '@tanstack/react-query';
+import { oAuthLogin } from '@libs/api/account';
 
 const LoginPage = () => {
-  const { onPress } = useLinkProps({ to: { screen: 'Home' } });
+  const { onPress: navigateHome } = useLinkProps({ to: { screen: 'Home' } });
+  const { onPress: navigateSignup } = useLinkProps({ to: { screen: 'Signup' } });
   const [setState] = useAccountStore((state) => [state.setState]);
+
+  const { mutate: oAuthLoginMutate } = useMutation(
+    ({ idToken, provider }: { idToken: string; provider: string }) => oAuthLogin(idToken, provider),
+    {
+      onSuccess: (data) => {
+        if (data.isNewAccount) {
+          navigateSignup();
+        } else {
+          setState('isLoggedIn', true);
+          navigateHome();
+        }
+      },
+    },
+  );
 
   useEffect(() => {
     const backAction = () => true;
@@ -27,15 +44,18 @@ const LoginPage = () => {
     // setLoginUrl(
     //   'https://api.dutying.net/oauth2/authorization/kakao?redirectUrl=http://localhost:3000/',
     // );
+    // await logout();
+    // await unlink();
     const token: KakaoOAuthToken = await login();
-    const profile: KakaoProfile = await getProfile();
+    const profile = await getProfile(JSON.stringify(token));
+    // await logout();
     console.log(token);
     console.log(profile);
-    setState('isLoggedIn', true);
-    onPress();
   };
 
   const onPressAppleLogin = async () => {
+    const isAvail = await AppleAuthentication.isAvailableAsync();
+    console.log(isAvail);
     const token = await AppleAuthentication.signInAsync();
     console.log(token);
     // setState('isLoggedIn', true);
