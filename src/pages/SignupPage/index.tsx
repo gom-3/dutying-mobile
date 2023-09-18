@@ -14,7 +14,7 @@ const SignupPage = () => {
   } = useSignupPage();
 
   return (
-    <PageViewContainer>
+    <PageViewContainer withoutLogin>
       <SafeAreaView style={styles.container}>
         <Pressable onPress={onPressBack}>
           <BackArrowIcon />

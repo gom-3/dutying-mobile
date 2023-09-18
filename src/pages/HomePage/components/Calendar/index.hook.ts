@@ -28,9 +28,13 @@ const useCalendar = (isRender?: boolean) => {
     date.getMonth(),
   ];
 
+  console.log(userId, date);
+
   const { data: shiftListResponse } = useQuery(getAccountShiftListKey, () =>
     getAccountShiftList(userId, date.getFullYear(), date.getMonth()),
   );
+
+  console.log(shiftListResponse);
 
   const dateClickHandler = (date: Date) => {
     setState('date', date);
