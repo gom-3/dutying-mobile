@@ -8,7 +8,13 @@ import { useAccountStore } from 'store/account';
 import * as AppleAuthentication from 'expo-apple-authentication';
 import { useEffect } from 'react';
 import { screenHeight, screenWidth } from 'index.style';
-import { KakaoOAuthToken, getProfile, login, logout, unlink } from '@react-native-seoul/kakao-login';
+import {
+  KakaoOAuthToken,
+  getProfile,
+  login,
+  logout,
+  unlink,
+} from '@react-native-seoul/kakao-login';
 import { useMutation } from '@tanstack/react-query';
 import { oAuthLogin } from '@libs/api/account';
 
@@ -21,6 +27,7 @@ const LoginPage = () => {
     ({ idToken, provider }: { idToken: string; provider: string }) => oAuthLogin(idToken, provider),
     {
       onSuccess: (data) => {
+        console.log(data);
         if (data.isNewAccount) {
           navigateSignup();
         } else {
@@ -51,6 +58,7 @@ const LoginPage = () => {
     // await logout();
     console.log(token);
     console.log(profile);
+    oAuthLoginMutate({ idToken: token.idToken, provider: 'kakao' });
   };
 
   const onPressAppleLogin = async () => {
