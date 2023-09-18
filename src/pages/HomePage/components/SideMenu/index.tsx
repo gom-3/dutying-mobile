@@ -10,7 +10,7 @@ import useSideMenu from './index.hook';
 const SideMenu = () => {
   const {
     state: { menuItemList },
-    actions: { closeSideMenu },
+    actions: { closeSideMenu, logout },
   } = useSideMenu();
 
   return (
@@ -29,7 +29,7 @@ const SideMenu = () => {
             <ProfileIcon />
             <Text style={styles.profileText}>조성연</Text>
           </View>
-          <SettingIcon />
+          {/* <SettingIcon /> */}
         </View>
         <View style={styles.deviderView} />
         {menuItemList.map((item) => (
@@ -40,9 +40,9 @@ const SideMenu = () => {
             </View>
           </Pressable>
         ))}
-        <View style={styles.logoutView}>
+        <Pressable style={styles.logoutView} onPress={logout}>
           <Text style={styles.logoutText}>로그아웃</Text>
-        </View>
+        </Pressable>
       </Animated.View>
     </>
   );

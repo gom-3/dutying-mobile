@@ -19,7 +19,7 @@ const Shift = ({ shift, date, isCurrent, isToday, fullNameVisibilty }: Props) =>
         {
           backgroundColor: shift ? backgroundColor : isToday ? COLOR.sub5 : 'white',
           paddingLeft: fullNameVisibilty ? 0 : 8,
-          borderRadius: isToday ? 50 : 5,
+          borderRadius: !fullNameVisibilty && isToday ? 50 : 5,
         },
       ]}
     >

@@ -1,6 +1,6 @@
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import { Calendar } from 'expo-calendar';
-import { useMemo, useRef } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import { useDeviceCalendarStore } from 'store/device';
 import { useScheduleStore } from 'store/schedule';
 
@@ -10,6 +10,9 @@ const useCategory = () => {
 
   const ref = useRef<BottomSheetModal>(null);
 
+  useEffect(() => {
+    if (calendarId === '') setState('calendarId', deviceCalendar[0].id);
+  }, []);
   const selectedCalendar = useMemo(
     () => deviceCalendar.find((calendar) => calendar.id === calendarId) || deviceCalendar[0],
     [calendarId],

@@ -10,7 +10,6 @@ interface State {
     [key: string]: boolean;
   };
   dutyingCalendars: Calendar[];
-  permission: boolean;
   isChanged: boolean;
 }
 
@@ -27,7 +26,6 @@ export const useDeviceCalendarStore = createWithEqualityFn<Store>()(
         calendars: [],
         calendarLink: {},
         dutyingCalendars: [],
-        permission: true,
         isChanged: true,
         setLink: (key, value) =>
           set((state) => ({ calendarLink: { ...state.calendarLink, [key]: value } })),

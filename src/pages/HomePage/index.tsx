@@ -1,5 +1,3 @@
-import { StackParams } from '../Router';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import Calendar from './components/Calendar';
 import Header from './components/Header';
 import ScheduleCard from './components/ScheduleCard';
@@ -10,9 +8,7 @@ import PageViewContainer from '@components/PageView';
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-export type HomeNavigationProps = NativeStackScreenProps<StackParams, 'Home'>;
-
-const HomePage = ({ navigation }: HomeNavigationProps) => {
+const HomePage = () => {
   const [isCardOpen, isSideMenuOpen] = useCaledarDateStore((state) => [
     state.isCardOpen,
     state.isSideMenuOpen,

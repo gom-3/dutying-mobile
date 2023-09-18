@@ -25,11 +25,10 @@ export type Schedule = Event & {
 };
 
 const useDeviceCalendar = () => {
-  const [date, calendar, isCalendarReady, isScheduleUpdated, setState] = useCaledarDateStore(
+  const [date, calendar, isScheduleUpdated, setState] = useCaledarDateStore(
     (state) => [
       state.date,
       state.calendar,
-      state.isCalendarReady,
       state.isScheduleUpdated,
       state.setState,
     ],
@@ -48,19 +47,16 @@ const useDeviceCalendar = () => {
     const month = date.getMonth();
     const first = new Date(year, month, 1);
     const last = new Date(year, month + 1, 0);
-    // const startDate = new Date(year, month, -(first.getDay() - 1)); 전달 까지 범위 확대
-    // const endDate = new Date(year, month + 1, 6 - last.getDay()); 다음달 까지 범위 확대
+
     const idList = deviceCalendar
       .filter((calendar) => calendarLinks[calendar.id])
       .map((calendar) => calendar.id);
-    console.log(idList);
     const events = await getEventsAsync(idList, first, last);
     const newCalendar = [...calendar];
 
     if (isScheduleUpdated) {
       newCalendar.forEach((date) => (date.schedules = []));
     }
-
     events.forEach((event) => {
       const eventStartDate = new Date(event.startDate);
       const eventEndDate = new Date(event.endDate);
@@ -68,26 +64,6 @@ const useDeviceCalendar = () => {
       const color =
         dutyingCalendars.find((calendar) => calendar.id === event.calendarId)?.color || '#5AF8F8';
       let level;
-      if (event.allDay) {
-        // start
-        // const schedules = [...newCalendar[startIndex].schedules];
-        // const occupiedLevels = new Set(schedules.map((schedule) => schedule.level));
-        // level = 1;
-        // while (occupiedLevels.has(level)) {
-        //   level++;
-        // }
-        // const schedule: Schedule = {
-        //   ...event,
-        //   startTime: eventStartDate,
-        //   endTime: eventEndDate,
-        //   level,
-        //   isStart: true,
-        //   isEnd: true,
-        //   leftDuration: 0,
-        // };
-        // schedules.push(schedule);
-        // newCalendar[startIndex].schedules = schedules;
-      }
       let endIndex = first.getDay() + eventEndDate.getDate() - 1;
       if (endIndex > newCalendar.length - 1) endIndex = newCalendar.length - 1;
       let index = startIndex;
@@ -100,12 +76,10 @@ const useDeviceCalendar = () => {
           schedules.forEach((schedule) => occupiedLevels.add(schedule.level));
           if (newCalendar[i].date.getDay() == 6) break;
         }
-
         level = 1;
         while (occupiedLevels.has(level)) {
           level++;
         }
-
         for (let i = index; i < index + jump; i++) {
           const schedule: Schedule = {
             ...event,
@@ -132,6 +106,13 @@ const useDeviceCalendar = () => {
 
     if (status === 'granted') {
       let calendars = await getCalendarsAsync(EntityTypes.EVENT);
+
+
+      /**
+       * 디바이스에서 캘린더들을 가져와 기존 zustand에 calendarLinks에 등록되지 않은 캘린더면 새로 등록하고 true 값을 넣는다.
+       * 이것은 새로 생긴 캘린더들은 기본적으로 듀팅 캘린더에 연동되는 것을 의미한다. 이미 이전에 정의된 캘린더는 그대로 둔다.
+       * */
+
       const newMap: { [key: string]: boolean } = { ...calendarLinks };
       calendars.forEach((key) => {
         if (newMap[key.id] === undefined) {
@@ -139,6 +120,12 @@ const useDeviceCalendar = () => {
         }
       });
       setDeivceCalendar('calendarLink', newMap);
+
+      /**
+       * 듀팅- 접두사로 시작하는 캘린더들은 듀팅 캘린더로 구분된다. 디바이스에서 가져온 캘린더들 중에
+       * 만약 듀팅 캘린더가 한개도 없을 시 사전에 정의된 2종류의 듀팅 캘린더가 디바이스에 추가된다.
+       */
+
       let deviceDutyingCalendars = calendars.filter((calendar) =>
         calendar.title.startsWith('듀팅'),
       );
@@ -149,6 +136,7 @@ const useDeviceCalendar = () => {
         deviceDutyingCalendars = calendars.filter((calendar) => calendar.title.startsWith('듀팅'));
         setDeivceCalendar('dutyingCalendars', deviceDutyingCalendars);
       }
+
       setDeivceCalendar('dutyingCalendars', deviceDutyingCalendars);
       setDeivceCalendar('calendars', calendars);
     }
@@ -166,14 +154,11 @@ const useDeviceCalendar = () => {
   }, [isCalendarChanged]);
 
   useEffect(() => {
-    if (isCalendarReady || isScheduleUpdated) {
+    if (isScheduleUpdated) {
       getEventFromDevice();
-      setState('isCalendarReady', false);
       setState('isScheduleUpdated', false);
     }
-  }, [isCalendarReady, isScheduleUpdated, isCalendarChanged]);
-
-  return;
+  }, [isScheduleUpdated]);
 };
 
 const newCalendars: Partial<Calendar>[] = [

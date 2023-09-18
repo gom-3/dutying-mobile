@@ -52,7 +52,7 @@
     "ios": {
       "googleServicesFile": "./GoogleService-Info.plist",
       "usesAppleSignIn": true,
-      "supportsTablet": true,
+      "supportsTablet": false,
       "infoPlist": {
         "NSCalendarsUsageDescription": "The app needs to access your calendar.",
         "NSRemindersUsageDescription": "The app needs to access your reminders."

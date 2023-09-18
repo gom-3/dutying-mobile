@@ -1,7 +1,6 @@
 import { useRef, useState } from 'react';
 import { createEventAsync, updateEventAsync, Event, deleteEventAsync } from 'expo-calendar';
 import { useCaledarDateStore } from 'store/calendar';
-import { useDeviceCalendarStore } from 'store/device';
 import { useNavigation } from '@react-navigation/native';
 import { ScrollView } from 'react-native';
 import { useScheduleStore } from 'store/schedule';
@@ -9,7 +8,7 @@ import { BottomSheetModal } from '@gorhom/bottom-sheet';
 
 type DeviceEvent = Partial<Event>;
 
-const useRegistSchedule = (isEdit?: boolean) => {
+const useRegistSchedule = () => {
   const navigation = useNavigation();
   const ref = useRef<ScrollView | null>(null);
   const modalRef = useRef<BottomSheetModal>(null);
@@ -37,7 +36,6 @@ const useRegistSchedule = (isEdit?: boolean) => {
     state.notes,
     state.setState,
   ]);
-  const [calendars] = useDeviceCalendarStore((state) => [state.dutyingCalendars]);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const event: DeviceEvent = {
@@ -74,7 +72,7 @@ const useRegistSchedule = (isEdit?: boolean) => {
     navigation.goBack();
   };
 
-  const openModal = (name: 'date' | 'alarm' | 'reculsive' | 'category') => {
+  const openModal = (name: 'alarm' | 'reculsive') => {
     modalRef.current?.present();
     setIsModalOpen(true);
     setScheduleState('modalName', name);
@@ -89,8 +87,6 @@ const useRegistSchedule = (isEdit?: boolean) => {
     state: {
       title,
       ref,
-      startDate,
-      endDate,
       modalRef,
       isModalOpen,
       notes,

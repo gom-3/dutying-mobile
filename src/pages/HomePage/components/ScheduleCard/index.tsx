@@ -86,13 +86,15 @@ const ScheduleCard = () => {
                     <View>
                       <Text style={styles.scheduleNameText}>{schedule.title}</Text>
                       <Text style={styles.scheduleDateText}>
-                        {schedule.startTime.getHours().toString().padStart(2, '0') +
-                          ':' +
-                          schedule.startTime.getMinutes().toString().padStart(2, '0') +
-                          ' - ' +
-                          schedule.endTime.getHours().toString().padStart(2, '0') +
-                          ':' +
-                          schedule.endTime.getMinutes().toString().padStart(2, '0')}
+                        {schedule.allDay
+                          ? '하루 종일'
+                          : schedule.startTime.getHours().toString().padStart(2, '0') +
+                            ':' +
+                            schedule.startTime.getMinutes().toString().padStart(2, '0') +
+                            ' - ' +
+                            schedule.endTime.getHours().toString().padStart(2, '0') +
+                            ':' +
+                            schedule.endTime.getMinutes().toString().padStart(2, '0')}
                       </Text>
                     </View>
                   </View>

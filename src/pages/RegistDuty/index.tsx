@@ -3,8 +3,6 @@ import useRegistDuty from './index.hook';
 import { COLOR } from 'index.style';
 import { View, Text, Pressable, StyleSheet } from 'react-native';
 import PageViewContainer from '@components/PageView';
-import useImagePicker from 'hooks/useImagePicker';
-import PhotoIcon from '@assets/svgs/photo.svg';
 import PageHeader from '@components/PageHeader';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import MonthSelector from '@components/MonthSelector';
@@ -22,9 +20,7 @@ const RegistDuty = () => {
     state: { date, weeks, selectedDate, shiftTypes, shiftTypesCount },
     actions: { insertShift, deleteShift, selectDate, saveRegistDutyChange },
   } = useRegistDuty(dateFrom);
-  const {
-    actions: { pickImage },
-  } = useImagePicker();
+
   return (
     <PageViewContainer>
       <BottomSheetModalProvider>
@@ -39,9 +35,6 @@ const RegistDuty = () => {
           />
           <View style={{ flexDirection: 'row', justifyContent: 'space-between', padding: 22 }}>
             <MonthSelector />
-            <Pressable onPress={pickImage}>
-              <PhotoIcon width={22} height={22} />
-            </Pressable>
           </View>
           <View style={styles.calendarHeaderView}>
             {days.map((day) => (
@@ -61,42 +54,40 @@ const RegistDuty = () => {
           </View>
           {weeks.map((week, i) => (
             <View key={i} style={styles.weekView}>
-              {week.map((day) => (
-                <Pressable
-                  key={day.date.getTime()}
-                  style={{
-                    flex: 1,
-                    height: 67,
-                    backgroundColor: isSameDate(selectedDate, day.date) ? COLOR.sub5 : 'white',
-                  }}
-                  onPress={() => selectDate(day.date)}
-                >
-                  <View
-                    style={[
-                      styles.dateView,
-                      {
-                        backgroundColor: isSameDate(selectedDate, day.date) ? COLOR.sub5 : 'white',
-                      },
-                    ]}
+              {week.map((day) => {
+                const isSame = isSameDate(selectedDate, day.date);
+                const isSameMonth = date.getMonth() === day.date.getMonth();
+                return (
+                  <Pressable
+                    key={day.date.getTime()}
+                    style={{
+                      flex: 1,
+                      height: 67,
+                    }}
+                    onPress={() => selectDate(day.date)}
                   >
-                    <Text
+                    <View
                       style={[
-                        styles.dateText,
-                        { opacity: date.getMonth() === day.date.getMonth() ? 1 : 0.3 },
+                        styles.dateView,
+                        {
+                          backgroundColor: isSame ? COLOR.sub5 : 'white',
+                        },
                       ]}
                     >
-                      {day.date.getDate()}
-                    </Text>
-                    <Shift
-                      date={day.date.getDate()}
-                      shift={day.shift !== null ? shiftTypes.get(day.shift) : undefined}
-                      isCurrent={date.getMonth() === day.date.getMonth()}
-                      isToday={isSameDate(day.date, selectedDate)}
-                      fullNameVisibilty
-                    />
-                  </View>
-                </Pressable>
-              ))}
+                      <Text style={[styles.dateText, { opacity: isSameMonth ? 1 : 0.3 }]}>
+                        {day.date.getDate()}
+                      </Text>
+                      <Shift
+                        date={day.date.getDate()}
+                        shift={day.shift !== null ? shiftTypes.get(day.shift) : undefined}
+                        isCurrent={isSameMonth}
+                        isToday={isSame}
+                        fullNameVisibilty
+                      />
+                    </View>
+                  </Pressable>
+                );
+              })}
             </View>
           ))}
           <View style={styles.registView}>

@@ -6,15 +6,30 @@ import AppleLogo from '@assets/svgs/apple.svg';
 import { useLinkProps } from '@react-navigation/native';
 import { useAccountStore } from 'store/account';
 import * as AppleAuthentication from 'expo-apple-authentication';
-import { useEffect, useState } from 'react';
-import { WebView } from 'react-native-webview';
+import { useEffect } from 'react';
 import { screenHeight, screenWidth } from 'index.style';
-import { KakaoOAuthToken, KakaoProfile, login, getProfile } from '@react-native-seoul/kakao-login';
+import { KakaoOAuthToken, getProfile, login, logout, unlink } from '@react-native-seoul/kakao-login';
+import { useMutation } from '@tanstack/react-query';
+import { oAuthLogin } from '@libs/api/account';
 
 const LoginPage = () => {
-  const { onPress } = useLinkProps({ to: { screen: 'Home' } });
+  const { onPress: navigateHome } = useLinkProps({ to: { screen: 'Home' } });
+  const { onPress: navigateSignup } = useLinkProps({ to: { screen: 'Signup' } });
   const [setState] = useAccountStore((state) => [state.setState]);
-  const [loginUrl, setLoginUrl] = useState<string | null>(null);
+
+  const { mutate: oAuthLoginMutate } = useMutation(
+    ({ idToken, provider }: { idToken: string; provider: string }) => oAuthLogin(idToken, provider),
+    {
+      onSuccess: (data) => {
+        if (data.isNewAccount) {
+          navigateSignup();
+        } else {
+          setState('isLoggedIn', true);
+          navigateHome();
+        }
+      },
+    },
+  );
 
   useEffect(() => {
     const backAction = () => true;
@@ -29,24 +44,22 @@ const LoginPage = () => {
     // setLoginUrl(
     //   'https://api.dutying.net/oauth2/authorization/kakao?redirectUrl=http://localhost:3000/',
     // );
+    // await logout();
+    // await unlink();
     const token: KakaoOAuthToken = await login();
-    const profile: KakaoProfile = await getProfile();
+    const profile = await getProfile(JSON.stringify(token));
+    // await logout();
     console.log(token);
     console.log(profile);
-    setState('isLoggedIn', true);
-    onPress();
   };
 
   const onPressAppleLogin = async () => {
+    const isAvail = await AppleAuthentication.isAvailableAsync();
+    console.log(isAvail);
     const token = await AppleAuthentication.signInAsync();
     console.log(token);
     // setState('isLoggedIn', true);
     // onPress();
-  };
-
-  const handleWebViewNavigationStateChange = (newNavigationState: any) => {
-    const { url } = newNavigationState;
-    // setLoginUrl(null);
   };
 
   // const onPressAppleLogin = async () => {
@@ -60,60 +73,48 @@ const LoginPage = () => {
 
   return (
     <PageViewContainer>
-      {loginUrl && (
-        <WebView
-          style={styles.webview}
-          source={{ uri: loginUrl }}
-          onNavigationStateChange={handleWebViewNavigationStateChange}
-          javaScriptEnabled={true}
-        />
-      )}
       <SafeAreaView>
-        {!loginUrl && (
-          <View style={styles.pageContainer}>
-            <View style={styles.guidTextWrapper}>
-              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                <View>
-                  <Text style={styles.guideTextHighlight}>간편 로그인</Text>
-                  <View style={styles.guidTextUnderline} />
-                </View>
-                <View>
-                  <Text
-                    style={[styles.guideText, { marginTop: Platform.OS === 'android' ? 7 : 0 }]}
-                  >
-                    후
-                  </Text>
-                </View>
+        <View style={styles.pageContainer}>
+          <View style={styles.guidTextWrapper}>
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              <View>
+                <Text style={styles.guideTextHighlight}>간편 로그인</Text>
+                <View style={styles.guidTextUnderline} />
               </View>
-              <Text style={styles.guideText}>이용 가능합니다.</Text>
+              <View>
+                <Text style={[styles.guideText, { marginTop: Platform.OS === 'android' ? 7 : 0 }]}>
+                  후
+                </Text>
+              </View>
             </View>
-            <View style={styles.socialLoginButtonView}>
-              <Pressable onPress={onPressKakaoLogin}>
-                <View style={styles.kakaoLoginButton}>
-                  <KakaoLogo />
-                  <Text style={styles.kakaoLoginText}>카카오톡으로 시작하기</Text>
+            <Text style={styles.guideText}>이용 가능합니다.</Text>
+          </View>
+          <View style={styles.socialLoginButtonView}>
+            <Pressable onPress={onPressKakaoLogin}>
+              <View style={styles.kakaoLoginButton}>
+                <KakaoLogo />
+                <Text style={styles.kakaoLoginText}>카카오톡으로 시작하기</Text>
+              </View>
+            </Pressable>
+            {Platform.OS === 'ios' && (
+              <Pressable onPress={onPressAppleLogin}>
+                <View style={styles.appleLoginButton}>
+                  <AppleLogo />
+                  <Text style={styles.appleLoginText}>Apple Id로 시작하기</Text>
                 </View>
               </Pressable>
-              {Platform.OS === 'ios' && (
-                <Pressable onPress={onPressAppleLogin}>
-                  <View style={styles.appleLoginButton}>
-                    <AppleLogo />
-                    <Text style={styles.appleLoginText}>Apple Id로 시작하기</Text>
-                  </View>
-                </Pressable>
-              )}
-            </View>
-            <View style={styles.termTextView}>
-              <Text style={styles.termText}>
-                버튼을 누르면 <Text style={styles.termTextHighlight}>서비스약관</Text>,{' '}
-                <Text style={styles.termTextHighlight}>개인정보 취급방침</Text>
-              </Text>
-              <Text style={[styles.termText, { marginTop: 5 }]}>
-                수신에 동의하신 것으로 간주합니다.
-              </Text>
-            </View>
+            )}
           </View>
-        )}
+          <View style={styles.termTextView}>
+            <Text style={styles.termText}>
+              버튼을 누르면 <Text style={styles.termTextHighlight}>서비스약관</Text>,{' '}
+              <Text style={styles.termTextHighlight}>개인정보 취급방침</Text>
+            </Text>
+            <Text style={[styles.termText, { marginTop: 5 }]}>
+              수신에 동의하신 것으로 간주합니다.
+            </Text>
+          </View>
+        </View>
       </SafeAreaView>
     </PageViewContainer>
   );

@@ -19,7 +19,7 @@ interface State {
   startDate: Date;
   endDate: Date;
   notes: string;
-  modalName: 'date' | 'alarm' | 'reculsive' | 'category';
+  modalName: 'alarm' | 'reculsive';
 }
 
 interface Store extends State {
@@ -43,7 +43,7 @@ const initialState: State = {
   startDate: new Date(),
   endDate: new Date(),
   notes: '',
-  modalName: 'date',
+  modalName: 'alarm',
 };
 
 export const useScheduleStore = createWithEqualityFn<Store>()(

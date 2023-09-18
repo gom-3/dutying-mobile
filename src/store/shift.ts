@@ -4,7 +4,6 @@ import { shallow } from 'zustand/shallow';
 import { createWithEqualityFn } from 'zustand/traditional';
 
 interface State {
-  // shiftTypes: Shift[];
   shiftTypes: Map<number, Shift>;
 }
 
