@@ -64,7 +64,9 @@ const LoginPage = () => {
   const onPressAppleLogin = async () => {
     const isAvail = await AppleAuthentication.isAvailableAsync();
     console.log(isAvail);
-    const token = await AppleAuthentication.signInAsync();
+    const token = await AppleAuthentication.signInAsync({
+      requestedScopes: [AppleAuthentication.AppleAuthenticationScope.EMAIL],
+    });
     console.log(token);
     // setState('isLoggedIn', true);
     // onPress();
