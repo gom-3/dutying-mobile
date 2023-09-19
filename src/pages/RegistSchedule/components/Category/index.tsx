@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Pressable } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import ArrowIcon from '@assets/svgs/under-arrow-black.svg';
 import useCategory from './index.hook';
 import { hexToRgba } from '@libs/utils/color';
@@ -17,7 +17,7 @@ const Category = () => {
 
   return (
     <View style={{ flexDirection: 'row' }}>
-      <Pressable onPress={openModal}>
+      <TouchableOpacity activeOpacity={0.5} onPress={openModal}>
         <View
           style={[
             styles.category,
@@ -30,7 +30,7 @@ const Category = () => {
           <Text style={styles.categoryText}>{selectedCalendar.title.slice(3)}</Text>
           <ArrowIcon />
         </View>
-      </Pressable>
+      </TouchableOpacity>
       <BottomSheetModal
         backdropComponent={renderBackdrop}
         style={{ padding: 14 }}
@@ -45,7 +45,7 @@ const Category = () => {
         <BottomSheetHeader title="유형" onPressExit={() => ref.current?.close()} />
         <View>
           {deviceCalendar.map((calendar) => (
-            <Pressable
+            <TouchableOpacity
               style={styles.item}
               key={calendar.id}
               onPress={() => pressCategoryHandler(calendar)}
@@ -71,7 +71,7 @@ const Category = () => {
               >
                 {calendar.title.slice(3)}
               </Text>
-            </Pressable>
+            </TouchableOpacity>
           ))}
         </View>
       </BottomSheetModal>

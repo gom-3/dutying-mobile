@@ -21,8 +21,8 @@ const initialShift = (): ShiftWithoutID => {
   return {
     name: '',
     shortName: '',
-    startTime: undefined,
-    endTime: undefined,
+    startTime: null,
+    endTime: null,
     classification: 'OTHER_WORK',
     isDefault: false,
     color: randomHexColor(),

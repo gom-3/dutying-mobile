@@ -1,7 +1,6 @@
 import BackDrop from '@components/BackDrop';
 import SettingIcon from '@assets/svgs/setting.svg';
-import { Pressable, StyleSheet, View, Text } from 'react-native';
-import ProfileIcon from '@assets/svgs/profile.svg';
+import { StyleSheet, View, Text, Image, TouchableOpacity } from 'react-native';
 import Animated, { SlideInRight, SlideOutRight } from 'react-native-reanimated';
 import { COLOR, screenHeight, screenWidth } from 'index.style';
 import ExitIcon from '@assets/svgs/exit.svg';
@@ -9,7 +8,7 @@ import useSideMenu from './index.hook';
 
 const SideMenu = () => {
   const {
-    state: { menuItemList },
+    state: { account, menuItemList },
     actions: { closeSideMenu, logout },
   } = useSideMenu();
 
@@ -21,28 +20,31 @@ const SideMenu = () => {
         entering={SlideInRight.duration(350)}
         exiting={SlideOutRight.duration(350)}
       >
-        <Pressable onPress={closeSideMenu}>
+        <TouchableOpacity onPress={closeSideMenu}>
           <ExitIcon style={styles.exitIcon} />
-        </Pressable>
+        </TouchableOpacity>
         <View style={styles.profileView}>
-          <View style={{ flexDirection: 'row' }}>
-            <ProfileIcon />
-            <Text style={styles.profileText}>조성연</Text>
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <Image
+              source={{ uri: `data:image/png;base64,${account.profileImgBase64}` }}
+              style={{ width: 28, height: 28 }}
+            />
+            <Text style={styles.profileText}>{account.name}</Text>
           </View>
           {/* <SettingIcon /> */}
         </View>
         <View style={styles.deviderView} />
         {menuItemList.map((item) => (
-          <Pressable key={item.title} onPress={item.onPress}>
+          <TouchableOpacity key={item.title} onPress={item.onPress}>
             <View style={styles.menuItemView}>
               <item.icon />
               <Text style={styles.menuItemText}>{item.title}</Text>
             </View>
-          </Pressable>
+          </TouchableOpacity>
         ))}
-        <Pressable style={styles.logoutView} onPress={logout}>
+        <TouchableOpacity style={styles.logoutView} onPress={logout}>
           <Text style={styles.logoutText}>로그아웃</Text>
-        </Pressable>
+        </TouchableOpacity>
       </Animated.View>
     </>
   );
@@ -92,8 +94,6 @@ const styles = StyleSheet.create({
     paddingVertical: 18,
     paddingHorizontal: 25,
     alignItems: 'center',
-    borderBottomColor: '#d6d6de',
-    borderBottomWidth: 1,
   },
   menuItemText: {
     fontFamily: 'Apple',

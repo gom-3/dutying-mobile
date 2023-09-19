@@ -1,6 +1,5 @@
 import { View, Text, StyleSheet, StyleProp, ViewStyle, Pressable } from 'react-native';
 import ExitIcon from '@assets/svgs/exit.svg';
-import CheckIcon from '@assets/svgs/check.svg';
 import { COLOR } from 'index.style';
 
 interface Props {

@@ -19,7 +19,7 @@ const useRegistDuty = (dateFrom?: string) => {
     state.calendar,
     state.setState,
   ]);
-  const [userId] = useAccountStore((state) => [state.userId]);
+  const [userId] = useAccountStore((state) => [state.account.accountId]);
   const [shiftTypes] = useShiftTypeStore((state) => [state.shiftTypes]);
   const [tempCalendar, setTempCalendar] = useState<DateType[]>(calendar);
 

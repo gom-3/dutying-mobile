@@ -13,7 +13,7 @@ import {
 } from 'react-native-gesture-handler';
 
 const useCalendar = (isRender?: boolean) => {
-  const [userId] = useAccountStore((state) => [state.userId]);
+  const [account, userId] = useAccountStore((state) => [state.account, state.account.accountId]);
   const [date, calendar, setState] = useCaledarDateStore((state) => [
     state.date,
     state.calendar,
@@ -27,14 +27,15 @@ const useCalendar = (isRender?: boolean) => {
     date.getFullYear(),
     date.getMonth(),
   ];
+  console.log(getAccountShiftListKey);
 
-  console.log(userId, date);
-
-  const { data: shiftListResponse } = useQuery(getAccountShiftListKey, () =>
-    getAccountShiftList(userId, date.getFullYear(), date.getMonth()),
+  const { data: shiftListResponse } = useQuery(
+    getAccountShiftListKey,
+    () => getAccountShiftList(userId, date.getFullYear(), date.getMonth()),
+    {
+      enabled: userId > 0,
+    },
   );
-
-  console.log(shiftListResponse);
 
   const dateClickHandler = (date: Date) => {
     setState('date', date);
@@ -47,6 +48,7 @@ const useCalendar = (isRender?: boolean) => {
     const calendar: DateType[] = [];
     let dateIndex = 0;
     if (shiftListResponse) {
+      console.log(shiftListResponse)
       const shiftList = shiftListResponse.accountShiftTypeIdList;
       for (let i = first.getDay() - 1; i >= 0; i--) {
         const date: DateType = {

@@ -1,6 +1,6 @@
 import BellIcon from '@assets/svgs/bell.svg';
 import BurgerIcon from '@assets/svgs/burger.svg';
-import { Pressable, StyleSheet, View, Text } from 'react-native';
+import { TouchableOpacity, StyleSheet, View, Text } from 'react-native';
 import useCalendarHeader from './index.hook';
 import { COLOR } from 'index.style';
 import MonthSelector from '@components/MonthSelector';
@@ -21,17 +21,17 @@ const Header = ({ isImage }: Props) => {
         <MonthSelector isImage={isImage} />
         <View style={styles.sideMenuView}>
           {!isImage && (
-            <Pressable onPress={navigateToNotification}>
+            <TouchableOpacity onPress={navigateToNotification}>
               <View style={styles.bellView}>
                 <BellIcon />
                 <View style={styles.alertDotView} />
               </View>
-            </Pressable>
+            </TouchableOpacity>
           )}
           {!isImage && (
-            <Pressable onPress={() => setState('isSideMenuOpen', true)}>
+            <TouchableOpacity onPress={() => setState('isSideMenuOpen', true)}>
               <BurgerIcon />
-            </Pressable>
+            </TouchableOpacity>
           )}
         </View>
       </View>

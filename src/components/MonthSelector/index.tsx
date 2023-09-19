@@ -1,4 +1,4 @@
-import { Pressable, View, StyleSheet, Text, StyleProp, ViewStyle, Platform } from 'react-native';
+import { View, StyleSheet, Text, StyleProp, ViewStyle, Platform, TouchableOpacity } from 'react-native';
 import UnderArrowIcon from '@assets/svgs/under-arrow.svg';
 import useMonthSelector from './index.hook';
 import { COLOR } from 'index.style';
@@ -21,7 +21,7 @@ const MonthSelector = ({ isImage, style }: Props) => {
 
   return (
     <View style={style}>
-      <Pressable onPress={onPressMonthSelector}>
+      <TouchableOpacity onPress={onPressMonthSelector}>
         <View style={styles.datePresenterView}>
           <Text style={styles.datePresenterText}>
             <Text style={{ fontFamily: 'Poppins600' }}>
@@ -31,7 +31,7 @@ const MonthSelector = ({ isImage, style }: Props) => {
           </Text>
           {!isImage && <UnderArrowIcon />}
         </View>
-      </Pressable>
+      </TouchableOpacity>
       {Platform.OS === 'ios' && (
         <BottomSheetModal
           style={{ padding: 14 }}

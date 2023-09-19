@@ -4,6 +4,7 @@ import NextButton from '@components/NextButton';
 import ExitIcon from '@assets/svgs/exit-white.svg';
 import { COLOR } from 'index.style';
 import useName from './index.hook';
+import Animated, { FadeIn, FadeInDown, FadeInUp, FadeOut } from 'react-native-reanimated';
 
 const Name = () => {
   const {
@@ -33,11 +34,19 @@ const Name = () => {
           style={styles.textInput}
           onChangeText={onChangeTextInput}
         />
-        <Pressable onPress={clearTextInput} style={styles.clearPosition}>
-          <View style={styles.clear}>
-            <ExitIcon />
-          </View>
-        </Pressable>
+        {name.length > 0 && (
+          <Animated.View
+            style={styles.clearPosition}
+            entering={FadeIn.duration(200)}
+            exiting={FadeOut.duration(200)}
+          >
+            <Pressable onPress={clearTextInput}>
+              <View style={styles.clear}>
+                <ExitIcon />
+              </View>
+            </Pressable>
+          </Animated.View>
+        )}
       </View>
       <Text style={styles.feedback}>{feedback}</Text>
       <NextButton disabled={!isValid} text="다음" Icon={NextArrowIcon} onPress={toNextStep} />

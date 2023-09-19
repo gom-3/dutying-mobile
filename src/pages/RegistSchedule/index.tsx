@@ -54,7 +54,7 @@ const RegistSchedulePage = () => {
   const { params } = route;
   const isEdit = params ? params.isEdit : false;
   const {
-    state: { title, ref, startDate, isModalOpen, modalRef, notes },
+    state: { title, ref, isModalOpen, modalRef, notes },
     actions: {
       titleChangeHandler,
       createEvent,
@@ -64,7 +64,7 @@ const RegistSchedulePage = () => {
       notesChangeHandler,
       closeModal,
     },
-  } = useRegistSchedule(isEdit);
+  } = useRegistSchedule();
 
   return (
     <PageViewContainer>

@@ -1,5 +1,5 @@
 import { COLOR } from 'index.style';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SvgProps } from 'react-native-svg';
 
 interface Props {
@@ -11,12 +11,12 @@ interface Props {
 
 const NextButton = ({ text, Icon, disabled, onPress }: Props) => {
   return (
-    <Pressable disabled={disabled} onPress={onPress}>
+    <TouchableOpacity disabled={disabled} onPress={onPress}>
       <View style={[styles.container, { backgroundColor: disabled ? COLOR.main3 : COLOR.main1 }]}>
         <Text style={styles.text}>{text}</Text>
         {Icon && <Icon />}
       </View>
-    </Pressable>
+    </TouchableOpacity>
   );
 };
 

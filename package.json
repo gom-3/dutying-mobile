@@ -51,7 +51,8 @@
     "styled-components": "^6.0.5",
     "zustand": "^4.3.9",
     "expo-build-properties": "~0.8.3",
-    "react-native-pager-view": "6.2.0"
+    "react-native-pager-view": "6.2.0",
+    "expo-asset": "~8.10.1"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

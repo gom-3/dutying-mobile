@@ -7,6 +7,7 @@ import EditShiftTypeIcon from '@assets/svgs/edit-shift-type.svg';
 import ShareIcon from '@assets/svgs/share.svg';
 import SliderIcon from '@assets/svgs/slider.svg';
 import { useMemo } from 'react';
+import { useAccountStore } from 'store/account';
 
 interface SideMenuItem {
   icon: React.FC<SvgProps>;
@@ -15,13 +16,22 @@ interface SideMenuItem {
 }
 
 const useSideMenu = () => {
+  const [account, logoutAccount] = useAccountStore((state) => [state.account, state.logout]);
   const [setState] = useCaledarDateStore((state) => [state.setState]);
   const { onPress: onPressLinkRegistDuty } = useLinkProps({ to: { screen: 'RegistDuty' } });
   const { onPress: onPressEditShiftType } = useLinkProps({ to: { screen: 'ShiftType' } });
   const { onPress: onPressShare } = useLinkProps({ to: { screen: 'Share' } });
   const { onPress: onPressDeviceCalendar } = useLinkProps({ to: { screen: 'DeviceCalendar' } });
+  const { onPress: onPressLogout } = useLinkProps({ to: { screen: 'Login' } });
+
   const closeSideMenu = () => {
     setState('isSideMenuOpen', false);
+  };
+
+  const logout = () => {
+    logoutAccount();
+    setState('isSideMenuOpen', false);
+    onPressLogout();
   };
 
   const menuItemList: SideMenuItem[] = useMemo(
@@ -49,8 +59,7 @@ const useSideMenu = () => {
     ],
     [],
   );
-
-  return { state: { menuItemList }, actions: { closeSideMenu } };
+  return { state: { account, menuItemList }, actions: { closeSideMenu, logout } };
 };
 
 export default useSideMenu;

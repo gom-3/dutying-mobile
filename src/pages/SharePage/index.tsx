@@ -3,7 +3,7 @@ import PageHeader from '@components/PageHeader';
 import PageViewContainer from '@components/PageView';
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { COLOR } from 'index.style';
-import { View, Text, Switch, StyleSheet, Pressable, Modal } from 'react-native';
+import { View, Text, Switch, StyleSheet, TouchableOpacity, Modal } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import ImageIcon from '@assets/svgs/image-save.svg';
 import Header from '@pages/HomePage/components/Header';
@@ -67,10 +67,10 @@ const SharePage = () => {
               </View>
             </View>
             <View style={styles.buttonContainer}>
-              <Pressable style={styles.button} onPress={() => setIsImageModalVisible(true)}>
+              <TouchableOpacity style={styles.button} onPress={() => setIsImageModalVisible(true)}>
                 <ImageIcon />
                 <Text style={styles.buttonText}>이미지로 공유하기</Text>
-              </Pressable>
+              </TouchableOpacity>
             </View>
           </View>
           <Modal animationType="slide" visible={isImageModalVisible}>
@@ -85,7 +85,7 @@ const SharePage = () => {
                     <FullLogoIcon />
                   </View>
                   <Header isImage />
-                  <Calendar withoutSchedule={!scheduleSwitch} isSharing />
+                  <Calendar withoutSchedule={!scheduleSwitch} />
                   {guideSwitch && (
                     <View style={styles.typeItem}>
                       <ShiftTypeGuide />

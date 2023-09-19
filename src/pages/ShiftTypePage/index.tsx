@@ -32,13 +32,17 @@ const ShiftTypePage = () => {
               <Text style={styles.shoftName}>{shiftType.shortName}</Text>
               <Text style={styles.name}>{shiftType.name}</Text>
             </View>
-            <Text style={styles.time}>{`${shiftType.startTime?.getHours()}:${shiftType.startTime
-              ?.getMinutes()
-              .toString()
-              .padStart(2, '0')}-${shiftType.endTime?.getHours()}:${shiftType.endTime
-              ?.getMinutes()
-              .toString()
-              .padStart(2, '0')}`}</Text>
+            {shiftType.startTime && shiftType.endTime ? (
+              <Text style={styles.time}>{`${shiftType.startTime.getHours()}:${shiftType.startTime
+                .getMinutes()
+                .toString()
+                .padStart(2, '0')}-${shiftType.endTime.getHours()}:${shiftType.endTime
+                .getMinutes()
+                .toString()
+                .padStart(2, '0')}`}</Text>
+            ) : (
+              <Text style={styles.time}>-</Text>
+            )}
             <Pressable onPress={() => onPressEditIcon(shiftType)}>
               <PencilIcon />
             </Pressable>

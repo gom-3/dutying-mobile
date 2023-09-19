@@ -12,14 +12,14 @@ const useShiftTypePage = () => {
   const { onPress: navigateToEdit } = useLinkProps({ to: { screen: 'ShiftTypeEdit' } });
   const workShiftTypes = useMemo(
     () =>
-      Array.from(shiftTypes.values()).filter((shiftType) =>
+      Array.from(shiftTypes.size > 0 ? shiftTypes.values() : []).filter((shiftType) =>
         workClassifications.includes(shiftType.classification),
       ),
     [shiftTypes],
   );
   const offShiftTypes = useMemo(
     () =>
-      Array.from(shiftTypes.values()).filter((shiftType) =>
+      Array.from(shiftTypes.size > 0 ? shiftTypes.values() : []).filter((shiftType) =>
         offClassification.includes(shiftType.classification),
       ),
     [shiftTypes],
@@ -31,7 +31,7 @@ const useShiftTypePage = () => {
   };
 
   const onPressEditIcon = (shift: Shift) => {
-    const {accountShiftTypeId, ...shiftWithoutAccountShiftTypeId} = shift;
+    const { accountShiftTypeId, ...shiftWithoutAccountShiftTypeId } = shift;
     setState('currentShift', shiftWithoutAccountShiftTypeId);
     setState('accountShiftTypeId', shift.accountShiftTypeId);
     setState('isEdit', true);

@@ -4,10 +4,10 @@ import { shallow } from 'zustand/shallow';
 import { createWithEqualityFn } from 'zustand/traditional';
 
 interface State {
+  id: number;
   name: string;
   image: any;
-  photo: string | undefined;
-  isPhoto: boolean;
+  photo: string | null;
   step: number;
 }
 
@@ -18,9 +18,10 @@ interface Store extends State {
 
 export const useSignupStore = createWithEqualityFn<Store>()(
   devtools((set, _) => ({
+    id: 0,
     name: '',
     step: 1,
-    photo: undefined,
+    photo: null,
     isPhoto: false,
     image: images[Math.floor(Math.random() * 30)],
     setState: (state, value) => set((prev) => ({ ...prev, [state]: value })),

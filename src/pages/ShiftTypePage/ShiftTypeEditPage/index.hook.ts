@@ -29,7 +29,7 @@ const offTypeList: TypeList[] = [
 ];
 
 const useShiftTypeEdit = () => {
-  const [userId] = useAccountStore((state) => [state.userId]);
+  const [userId] = useAccountStore((state) => [state.account.accountId]);
   const [shift, isEdit, accountShiftTypeId, setState] = useEditShiftTypeStore((state) => [
     state.currentShift,
     state.isEdit,
@@ -65,11 +65,11 @@ const useShiftTypeEdit = () => {
     },
   );
 
-  const changeStartTime = (_: DateTimePickerEvent, selectedDate: Date | undefined) => {
+  const changeStartTime = (_: DateTimePickerEvent, selectedDate: Date | null) => {
     const newShift: ShiftWithoutID = { ...shift, startTime: selectedDate };
     setState('currentShift', newShift);
   };
-  const changeEndTime = (_: DateTimePickerEvent, selectedDate: Date | undefined) => {
+  const changeEndTime = (_: DateTimePickerEvent, selectedDate: Date | null) => {
     const newShift: ShiftWithoutID = { ...shift, endTime: selectedDate };
     setState('currentShift', newShift);
   };
@@ -85,7 +85,7 @@ const useShiftTypeEdit = () => {
       setState('currentShift', newShift);
       setUsingTime(true);
     } else {
-      const newShift: ShiftWithoutID = { ...shift, startTime: undefined, endTime: undefined };
+      const newShift: ShiftWithoutID = { ...shift, startTime: null, endTime: null };
       setState('currentShift', newShift);
       setUsingTime(false);
     }
@@ -101,8 +101,8 @@ const useShiftTypeEdit = () => {
   const onPressShiftType = (type: Shift['classification']) => {
     const newShift: ShiftWithoutID = { ...shift, classification: type };
     if (type === 'OTHER_WORK' || type === 'LEAVE') {
-      newShift.startTime = undefined;
-      newShift.endTime = undefined;
+      newShift.startTime = null;
+      newShift.endTime = null;
       setUsingTime(false);
     }
     setState('currentShift', newShift);
@@ -112,15 +112,20 @@ const useShiftTypeEdit = () => {
   };
   const onPressSaveButton = () => {
     if (shift.name.length > 0 && shift.shortName.length > 0) {
-      const startTime = `${shift.startTime
-        ?.getHours()
-        .toString()
-        .padStart(2, '0')}:${shift.startTime?.getMinutes().toString().padStart(2, '0')}`;
-      const endTime = `${shift.endTime?.getHours().toString().padStart(2, '0')}:${shift.endTime
-        ?.getMinutes()
-        .toString()
-        .padStart(2, '0')}`;
+      const startTime = shift.startTime
+        ? `${shift.startTime.getHours().toString().padStart(2, '0')}:${shift.startTime
+            ?.getMinutes()
+            .toString()
+            .padStart(2, '0')}`
+        : null;
+      const endTime = shift.endTime
+        ? `${shift.endTime?.getHours().toString().padStart(2, '0')}:${shift.endTime
+            .getMinutes()
+            .toString()
+            .padStart(2, '0')}`
+        : null;
       const reqDTO: ShiftTypeRequestDTO = { ...shift, startTime, endTime };
+      console.log(reqDTO);
       if (!isEdit) {
         addShiftTypeMutate(reqDTO);
       } else {
