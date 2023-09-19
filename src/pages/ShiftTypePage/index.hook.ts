@@ -2,6 +2,7 @@ import { useLinkProps } from '@react-navigation/native';
 import { useMemo } from 'react';
 import { useShiftTypeStore } from 'store/shift';
 import { useEditShiftTypeStore } from './store';
+import analytics from '@react-native-firebase/analytics';
 
 const workClassifications = ['DAY', 'EVENING', 'NIGHT', 'OTHER_WORK'];
 const offClassification = ['OFF', 'LEAVE'];
@@ -26,11 +27,13 @@ const useShiftTypePage = () => {
   );
 
   const onPressPlusIcon = () => {
+    analytics().logEvent('move_add_shift_type');
     initShift();
     navigateToEdit();
   };
 
   const onPressEditIcon = (shift: Shift) => {
+    analytics().logEvent('move_edit_shift_type');
     const { accountShiftTypeId, ...shiftWithoutAccountShiftTypeId } = shift;
     setState('currentShift', shiftWithoutAccountShiftTypeId);
     setState('accountShiftTypeId', shift.accountShiftTypeId);

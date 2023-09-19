@@ -13,6 +13,7 @@ import ViewShot from 'react-native-view-shot';
 import FullLogoIcon from '@assets/svgs/logo-full.svg';
 import * as Sharing from 'expo-sharing';
 import ShiftTypeGuide from './components/ShiftTypeGuide';
+import analytics from '@react-native-firebase/analytics';
 
 const SharePage = () => {
   const [isImageModalVisible, setIsImageModalVisible] = useState(false);
@@ -43,7 +44,10 @@ const SharePage = () => {
                   trackColor={{ true: COLOR.main1 }}
                   thumbColor="white"
                   value={scheduleSwitch}
-                  onValueChange={(value) => setScheduleSwitch(value)}
+                  onValueChange={(value) => {
+                    analytics().logEvent('include_schedule');
+                    setScheduleSwitch(value);
+                  }}
                 />
               </View>
               <View style={styles.typeItem}>
@@ -53,7 +57,10 @@ const SharePage = () => {
                     trackColor={{ true: COLOR.main1 }}
                     thumbColor="white"
                     value={guideSwitch}
-                    onValueChange={(value) => setGuideSwitch(value)}
+                    onValueChange={(value) => {
+                      analytics().logEvent('include_guide');
+                      setGuideSwitch(value);
+                    }}
                   />
                 </View>
                 {guideSwitch && (
@@ -67,7 +74,13 @@ const SharePage = () => {
               </View>
             </View>
             <View style={styles.buttonContainer}>
-              <TouchableOpacity style={styles.button} onPress={() => setIsImageModalVisible(true)}>
+              <TouchableOpacity
+                style={styles.button}
+                onPress={() => {
+                  analytics().logEvent('share');
+                  setIsImageModalVisible(true);
+                }}
+              >
                 <ImageIcon />
                 <Text style={styles.buttonText}>이미지로 공유하기</Text>
               </TouchableOpacity>

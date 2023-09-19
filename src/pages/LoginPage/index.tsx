@@ -8,11 +8,11 @@ import { useAccountStore } from 'store/account';
 import * as AppleAuthentication from 'expo-apple-authentication';
 import { useEffect, useState } from 'react';
 import { screenHeight, screenWidth } from 'index.style';
-import { KakaoOAuthToken, getProfile, login } from '@react-native-seoul/kakao-login';
+import { KakaoOAuthToken, login } from '@react-native-seoul/kakao-login';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { getAccount, oAuthLogin } from '@libs/api/account';
 import { useSignupStore } from '@pages/SignupPage/store';
-import { WebView } from 'react-native-webview';
+import analytics from '@react-native-firebase/analytics';
 
 const LoginPage = () => {
   const { onPress: navigateHome } = useLinkProps({ to: { screen: 'Home' } });
@@ -21,7 +21,6 @@ const LoginPage = () => {
   const [setState] = useAccountStore((state) => [state.setState]);
   const [setSignupState] = useSignupStore((state) => [state.setState]);
   const [accountId, setAccountId] = useState(0);
-  const [term, setTerm] = useState(false);
 
   const { data: accountData } = useQuery(['getAccount', accountId], () => getAccount(accountId), {
     enabled: accountId > 0,
@@ -43,7 +42,6 @@ const LoginPage = () => {
 
   useEffect(() => {
     if (accountData) {
-      console.log(accountData);
       setState('account', accountData);
       navigateHome();
     }
@@ -57,21 +55,16 @@ const LoginPage = () => {
   }, []);
 
   const onPressKakaoLogin = async () => {
+    analytics().logEvent('kakao');
     const token: KakaoOAuthToken = await login();
-    const profile = await getProfile(JSON.stringify(token));
     oAuthLoginMutate({ idToken: token.idToken, provider: 'kakao' });
   };
 
   const onPressAppleLogin = async () => {
+    analytics().logEvent('apple');
     const token = await AppleAuthentication.signInAsync();
+    oAuthLoginMutate({ idToken: token.identityToken || '', provider: 'apple' });
   };
-
-  const handleWebViewNavigationStateChange = (newNavigationState: any) => {
-    const { url } = newNavigationState;
-    // setLoginUrl(null);
-  };
-
-  console.log(term);
 
   return (
     <PageViewContainer>
@@ -108,7 +101,7 @@ const LoginPage = () => {
             )}
           </View>
           <View style={styles.termTextView}>
-            <Text style={styles.termText} onPress={()=>navigateTerm()}>
+            <Text style={styles.termText} onPress={() => navigateTerm()}>
               버튼을 누르면 <Text style={styles.termTextHighlight}>서비스약관</Text>,{' '}
               <Text style={styles.termTextHighlight}>개인정보 취급방침</Text>
             </Text>

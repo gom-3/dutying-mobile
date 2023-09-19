@@ -12,7 +12,7 @@ interface Props {
 const Header = ({ isImage }: Props) => {
   const {
     states: { shiftTypes, shiftTypesCount },
-    actions: { setState, navigateToNotification },
+    actions: { navigateToNotification, openSideMenu },
   } = useCalendarHeader();
 
   return (
@@ -29,7 +29,7 @@ const Header = ({ isImage }: Props) => {
             </TouchableOpacity>
           )}
           {!isImage && (
-            <TouchableOpacity onPress={() => setState('isSideMenuOpen', true)}>
+            <TouchableOpacity onPress={openSideMenu}>
               <BurgerIcon />
             </TouchableOpacity>
           )}
