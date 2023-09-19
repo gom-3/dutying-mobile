@@ -3,7 +3,7 @@ import { images } from '@assets/images/profiles';
 import { useSignupStore } from '@pages/SignupPage/store';
 import useImagePicker from '@hooks/useImagePicker';
 import { useMutation } from '@tanstack/react-query';
-import { SignupRequestDTO, editAccount } from '@libs/api/account';
+import { SignupRequestDTO, changeAccountStatus, editAccount } from '@libs/api/account';
 import { useLinkProps } from '@react-navigation/native';
 import { useAccountStore } from 'store/account';
 import * as FileSystem from 'expo-file-system';
@@ -27,13 +27,22 @@ const useProfile = () => {
 
   const { onPress: navigateToHome } = useLinkProps({ to: { screen: 'Onboarding' } });
 
+  const { mutate: changeAccountStatusMutate } = useMutation(
+    () => changeAccountStatus(id, 'ACTIVE'),
+    {
+      onSuccess: () => {
+        navigateToHome();
+      },
+    },
+  );
+
   const { mutate: signupMutate } = useMutation(
     ({ accountId, name, profileImgBase64 }: SignupRequestDTO) =>
       editAccount(accountId, name, profileImgBase64),
     {
       onSuccess: (data) => {
         setAccountState('account', data);
-        navigateToHome();
+        changeAccountStatusMutate();
       },
     },
   );
@@ -58,7 +67,6 @@ const useProfile = () => {
 
     return base64String;
   };
-
 
   const setRandomImage = () => {
     analytics().logEvent('change_image');

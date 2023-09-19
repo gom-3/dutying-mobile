@@ -24,3 +24,7 @@ export const editAccount = async (accountId: number, name: string, profileImgBas
 export const getAccount = async (accountId: number) => {
   return (await axiosInstance.get<Account>(`/accounts/${accountId}`)).data;
 };
+
+export const changeAccountStatus = async (accountId: number, status: 'ACTIVE' | 'INITIAL') => {
+  return (await axiosInstance.patch(`/accounts/${accountId}/status?status=${status}`)).data;
+};
