@@ -38,6 +38,12 @@
           "overrideKakaoSDKVersion": "2.11.1",
           "kotlinVersion": "1.9.0"
         }
+      ],[
+        "airbridge-expo-sdk",
+        {
+          "appName": "dutying",
+          "appToken": "cfde524ff73c47a8a5c863327579af6f"
+        }
       ]
     ],
     "experiments": {
