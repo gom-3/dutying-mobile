@@ -1,7 +1,7 @@
 import PageHeader from '@components/PageHeader';
 import PageViewContainer from '@components/PageView';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Pressable, View, Text, StyleSheet } from 'react-native';
+import { Pressable, View, Text, StyleSheet, ScrollView } from 'react-native';
 import PlusIcon from '@assets/svgs/plus.svg';
 import PencilIcon from '@assets/svgs/pencil.svg';
 import useShiftTypePage from './index.hook';
@@ -23,52 +23,57 @@ const ShiftTypePage = () => {
             </Pressable>
           }
         />
-        <View style={styles.category}>
-          <Text style={styles.categoryText}>근무</Text>
-        </View>
-        {workShiftTypes.map((shiftType) => (
-          <View style={styles.shift} key={shiftType.accountShiftTypeId}>
-            <View style={[styles.shiftBox, { backgroundColor: shiftType.color }]}>
-              <Text style={styles.shoftName}>{shiftType.shortName}</Text>
-              <Text style={styles.name}>{shiftType.name}</Text>
+        <ScrollView style={styles.scroll}>
+          <View style={styles.category}>
+            <Text style={styles.categoryText}>근무</Text>
+          </View>
+          {workShiftTypes.map((shiftType) => (
+            <View style={styles.shift} key={shiftType.accountShiftTypeId}>
+              <View style={[styles.shiftBox, { backgroundColor: shiftType.color }]}>
+                <Text style={styles.shoftName}>{shiftType.shortName}</Text>
+                <Text style={styles.name}>{shiftType.name}</Text>
+              </View>
+              {shiftType.startTime && shiftType.endTime ? (
+                <Text style={styles.time}>{`${shiftType.startTime.getHours()}:${shiftType.startTime
+                  .getMinutes()
+                  .toString()
+                  .padStart(2, '0')}-${shiftType.endTime.getHours()}:${shiftType.endTime
+                  .getMinutes()
+                  .toString()
+                  .padStart(2, '0')}`}</Text>
+              ) : (
+                <Text style={styles.time}>-</Text>
+              )}
+              <Pressable onPress={() => onPressEditIcon(shiftType)}>
+                <PencilIcon />
+              </Pressable>
             </View>
-            {shiftType.startTime && shiftType.endTime ? (
-              <Text style={styles.time}>{`${shiftType.startTime.getHours()}:${shiftType.startTime
-                .getMinutes()
-                .toString()
-                .padStart(2, '0')}-${shiftType.endTime.getHours()}:${shiftType.endTime
-                .getMinutes()
-                .toString()
-                .padStart(2, '0')}`}</Text>
-            ) : (
+          ))}
+          <View style={styles.category}>
+            <Text style={styles.categoryText}>오프</Text>
+          </View>
+          {offShiftTypes.map((shiftType) => (
+            <View style={styles.shift} key={shiftType.accountShiftTypeId}>
+              <View style={[styles.shiftBox, { backgroundColor: shiftType.color }]}>
+                <Text style={styles.shoftName}>{shiftType.shortName}</Text>
+                <Text style={styles.name}>{shiftType.name}</Text>
+              </View>
               <Text style={styles.time}>-</Text>
-            )}
-            <Pressable onPress={() => onPressEditIcon(shiftType)}>
-              <PencilIcon />
-            </Pressable>
-          </View>
-        ))}
-        <View style={styles.category}>
-          <Text style={styles.categoryText}>오프</Text>
-        </View>
-        {offShiftTypes.map((shiftType) => (
-          <View style={styles.shift} key={shiftType.accountShiftTypeId}>
-            <View style={[styles.shiftBox, { backgroundColor: shiftType.color }]}>
-              <Text style={styles.shoftName}>{shiftType.shortName}</Text>
-              <Text style={styles.name}>{shiftType.name}</Text>
+              <Pressable onPress={() => onPressEditIcon(shiftType)}>
+                <PencilIcon />
+              </Pressable>
             </View>
-            <Text style={styles.time}>-</Text>
-            <Pressable onPress={() => onPressEditIcon(shiftType)}>
-              <PencilIcon />
-            </Pressable>
-          </View>
-        ))}
+          ))}
+        </ScrollView>
       </SafeAreaView>
     </PageViewContainer>
   );
 };
 
 const styles = StyleSheet.create({
+  scroll:{
+    height:'80%'
+  },
   category: {
     marginTop: 42,
     paddingHorizontal: 24,

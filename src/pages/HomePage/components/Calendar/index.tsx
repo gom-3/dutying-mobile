@@ -6,6 +6,7 @@ import { Schedule } from '@hooks/useDeviceCalendar';
 import { days, isSameDate } from '@libs/utils/date';
 import { hexToRgba } from '@libs/utils/color';
 import { PanGestureHandler } from 'react-native-gesture-handler';
+import GrayDotsIcon from '@assets/svgs/dots-gray.svg';
 
 export type DateType = {
   date: Date;
@@ -16,6 +17,15 @@ export type DateType = {
 interface Props {
   withoutSchedule?: boolean;
 }
+
+const ElseSchedule = ({ lefts, level }: { lefts: number; level: number }) => {
+  return (
+    <View style={[styles.elseView, { top: 27 + (level - 1) * 16 }]}>
+      <Text style={styles.elseText}>외 {lefts}개</Text>
+      <GrayDotsIcon />
+    </View>
+  );
+};
 
 const Calendar = ({ withoutSchedule }: Props) => {
   const {
@@ -60,6 +70,12 @@ const Calendar = ({ withoutSchedule }: Props) => {
                     day.schedules.map((schedule, j) => {
                       if (weeks.length === 6 && schedule.level > 4) return;
                       if (weeks.length < 6 && schedule.level > 5) return;
+                      if (weeks.length === 6 && schedule.level === 4) {
+                        return <ElseSchedule level={4} lefts={day.schedules.length - 3} />;
+                      }
+                      if (weeks.length < 6 && schedule.level === 5) {
+                        return <ElseSchedule level={5} lefts={day.schedules.length - 4} />;
+                      }
                       return (
                         <View
                           key={schedule.title}
@@ -140,8 +156,25 @@ const styles = StyleSheet.create({
   },
   day: {
     flex: 1,
-    // backgroundColor: 'white',
     position: 'relative',
+  },
+  elseView: {
+    position: 'absolute',
+    height: 14,
+    flexDirection: 'row',
+    alignItems: 'center',
+    width: '98%',
+    borderTopLeftRadius: 2,
+    borderBottomLeftRadius: 2,
+    borderTopRightRadius: 2,
+    borderBottomRightRadius: 2,
+    backgroundColor: COLOR.sub5,
+  },
+  elseText: {
+    fontFamily: 'Apple',
+    color: COLOR.sub25,
+    fontSize: 10,
+    marginHorizontal: 5,
   },
   scheduleView: {
     position: 'absolute',
