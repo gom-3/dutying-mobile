@@ -2,7 +2,7 @@
   "expo": {
     "name": "dutying-mobile",
     "slug": "dutying-mobile",
-    "version": "1.0.0",
+    "version": "0.1.0",
     "orientation": "portrait",
     "icon": "./src/assets/icon.png",
     "userInterfaceStyle": "light",
@@ -38,7 +38,8 @@
           "overrideKakaoSDKVersion": "2.11.1",
           "kotlinVersion": "1.9.0"
         }
-      ],[
+      ],
+      [
         "airbridge-expo-sdk",
         {
           "appName": "dutying",
