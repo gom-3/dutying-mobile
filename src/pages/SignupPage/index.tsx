@@ -1,5 +1,5 @@
 import PageViewContainer from '@components/PageView';
-import { Pressable, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import BackArrowIcon from '@assets/svgs/back-arrow.svg';
 import { COLOR } from 'index.style';
