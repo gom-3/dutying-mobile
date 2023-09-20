@@ -13,12 +13,14 @@ import SignupPage from './SignupPage';
 import Notification from './NotificationPage';
 import OnboardingPage from './OnboardingPage';
 import DeviceCalendarPage from './DeviceCalendarPage';
+import MoimDetailPage from './Social/Moim/MoimDetailPage';
 
 export type StackParams = {
   Login: undefined;
   Signup: undefined;
   Home: undefined;
   Moim: undefined;
+  MoimDetail: undefined;
   RegistDuty: undefined;
   RegistSchedule: undefined;
   ShiftType: undefined;
@@ -45,6 +47,7 @@ const Router = () => {
           component={MoimPage}
           options={{ animation: 'none', gestureEnabled: false }}
         />
+        <Stack.Screen name="MoimDetail" component={MoimDetailPage} />
         <Stack.Screen name="RegistDuty" component={RegistDuty} />
         <Stack.Screen name="RegistSchedule" component={RegistSchedulePage} />
         <Stack.Screen name="ShiftType" component={ShiftTypePage} />

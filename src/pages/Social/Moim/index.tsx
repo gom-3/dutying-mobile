@@ -16,8 +16,11 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import SortIcon from '@assets/svgs/sort.svg';
 import PlusIcon from '@assets/svgs/plus-circle.svg';
 import { images } from '@assets/images/profiles';
+import { useLinkProps } from '@react-navigation/native';
 
 const MoimPage = () => {
+  const { onPress: navigateDetailMoim } = useLinkProps({ to: { screen: 'MoimDetail' } });
+
   return (
     <PageViewContainer style={{ backgroundColor: '#fdfcfe' }}>
       <BottomSheetModalProvider>
@@ -59,7 +62,7 @@ const MoimPage = () => {
             </View>
           </View>
           <ScrollView style={styles.cardScrollView}>
-            <TouchableOpacity style={styles.shadowWrapper}>
+            <TouchableOpacity style={styles.shadowWrapper} onPress={navigateDetailMoim}>
               <View>
                 <Text style={styles.titleText}>곰세마리 병동 동기</Text>
                 <Text style={styles.ownerText}>모임장 김범진</Text>
@@ -67,6 +70,7 @@ const MoimPage = () => {
               <View style={{ flexDirection: 'row', position: 'relative' }}>
                 {[1, 2, 3].map((_, i) => (
                   <Image
+                    key={i}
                     style={[styles.profile, { right: 0 + (3 - i) * 18 }]}
                     source={images[i * 3]}
                   />
