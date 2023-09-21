@@ -1,5 +1,5 @@
 import PageViewContainer from '@components/PageView';
-import { View, Text, StyleSheet, Platform, BackHandler, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, Platform, BackHandler, TouchableOpacity, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import KakaoLogo from '@assets/svgs/kakao.svg';
 import AppleLogo from '@assets/svgs/apple.svg';
@@ -57,6 +57,7 @@ const LoginPage = () => {
   const onPressKakaoLogin = async () => {
     analytics().logEvent('kakao');
     const token: KakaoOAuthToken = await login();
+    Alert.alert(token.accessToken);
     oAuthLoginMutate({ idToken: token.idToken, provider: 'kakao' });
   };
 

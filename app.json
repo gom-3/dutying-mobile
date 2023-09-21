@@ -2,7 +2,7 @@
   "expo": {
     "name": "dutying-mobile",
     "slug": "dutying-mobile",
-    "version": "1.1.0",
+    "version": "1.1.17",
     "orientation": "portrait",
     "icon": "./src/assets/icon.png",
     "userInterfaceStyle": "light",
@@ -35,7 +35,7 @@
         "@react-native-seoul/kakao-login",
         {
           "kakaoAppKey": "1bcf231af91f55cd3ca892cce7dce246",
-          "overrideKakaoSDKVersion": "2.11.1",
+          "overrideKakaoSDKVersion": "2.11.2",
           "kotlinVersion": "1.9.0"
         }
       ],
@@ -67,6 +67,7 @@
       "bundleIdentifier": "com.gom3.dutying"
     },
     "android": {
+      "enableProguardInReleaseBuilds": true,
       "adaptiveIcon": {
         "foregroundImage": "./src/assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
@@ -78,7 +79,7 @@
       ],
       "package": "com.gom3.dutying",
       "googleServicesFile": "./google-services.json",
-      "versionCode": "2"
+      "versionCode": 11
     },
     "web": {
       "favicon": "./src/assets/favicon.png"
