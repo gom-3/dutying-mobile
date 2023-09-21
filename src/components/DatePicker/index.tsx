@@ -10,7 +10,7 @@ import BottomSheetHeader from '@components/BottomSheetHeader';
 
 interface Props {
   date: Date;
-  onChange: (_: DateTimePickerEvent, selectedDate: Date | undefined) => void;
+  onChange: (_: DateTimePickerEvent, selectedDate: Date | any) => void;
   mode: 'date' | 'time' | 'datetime';
   text?: string;
   style?: StyleProp<ViewStyle>;

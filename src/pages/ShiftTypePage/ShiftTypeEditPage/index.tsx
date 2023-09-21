@@ -14,6 +14,7 @@ import DatePicker from '@components/DatePicker';
 import useShiftTypeEdit from './index.hook';
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import ColorPicker from '@components/ColorPicker';
+import KeyboardAvoidWrapper from '@components/KeyboardAvoidWrapper';
 
 const ShiftTypeEditPage = () => {
   const {
@@ -34,128 +35,130 @@ const ShiftTypeEditPage = () => {
     <PageViewContainer>
       <BottomSheetModalProvider>
         <SafeAreaView>
-          <PageHeader
-            title={isEdit ? '근무 유형 수정' : '근무 유형 등록'}
-            titleMargin={isEdit ? 38 : 0}
-            rightItems={
-              <View style={styles.headerIcons}>
-                {isEdit && (
-                  <Pressable style={styles.trashIcon} onPress={onPressDeleteButton}>
-                    <TrashIcon />
+          <KeyboardAvoidWrapper>
+            <PageHeader
+              title={isEdit ? '근무 유형 수정' : '근무 유형 등록'}
+              titleMargin={isEdit ? 38 : 0}
+              rightItems={
+                <View style={styles.headerIcons}>
+                  {isEdit && (
+                    <Pressable style={styles.trashIcon} onPress={onPressDeleteButton}>
+                      <TrashIcon />
+                    </Pressable>
+                  )}
+                  <Pressable onPress={onPressSaveButton}>
+                    <CheckIcon />
                   </Pressable>
-                )}
-                <Pressable onPress={onPressSaveButton}>
-                  <CheckIcon />
-                </Pressable>
+                </View>
+              }
+            />
+            <View style={styles.itemContainer}>
+              <View style={styles.itemHeader}>
+                <WriteIcon />
+                <Text style={styles.itemHeaderText}>근무명•약자</Text>
               </View>
-            }
-          />
-          <View style={styles.itemContainer}>
-            <View style={styles.itemHeader}>
-              <WriteIcon />
-              <Text style={styles.itemHeaderText}>근무명•약자</Text>
-            </View>
-            <View style={styles.input}>
-              <TextInputBox
-                placeholder="데이"
-                value={shift.name}
-                maxLength={8}
-                onChangeText={(e) => onChangeTextInput('name', e)}
-                style={styles.nameInput}
-              />
-              <TextInputBox
-                placeholder="D"
-                value={shift.shortName}
-                maxLength={2}
-                onChangeText={(e) => onChangeTextInput('shortName', e)}
-                style={styles.shortNameInput}
-              />
-            </View>
-          </View>
-          <View style={styles.itemContainer}>
-            <View style={styles.itemHeader}>
-              <TypeIcon />
-              <Text style={styles.itemHeaderText}>유형</Text>
-            </View>
-            <Text style={styles.shiftTypeHeader}>근무</Text>
-            <View style={styles.shiftTypes}>
-              {workTypeList.map((type) => {
-                const isSelected = shift.classification === type.key;
-                return (
-                  <Pressable key={type.text} onPress={() => onPressShiftType(type.key)}>
-                    <Text
-                      style={[
-                        styles.shiftTypeItem,
-                        {
-                          backgroundColor: isSelected ? COLOR.main4 : 'white',
-                          borderColor: isSelected ? COLOR.main1 : COLOR.sub4,
-                          color: isSelected ? COLOR.main1 : COLOR.sub25,
-                        },
-                      ]}
-                    >
-                      {type.text}
-                    </Text>
-                  </Pressable>
-                );
-              })}
-            </View>
-            <Text style={styles.shiftTypeHeader}>오프</Text>
-            <View style={styles.shiftTypes}>
-              {offTypeList.map((type) => {
-                const isSelected = shift.classification === type.key;
-                return (
-                  <Pressable key={type.text} onPress={() => onPressShiftType(type.key)}>
-                    <Text
-                      style={[
-                        styles.shiftTypeItem,
-                        {
-                          backgroundColor: isSelected ? COLOR.main4 : 'white',
-                          borderColor: isSelected ? COLOR.main1 : COLOR.sub4,
-                          color: isSelected ? COLOR.main1 : COLOR.sub25,
-                        },
-                      ]}
-                    >
-                      {type.text}
-                    </Text>
-                  </Pressable>
-                );
-              })}
-            </View>
-          </View>
-          <View style={styles.itemContainer}>
-            <View style={styles.itemTimeHeader}>
-              <View style={{ flexDirection: 'row' }}>
-                <TimeIcon />
-                <Text style={styles.itemHeaderText}>근무 시간</Text>
-              </View>
-              <Switch
-                trackColor={{ true: COLOR.main1 }}
-                thumbColor="white"
-                value={usingTime}
-                onValueChange={onChangeSwith}
-              />
-            </View>
-            <View style={{ flexDirection: 'row' }}>
-              {shift.startTime && (
-                <DatePicker
-                  style={{ marginRight: 11 }}
-                  mode="time"
-                  date={shift.startTime}
-                  onChange={changeStartTime}
+              <View style={styles.input}>
+                <TextInputBox
+                  placeholder="데이"
+                  value={shift.name}
+                  maxLength={8}
+                  onChangeText={(e) => onChangeTextInput('name', e)}
+                  style={styles.nameInput}
                 />
-              )}
-              {shift.endTime && (
-                <DatePicker mode="time" date={shift.endTime} onChange={changeEndTime} />
-              )}
+                <TextInputBox
+                  placeholder="D"
+                  value={shift.shortName}
+                  maxLength={2}
+                  onChangeText={(e) => onChangeTextInput('shortName', e)}
+                  style={styles.shortNameInput}
+                />
+              </View>
             </View>
-          </View>
-          <View style={styles.itemContainer}>
-            <View style={styles.itemHeader}>
-              <ColorIcon />
-              <Text style={styles.itemHeaderText}>색상</Text>
+            <View style={styles.itemContainer}>
+              <View style={styles.itemHeader}>
+                <TypeIcon />
+                <Text style={styles.itemHeaderText}>유형</Text>
+              </View>
+              <Text style={styles.shiftTypeHeader}>근무</Text>
+              <View style={styles.shiftTypes}>
+                {workTypeList.map((type) => {
+                  const isSelected = shift.classification === type.key;
+                  return (
+                    <Pressable key={type.text} onPress={() => onPressShiftType(type.key)}>
+                      <Text
+                        style={[
+                          styles.shiftTypeItem,
+                          {
+                            backgroundColor: isSelected ? COLOR.main4 : 'white',
+                            borderColor: isSelected ? COLOR.main1 : COLOR.sub4,
+                            color: isSelected ? COLOR.main1 : COLOR.sub25,
+                          },
+                        ]}
+                      >
+                        {type.text}
+                      </Text>
+                    </Pressable>
+                  );
+                })}
+              </View>
+              <Text style={styles.shiftTypeHeader}>오프</Text>
+              <View style={styles.shiftTypes}>
+                {offTypeList.map((type) => {
+                  const isSelected = shift.classification === type.key;
+                  return (
+                    <Pressable key={type.text} onPress={() => onPressShiftType(type.key)}>
+                      <Text
+                        style={[
+                          styles.shiftTypeItem,
+                          {
+                            backgroundColor: isSelected ? COLOR.main4 : 'white',
+                            borderColor: isSelected ? COLOR.main1 : COLOR.sub4,
+                            color: isSelected ? COLOR.main1 : COLOR.sub25,
+                          },
+                        ]}
+                      >
+                        {type.text}
+                      </Text>
+                    </Pressable>
+                  );
+                })}
+              </View>
             </View>
-            <ColorPicker color={shift.color} onChange={onChangeColor} />
-          </View>
+            <View style={styles.itemContainer}>
+              <View style={styles.itemTimeHeader}>
+                <View style={{ flexDirection: 'row' }}>
+                  <TimeIcon />
+                  <Text style={styles.itemHeaderText}>근무 시간</Text>
+                </View>
+                <Switch
+                  trackColor={{ true: COLOR.main1 }}
+                  thumbColor="white"
+                  value={usingTime}
+                  onValueChange={onChangeSwith}
+                />
+              </View>
+              <View style={{ flexDirection: 'row' }}>
+                {shift.startTime && (
+                  <DatePicker
+                    style={{ marginRight: 11 }}
+                    mode="time"
+                    date={shift.startTime}
+                    onChange={changeStartTime}
+                  />
+                )}
+                {shift.endTime && (
+                  <DatePicker mode="time" date={shift.endTime} onChange={changeEndTime} />
+                )}
+              </View>
+            </View>
+            <View style={styles.itemContainer}>
+              <View style={styles.itemHeader}>
+                <ColorIcon />
+                <Text style={styles.itemHeaderText}>색상</Text>
+              </View>
+              <ColorPicker color={shift.color} onChange={onChangeColor} />
+            </View>
+          </KeyboardAvoidWrapper>
         </SafeAreaView>
       </BottomSheetModalProvider>
     </PageViewContainer>

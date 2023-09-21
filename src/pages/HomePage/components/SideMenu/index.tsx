@@ -9,7 +9,7 @@ import useSideMenu from './index.hook';
 const SideMenu = () => {
   const {
     state: { account, menuItemList },
-    actions: { closeSideMenu, logout },
+    actions: { closeSideMenu, logout, signout },
   } = useSideMenu();
 
   return (
@@ -45,6 +45,10 @@ const SideMenu = () => {
         <TouchableOpacity style={styles.logoutView} onPress={logout}>
           <Text style={styles.logoutText}>로그아웃</Text>
         </TouchableOpacity>
+        <TouchableOpacity style={[styles.logoutView,{left:100}]} onPress={signout}>
+          <Text style={styles.logoutText}>회원탈퇴</Text>
+        </TouchableOpacity>
+
       </Animated.View>
     </>
   );

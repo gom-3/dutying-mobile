@@ -1,6 +1,6 @@
 import Shift from '@components/Shift';
 import useRegistDuty from './index.hook';
-import { COLOR } from 'index.style';
+import { COLOR, screenWidth } from 'index.style';
 import { View, Text, Pressable, StyleSheet } from 'react-native';
 import PageViewContainer from '@components/PageView';
 import PageHeader from '@components/PageHeader';
@@ -161,7 +161,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   deleteShiftText: { fontSize: 12, fontFamily: 'Apple', color: COLOR.main2 },
-  registShiftItemsView: { flexDirection: 'row', marginTop: 26, justifyContent: 'space-between' },
+  registShiftItemsView: {
+    flexDirection: 'row',
+    marginTop: 26,
+    flexWrap: 'wrap',
+    flex:1,
+    justifyContent:'space-evenly'
+  },
   shiftItemView: { alignItems: 'center', justifyContent: 'center' },
   shiftCountText: { fontFamily: 'Poppins', color: COLOR.sub25, fontSize: 12 },
   shiftView: {

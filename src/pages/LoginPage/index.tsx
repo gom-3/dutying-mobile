@@ -57,7 +57,6 @@ const LoginPage = () => {
   const onPressKakaoLogin = async () => {
     analytics().logEvent('kakao');
     const token: KakaoOAuthToken = await login();
-    Alert.alert(token.accessToken);
     oAuthLoginMutate({ idToken: token.idToken, provider: 'kakao' });
   };
 
