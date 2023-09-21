@@ -4,30 +4,35 @@ import { shallow } from 'zustand/shallow';
 import { createWithEqualityFn } from 'zustand/traditional';
 
 interface State {
-  userId: number;
-  isLoggedIn: boolean;
-  token: string;
-  name: string;
-  profile: string;
+  account: Account;
 }
+
+const initialAccount: Account = {
+  accountId: 0,
+  nurseId: 0,
+  wardId: 0,
+  shiftTeamId: 0,
+  email: '',
+  name: '',
+  isManager: false,
+  profileImgBase64: '',
+};
 
 interface Store extends State {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   setState: (key: keyof State, value: any) => void;
+  logout: () => void;
 }
 
 export const useAccountStore = createWithEqualityFn<Store>()(
   devtools(
     persist(
       (set, _) => ({
-        userId: 1,
-        isLoggedIn: false,
-        token: '',
-        name: '',
-        profile: '',
+        account: initialAccount,
         setState: (state, value) => set((prev) => ({ ...prev, [state]: value })),
+        logout: () => set(() => ({ account: initialAccount })),
       }),
-      { name: 'useShiftTypeStore', storage: createJSONStorage(() => AsyncStorage) },
+      { name: 'useAccountStore', storage: createJSONStorage(() => AsyncStorage) },
     ),
   ),
   shallow,

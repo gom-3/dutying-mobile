@@ -1,42 +1,6 @@
 import { DateType } from '@pages/HomePage/components/Calendar';
 
 export const shiftList: Shift[] = [
-  // {
-  //   name: '데이',
-  //   shortName: 'D',
-  //   color: '#4DC2AD',
-  //   startTime: new Date('2023-12-31T09:00:00'),
-  //   endTime: new Date('2023-12-31T18:00:00'),
-  //   type: 'work',
-  //   typeDetail: 'day',
-  // },
-  // {
-  //   name: '이브닝',
-  //   shortName: 'E',
-  //   color: '#FF8BA5',
-  //   startTime: new Date('2023-12-31T09:00:00'),
-  //   endTime: new Date('2023-12-31T09:00:00'),
-  //   type: 'work',
-  //   typeDetail: 'evening',
-  // },
-  // {
-  //   name: '나이트',
-  //   shortName: 'N',
-  //   color: '#3580FF',
-  //   startTime: new Date('2023-12-31T09:00:00'),
-  //   endTime: new Date('2023-12-31T09:00:00'),
-  //   type: 'work',
-  //   typeDetail: 'night',
-  // },
-  // {
-  //   name: '오프',
-  //   shortName: 'O',
-  //   color: '#465B7A',
-  //   startTime: undefined,
-  //   endTime: undefined,
-  //   type: 'off',
-  //   typeDetail: 'off',
-  // },
 ];
 
 export const mockCalendarData = [

@@ -12,6 +12,7 @@ import {
 import { useRef, useState } from 'react';
 import { useCaledarDateStore } from 'store/calendar';
 import { useDeviceCalendarStore } from 'store/device';
+import analytics from '@react-native-firebase/analytics';
 
 const useDeviceCalendarPage = () => {
   const [calendars, dutyingCalendars, calendarLink, setLink, setState] = useDeviceCalendarStore(
@@ -36,6 +37,7 @@ const useDeviceCalendarPage = () => {
   const normalCalendars = calendars.filter((calendar) => !calendar.title?.startsWith('듀팅'));
 
   const pressLinkHandler = (id: string) => {
+    analytics().logEvent('link_calendar');
     setLink(id, !calendarLink[id]);
     setScheduleState('isScheduleUpdated', true);
   };
@@ -45,6 +47,7 @@ const useDeviceCalendarPage = () => {
   };
 
   const openModalCreateMode = () => {
+    analytics().logEvent('add_calendar');
     ref.current?.present();
     setName('');
     setColor('');
@@ -52,6 +55,7 @@ const useDeviceCalendarPage = () => {
   };
 
   const openModalEditMode = (calendar: Calendar) => {
+    analytics().logEvent('edit_calendar');
     ref.current?.present();
     setName(calendar.title.slice(3));
     setColor(calendar.color);
@@ -86,6 +90,7 @@ const useDeviceCalendarPage = () => {
   };
 
   const deleteCalendar = async () => {
+    analytics().logEvent('delete_calendar');
     await deleteCalendarAsync(id);
     setState('isChanged', true);
     ref.current?.close();

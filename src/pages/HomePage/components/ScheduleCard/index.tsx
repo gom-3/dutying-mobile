@@ -1,4 +1,4 @@
-import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import { COLOR, screenWidth } from 'index.style';
 import { GestureDetector } from 'react-native-gesture-handler';
@@ -58,12 +58,12 @@ const ScheduleCard = () => {
                   </Text>
                 </View>
               ) : (
-                <Pressable onPress={editShiftPressHandler}>
+                <TouchableOpacity onPress={editShiftPressHandler}>
                   <View style={styles.shiftWrapperView}>
                     <AddShiftIcon />
                     <Text style={styles.registShiftText}>근무를 등록해주세요.</Text>
                   </View>
-                </Pressable>
+                </TouchableOpacity>
               )}
               {selectedDateData?.shift && (
                 <Pressable onPress={editShiftPressHandler}>
@@ -73,7 +73,7 @@ const ScheduleCard = () => {
             </View>
             <ScrollView style={{ padding: 24 }}>
               {selectedDateData?.schedules.map((schedule) => (
-                <Pressable key={schedule.id} onPress={() => editSchedulePressHandler(schedule)}>
+                <TouchableOpacity key={schedule.id} onPress={() => editSchedulePressHandler(schedule)}>
                   <View key={schedule.title} style={styles.scheduleView}>
                     <View
                       style={[
@@ -98,7 +98,7 @@ const ScheduleCard = () => {
                       </Text>
                     </View>
                   </View>
-                </Pressable>
+                </TouchableOpacity>
               ))}
             </ScrollView>
             <Pressable style={styles.addButtonIcon} onPress={addSchedulePressHandler}>

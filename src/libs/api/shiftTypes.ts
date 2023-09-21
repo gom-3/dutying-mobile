@@ -10,8 +10,8 @@ type ShiftTypesResponseDTO = {
 };
 
 export type ShiftTypeRequestDTO = Omit<Shift, 'accountShiftTypeId' | 'startTime' | 'endTime'> & {
-  startTime: string;
-  endTime: string;
+  startTime: string | null;
+  endTime: string | null;
 };
 
 export const getShiftTypes = async (userId: number) => {

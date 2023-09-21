@@ -10,12 +10,12 @@ interface Props {
 }
 
 const PageViewContainer = ({ children, withoutLogin }: Props) => {
-  const [isLoggedIn] = useAccountStore((state) => [state.isLoggedIn]);
+  const [account] = useAccountStore((state) => [state.account]);
   const { onPress: redirectToLoginPage } = useLinkProps({ to: { screen: 'Login' } });
 
   useEffect(() => {
-    if (!isLoggedIn && !withoutLogin) setTimeout(() => redirectToLoginPage(), 100);
-  }, [isLoggedIn]);
+    if (account.accountId === 0 && !withoutLogin) setTimeout(() => redirectToLoginPage(), 100);
+  }, [account.accountId]);
 
   return <View style={styles.container}>{children}</View>;
 };

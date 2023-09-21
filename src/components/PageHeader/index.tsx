@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import { COLOR } from 'index.style';
-import { Pressable, View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import PrevIcon from '@assets/svgs/back-arrow.svg';
 
 interface Props {
@@ -14,9 +14,9 @@ const PageHeader = ({ title, rightItems, titleMargin }: Props) => {
 
   return (
     <View style={styles.header}>
-      <Pressable onPress={() => navigation.goBack()}>
+      <TouchableOpacity onPress={() => navigation.goBack()}>
         <PrevIcon />
-      </Pressable>
+      </TouchableOpacity>
       <Text style={[styles.headerTitle, { marginLeft: titleMargin ? titleMargin : 0 }]}>
         {title}
       </Text>

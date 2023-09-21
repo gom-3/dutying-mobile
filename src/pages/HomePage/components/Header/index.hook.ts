@@ -2,6 +2,7 @@ import { useShiftTypeStore } from 'store/shift';
 import { useEffect, useState } from 'react';
 import { useCaledarDateStore } from 'store/calendar';
 import { useLinkProps } from '@react-navigation/native';
+import analytics from '@react-native-firebase/analytics';
 
 const useCalendarHeader = () => {
   const [calendar, setState] = useCaledarDateStore((state) => [state.calendar, state.setState]);
@@ -10,7 +11,13 @@ const useCalendarHeader = () => {
   const { onPress } = useLinkProps({ to: { screen: 'Notification' } });
 
   const navigateToNotification = () => {
+    analytics().logEvent('move_notification');
     onPress();
+  };
+
+  const openSideMenu = () => {
+    analytics().logEvent('open_sidemenu');
+    setState('isSideMenuOpen', true);
   };
 
   useEffect(() => {
@@ -28,7 +35,7 @@ const useCalendarHeader = () => {
 
   return {
     states: { shiftTypes, shiftTypesCount },
-    actions: { setState, navigateToNotification },
+    actions: { navigateToNotification, openSideMenu },
   };
 };
 

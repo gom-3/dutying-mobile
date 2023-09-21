@@ -1,42 +1,51 @@
 import PageViewContainer from '@components/PageView';
-import { View, Text, StyleSheet, Pressable, Platform, BackHandler } from 'react-native';
+import { View, Text, StyleSheet, Platform, BackHandler, TouchableOpacity, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import KakaoLogo from '@assets/svgs/kakao.svg';
 import AppleLogo from '@assets/svgs/apple.svg';
 import { useLinkProps } from '@react-navigation/native';
 import { useAccountStore } from 'store/account';
 import * as AppleAuthentication from 'expo-apple-authentication';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { screenHeight, screenWidth } from 'index.style';
-import {
-  KakaoOAuthToken,
-  getProfile,
-  login,
-  logout,
-  unlink,
-} from '@react-native-seoul/kakao-login';
-import { useMutation } from '@tanstack/react-query';
-import { oAuthLogin } from '@libs/api/account';
+import { KakaoOAuthToken, login } from '@react-native-seoul/kakao-login';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { getAccount, oAuthLogin } from '@libs/api/account';
+import { useSignupStore } from '@pages/SignupPage/store';
+import analytics from '@react-native-firebase/analytics';
 
 const LoginPage = () => {
   const { onPress: navigateHome } = useLinkProps({ to: { screen: 'Home' } });
   const { onPress: navigateSignup } = useLinkProps({ to: { screen: 'Signup' } });
+  const { onPress: navigateTerm } = useLinkProps({ to: { screen: 'Term' } });
   const [setState] = useAccountStore((state) => [state.setState]);
+  const [setSignupState] = useSignupStore((state) => [state.setState]);
+  const [accountId, setAccountId] = useState(0);
+
+  const { data: accountData } = useQuery(['getAccount', accountId], () => getAccount(accountId), {
+    enabled: accountId > 0,
+  });
 
   const { mutate: oAuthLoginMutate } = useMutation(
     ({ idToken, provider }: { idToken: string; provider: string }) => oAuthLogin(idToken, provider),
     {
       onSuccess: (data) => {
-        console.log(data);
-        if (data.isNewAccount) {
+        if (data.isNewAccount || data.name === null) {
+          setSignupState('id', data.accountId);
           navigateSignup();
         } else {
-          setState('isLoggedIn', true);
-          navigateHome();
+          setAccountId(data.accountId);
         }
       },
     },
   );
+
+  useEffect(() => {
+    if (accountData) {
+      setState('account', accountData);
+      navigateHome();
+    }
+  }, [accountData]);
 
   useEffect(() => {
     const backAction = () => true;
@@ -46,38 +55,17 @@ const LoginPage = () => {
   }, []);
 
   const onPressKakaoLogin = async () => {
-    // setState('isLoggedIn', true);
-    // onPress();
-    // setLoginUrl(
-    //   'https://api.dutying.net/oauth2/authorization/kakao?redirectUrl=http://localhost:3000/',
-    // );
-    // await logout();
-    // await unlink();
+    analytics().logEvent('kakao');
     const token: KakaoOAuthToken = await login();
-    const profile = await getProfile(JSON.stringify(token));
-    // await logout();
-    console.log(token);
-    console.log(profile);
+    Alert.alert(token.accessToken);
     oAuthLoginMutate({ idToken: token.idToken, provider: 'kakao' });
   };
 
   const onPressAppleLogin = async () => {
-    const isAvail = await AppleAuthentication.isAvailableAsync();
-    console.log(isAvail);
+    analytics().logEvent('apple');
     const token = await AppleAuthentication.signInAsync();
-    console.log(token);
-    // setState('isLoggedIn', true);
-    // onPress();
+    oAuthLoginMutate({ idToken: token.identityToken || '', provider: 'apple' });
   };
-
-  // const onPressAppleLogin = async () => {
-  //   const credential = await AppleAuthentication.signInAsync({
-  //     requestedScopes: [
-  //       AppleAuthentication.AppleAuthenticationScope.FULL_NAME,
-  //       AppleAuthentication.AppleAuthenticationScope.EMAIL,
-  //     ],
-  //   });
-  // };
 
   return (
     <PageViewContainer>
@@ -98,23 +86,23 @@ const LoginPage = () => {
             <Text style={styles.guideText}>이용 가능합니다.</Text>
           </View>
           <View style={styles.socialLoginButtonView}>
-            <Pressable onPress={onPressKakaoLogin}>
+            <TouchableOpacity onPress={onPressKakaoLogin}>
               <View style={styles.kakaoLoginButton}>
                 <KakaoLogo />
                 <Text style={styles.kakaoLoginText}>카카오톡으로 시작하기</Text>
               </View>
-            </Pressable>
+            </TouchableOpacity>
             {Platform.OS === 'ios' && (
-              <Pressable onPress={onPressAppleLogin}>
+              <TouchableOpacity onPress={onPressAppleLogin}>
                 <View style={styles.appleLoginButton}>
                   <AppleLogo />
                   <Text style={styles.appleLoginText}>Apple Id로 시작하기</Text>
                 </View>
-              </Pressable>
+              </TouchableOpacity>
             )}
           </View>
           <View style={styles.termTextView}>
-            <Text style={styles.termText}>
+            <Text style={styles.termText} onPress={() => navigateTerm()}>
               버튼을 누르면 <Text style={styles.termTextHighlight}>서비스약관</Text>,{' '}
               <Text style={styles.termTextHighlight}>개인정보 취급방침</Text>
             </Text>
@@ -131,8 +119,8 @@ const LoginPage = () => {
 const styles = StyleSheet.create({
   webview: {
     width: screenWidth,
-    height: screenHeight * 0.8,
-    marginTop: 20,
+    height: screenHeight,
+    marginTop: 40,
   },
   guidTextWrapper: {
     flex: 1,

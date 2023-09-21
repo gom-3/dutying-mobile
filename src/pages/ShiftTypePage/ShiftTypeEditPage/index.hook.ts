@@ -10,6 +10,7 @@ import {
 } from '@libs/api/shiftTypes';
 import { useAccountStore } from 'store/account';
 import { useNavigation } from '@react-navigation/native';
+import analytics from '@react-native-firebase/analytics';
 
 interface TypeList {
   text: string;
@@ -29,7 +30,7 @@ const offTypeList: TypeList[] = [
 ];
 
 const useShiftTypeEdit = () => {
-  const [userId] = useAccountStore((state) => [state.userId]);
+  const [userId] = useAccountStore((state) => [state.account.accountId]);
   const [shift, isEdit, accountShiftTypeId, setState] = useEditShiftTypeStore((state) => [
     state.currentShift,
     state.isEdit,
@@ -65,15 +66,16 @@ const useShiftTypeEdit = () => {
     },
   );
 
-  const changeStartTime = (_: DateTimePickerEvent, selectedDate: Date | undefined) => {
+  const changeStartTime = (_: DateTimePickerEvent, selectedDate: Date | null) => {
     const newShift: ShiftWithoutID = { ...shift, startTime: selectedDate };
     setState('currentShift', newShift);
   };
-  const changeEndTime = (_: DateTimePickerEvent, selectedDate: Date | undefined) => {
+  const changeEndTime = (_: DateTimePickerEvent, selectedDate: Date | null) => {
     const newShift: ShiftWithoutID = { ...shift, endTime: selectedDate };
     setState('currentShift', newShift);
   };
   const onChangeSwith = (value: boolean) => {
+    analytics().logEvent('change_shift_time');
     if (value) {
       const newShift: ShiftWithoutID = shift.startTime
         ? shift
@@ -85,12 +87,13 @@ const useShiftTypeEdit = () => {
       setState('currentShift', newShift);
       setUsingTime(true);
     } else {
-      const newShift: ShiftWithoutID = { ...shift, startTime: undefined, endTime: undefined };
+      const newShift: ShiftWithoutID = { ...shift, startTime: null, endTime: null };
       setState('currentShift', newShift);
       setUsingTime(false);
     }
   };
   const onChangeColor = (color: string) => {
+    analytics().logEvent('change_shift_color');
     const newShift: ShiftWithoutID = { ...shift, color: color };
     setState('currentShift', newShift);
   };
@@ -99,31 +102,40 @@ const useShiftTypeEdit = () => {
     setState('currentShift', newShift);
   };
   const onPressShiftType = (type: Shift['classification']) => {
+    analytics().logEvent('change_shift_classification');
     const newShift: ShiftWithoutID = { ...shift, classification: type };
     if (type === 'OTHER_WORK' || type === 'LEAVE') {
-      newShift.startTime = undefined;
-      newShift.endTime = undefined;
+      newShift.startTime = null;
+      newShift.endTime = null;
       setUsingTime(false);
     }
     setState('currentShift', newShift);
   };
   const onPressDeleteButton = () => {
+    analytics().logEvent('delete_shfit_type');
     deleteShiftTypeMutate(accountShiftTypeId);
   };
   const onPressSaveButton = () => {
     if (shift.name.length > 0 && shift.shortName.length > 0) {
-      const startTime = `${shift.startTime
-        ?.getHours()
-        .toString()
-        .padStart(2, '0')}:${shift.startTime?.getMinutes().toString().padStart(2, '0')}`;
-      const endTime = `${shift.endTime?.getHours().toString().padStart(2, '0')}:${shift.endTime
-        ?.getMinutes()
-        .toString()
-        .padStart(2, '0')}`;
+      const startTime = shift.startTime
+        ? `${shift.startTime.getHours().toString().padStart(2, '0')}:${shift.startTime
+            ?.getMinutes()
+            .toString()
+            .padStart(2, '0')}`
+        : null;
+      const endTime = shift.endTime
+        ? `${shift.endTime?.getHours().toString().padStart(2, '0')}:${shift.endTime
+            .getMinutes()
+            .toString()
+            .padStart(2, '0')}`
+        : null;
       const reqDTO: ShiftTypeRequestDTO = { ...shift, startTime, endTime };
+      console.log(reqDTO);
       if (!isEdit) {
+        analytics().logEvent('add_shfit_type');
         addShiftTypeMutate(reqDTO);
       } else {
+        analytics().logEvent('edit_shift_type');
         editShiftTypeMutate({ shiftId: accountShiftTypeId, shift: reqDTO });
       }
     }

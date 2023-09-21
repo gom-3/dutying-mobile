@@ -5,7 +5,7 @@ import useTimeHook from './index.hook';
 import OutsidePressHandler from 'react-native-outside-press';
 import DatePicker from '@components/DatePicker';
 
-const Date = () => {
+const Time = () => {
   const {
     states: { using, isOpen, mode, startDate, endDate, value },
     actions: { setUsing, setIsOpen, datePressHander, onChangeStartTime, onChangeEndTime },
@@ -17,37 +17,44 @@ const Date = () => {
         <View style={styles.item}>
           <View style={styles.itemTitleWrapper}>
             <ClockIcon />
-            <Text style={styles.itemTitle}>날짜 설정</Text>
+            <Text style={styles.itemTitle}>시간 설정</Text>
           </View>
+          <Switch
+            trackColor={{ true: COLOR.main1 }}
+            thumbColor="white"
+            value={using}
+            onValueChange={(value) => setUsing(value)}
+          />
         </View>
-
-        <View style={styles.usingView}>
-          <View style={styles.itemTitleWrapper}>
-            <DatePicker mode="date" date={startDate} text="시작일" onChange={onChangeStartTime} />
-            <DatePicker
-              style={{ marginLeft: 16 }}
-              mode="date"
-              date={endDate}
-              text="종료일"
-              onChange={onChangeEndTime}
-            />
+        {using && (
+          <View style={styles.usingView}>
+            <View style={styles.itemTitleWrapper}>
+              <DatePicker mode="date" date={startDate} text="시작일" onChange={onChangeStartTime} />
+              <DatePicker
+                style={{ marginLeft: 16 }}
+                mode="date"
+                date={endDate}
+                text="종료일"
+                onChange={onChangeEndTime}
+              />
+            </View>
+            <View style={[styles.itemTitleWrapper, { marginTop: 18 }]}>
+              <DatePicker
+                mode="datetime"
+                date={startDate}
+                text="시작 시간"
+                onChange={onChangeStartTime}
+              />
+              <DatePicker
+                mode="datetime"
+                date={endDate}
+                text="종료 시간"
+                onChange={onChangeEndTime}
+                style={{ marginLeft: 30 }}
+              />
+            </View>
           </View>
-          <View style={[styles.itemTitleWrapper, { marginTop: 18 }]}>
-            <DatePicker
-              mode="datetime"
-              date={startDate}
-              text="시작 시간"
-              onChange={onChangeStartTime}
-            />
-            <DatePicker
-              mode="datetime"
-              date={endDate}
-              text="종료 시간"
-              onChange={onChangeEndTime}
-              style={{ marginLeft: 30 }}
-            />
-          </View>
-        </View>
+        )}
       </OutsidePressHandler>
     </>
   );
@@ -77,4 +84,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Date;
+export default Time;

@@ -2,7 +2,7 @@
   "expo": {
     "name": "dutying-mobile",
     "slug": "dutying-mobile",
-    "version": "1.0.0",
+    "version": "1.1.17",
     "orientation": "portrait",
     "icon": "./src/assets/icon.png",
     "userInterfaceStyle": "light",
@@ -35,8 +35,15 @@
         "@react-native-seoul/kakao-login",
         {
           "kakaoAppKey": "1bcf231af91f55cd3ca892cce7dce246",
-          "overrideKakaoSDKVersion": "2.11.1",
+          "overrideKakaoSDKVersion": "2.11.2",
           "kotlinVersion": "1.9.0"
+        }
+      ],
+      [
+        "airbridge-expo-sdk",
+        {
+          "appName": "dutying",
+          "appToken": "cfde524ff73c47a8a5c863327579af6f"
         }
       ]
     ],
@@ -60,6 +67,7 @@
       "bundleIdentifier": "com.gom3.dutying"
     },
     "android": {
+      "enableProguardInReleaseBuilds": true,
       "adaptiveIcon": {
         "foregroundImage": "./src/assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
@@ -70,7 +78,8 @@
         "android.permission.RECORD_AUDIO"
       ],
       "package": "com.gom3.dutying",
-      "googleServicesFile": "./google-services.json"
+      "googleServicesFile": "./google-services.json",
+      "versionCode": 11
     },
     "web": {
       "favicon": "./src/assets/favicon.png"

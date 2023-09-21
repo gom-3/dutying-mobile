@@ -8,9 +8,16 @@ import CameraIcon from '@assets/svgs/camera.svg';
 
 const Profile = () => {
   const {
-    states: { image, photo, isPhoto, randomPressed, photoPressed },
-    actions: { setRandomImage, setPhotoImage, setRandomPressed, setPhotoPressed },
+    states: { image, photo, randomPressed, photoPressed },
+    actions: {
+      setRandomImage,
+      setPhotoImage,
+      setRandomPressed,
+      setPhotoPressed,
+      pressSignupButton,
+    },
   } = useProfile();
+
   return (
     <View>
       <View style={styles.guidTextWrapper}>
@@ -26,7 +33,7 @@ const Profile = () => {
         <Text style={[styles.guideText, { marginTop: 10 }]}>선택해주세요</Text>
       </View>
       <View style={styles.imageContainer}>
-        {isPhoto ? (
+        {photo ? (
           <Image source={{ uri: photo }} style={styles.image} />
         ) : (
           <Image source={image} style={styles.image} />
@@ -78,7 +85,7 @@ const Profile = () => {
           </View>
         </Pressable>
       </View>
-      <NextButton text="다음" Icon={NextArrowIcon} onPress={() => {}} />
+      <NextButton text="다음" Icon={NextArrowIcon} onPress={pressSignupButton} />
     </View>
   );
 };

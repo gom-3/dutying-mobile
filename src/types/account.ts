@@ -7,4 +7,5 @@ type Account = {
   name: string;
   isManager: boolean;
   profileImgBase64: string;
+  status: 'ACTIVE' | 'INITIAL';
 };

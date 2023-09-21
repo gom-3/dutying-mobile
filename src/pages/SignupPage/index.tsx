@@ -1,5 +1,5 @@
 import PageViewContainer from '@components/PageView';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import BackArrowIcon from '@assets/svgs/back-arrow.svg';
 import { COLOR } from 'index.style';
@@ -16,12 +16,13 @@ const SignupPage = () => {
   return (
     <PageViewContainer withoutLogin>
       <SafeAreaView style={styles.container}>
-        <Pressable onPress={onPressBack}>
+        <TouchableOpacity onPress={onPressBack}>
           <BackArrowIcon />
-        </Pressable>
+        </TouchableOpacity>
         <View style={styles.steps}>
           {[1, 2].map((item) => (
             <View
+              key={item}
               style={[styles.step, { backgroundColor: step === item ? COLOR.main1 : COLOR.sub4 }]}
             >
               <Text style={styles.stepText}>{item}</Text>

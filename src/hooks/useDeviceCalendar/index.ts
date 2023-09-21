@@ -25,19 +25,16 @@ export type Schedule = Event & {
 };
 
 const useDeviceCalendar = () => {
-  const [date, calendar, isScheduleUpdated, setState] = useCaledarDateStore(
-    (state) => [
-      state.date,
-      state.calendar,
-      state.isScheduleUpdated,
-      state.setState,
-    ],
-  );
-  const [deviceCalendar, calendarLinks, dutyingCalendars, isCalendarChanged, setDeivceCalendar] =
+  const [date, calendar, isScheduleUpdated, setState] = useCaledarDateStore((state) => [
+    state.date,
+    state.calendar,
+    state.isScheduleUpdated,
+    state.setState,
+  ]);
+  const [deviceCalendar, calendarLinks, isCalendarChanged, setDeivceCalendar] =
     useDeviceCalendarStore((state) => [
       state.calendars,
       state.calendarLink,
-      state.dutyingCalendars,
       state.isChanged,
       state.setState,
     ]);
@@ -62,7 +59,7 @@ const useDeviceCalendar = () => {
       const eventEndDate = new Date(event.endDate);
       const startIndex = first.getDay() + eventStartDate.getDate() - 1;
       const color =
-        dutyingCalendars.find((calendar) => calendar.id === event.calendarId)?.color || '#5AF8F8';
+        deviceCalendar.find((calendar) => calendar.id === event.calendarId)?.color || '#5AF8F8';
       let level;
       let endIndex = first.getDay() + eventEndDate.getDate() - 1;
       if (endIndex > newCalendar.length - 1) endIndex = newCalendar.length - 1;
@@ -106,7 +103,6 @@ const useDeviceCalendar = () => {
 
     if (status === 'granted') {
       let calendars = await getCalendarsAsync(EntityTypes.EVENT);
-
 
       /**
        * 디바이스에서 캘린더들을 가져와 기존 zustand에 calendarLinks에 등록되지 않은 캘린더면 새로 등록하고 true 값을 넣는다.
