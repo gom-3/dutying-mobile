@@ -1,11 +1,12 @@
 import { useLinkProps } from '@react-navigation/native';
 import { screenHeight, screenWidth } from 'index.style';
 import { ReactNode, useEffect } from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, StyleProp, ViewStyle } from 'react-native';
 import { useAccountStore } from 'store/account';
 
 interface Props {
   children: ReactNode;
+  style?: StyleProp<ViewStyle>;
   withoutLogin?: boolean;
 }
 
@@ -17,7 +18,7 @@ const PageViewContainer = ({ children, withoutLogin }: Props) => {
     if (account.accountId === 0 && !withoutLogin) setTimeout(() => redirectToLoginPage(), 100);
   }, [account.accountId]);
 
-  return <View style={styles.container}>{children}</View>;
+  return <View style={[styles.container, style]}>{children}</View>;
 };
 
 const styles = StyleSheet.create({
