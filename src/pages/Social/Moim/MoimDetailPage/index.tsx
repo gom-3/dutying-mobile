@@ -6,96 +6,101 @@ import DotsIcon from '@assets/svgs/dots.svg';
 import { images } from '@assets/images/profiles';
 import { COLOR } from 'index.style';
 import { useState } from 'react';
+import Summary from './components/Summary';
+import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 
 const MoimDetailPage = () => {
   const [tab, setTab] = useState<'summary' | 'monthly' | 'weekly'>('summary');
   return (
     <PageViewContainer>
-      <SafeAreaView>
-        <PageHeader
-          title=""
-          rightItems={
-            <TouchableOpacity>
-              <DotsIcon />
-            </TouchableOpacity>
-          }
-        />
-        <View style={styles.moimWrapper}>
-          <Text style={styles.moimName}>곰세마리 병동 동기</Text>
-          <View style={styles.profileImages}>
-            {[1, 2, 3].map((_, i) => (
-              <Image
-                key={i}
-                style={[styles.profileImage, { right: 0 + (3 - i) * 18 }]}
-                source={images[i * 3]}
-              />
-            ))}
+      <BottomSheetModalProvider>
+        <SafeAreaView>
+          <PageHeader
+            title=""
+            rightItems={
+              <TouchableOpacity>
+                <DotsIcon />
+              </TouchableOpacity>
+            }
+          />
+          <View style={styles.moimWrapper}>
+            <Text style={styles.moimName}>곰세마리 병동 동기</Text>
+            <View style={styles.profileImages}>
+              {[1, 2, 3].map((_, i) => (
+                <Image
+                  key={i}
+                  style={[styles.profileImage, { right: 0 + (3 - i) * 18 }]}
+                  source={images[i * 3]}
+                />
+              ))}
+            </View>
           </View>
-        </View>
-        <Text style={styles.moimHospital}>소마 병원</Text>
-        <View style={styles.tab}>
-          <Pressable
-            onPress={() => setTab('summary')}
-            style={[
-              styles.tabItem,
-              {
-                borderBottomWidth: tab === 'summary' ? 2 : 1,
-                borderBottomColor: tab === 'summary' ? COLOR.main1 : COLOR.sub45,
-              },
-            ]}
-          >
-            <Text
-              style={{
-                fontSize: 16,
-                color: tab === 'summary' ? COLOR.main1 : COLOR.sub3,
-                fontFamily: tab === 'summary' ? 'Apple600' : 'Apple500',
-              }}
+          <Text style={styles.moimHospital}>소마 병원</Text>
+          <View style={styles.tab}>
+            <Pressable
+              onPress={() => setTab('summary')}
+              style={[
+                styles.tabItem,
+                {
+                  borderBottomWidth: tab === 'summary' ? 2 : 1,
+                  borderBottomColor: tab === 'summary' ? COLOR.main1 : COLOR.sub45,
+                },
+              ]}
             >
-              요약보기
-            </Text>
-          </Pressable>
-          <Pressable
-            onPress={() => setTab('monthly')}
-            style={[
-              styles.tabItem,
-              {
-                borderBottomWidth: tab === 'monthly' ? 2 : 1,
-                borderBottomColor: tab === 'monthly' ? COLOR.main1 : COLOR.sub45,
-              },
-            ]}
-          >
-            <Text
-              style={{
-                fontSize: 16,
-                color: tab === 'monthly' ? COLOR.main1 : COLOR.sub3,
-                fontFamily: tab === 'monthly' ? 'Apple600' : 'Apple500',
-              }}
+              <Text
+                style={{
+                  fontSize: 16,
+                  color: tab === 'summary' ? COLOR.main1 : COLOR.sub3,
+                  fontFamily: tab === 'summary' ? 'Apple600' : 'Apple500',
+                }}
+              >
+                요약보기
+              </Text>
+            </Pressable>
+            <Pressable
+              onPress={() => setTab('monthly')}
+              style={[
+                styles.tabItem,
+                {
+                  borderBottomWidth: tab === 'monthly' ? 2 : 1,
+                  borderBottomColor: tab === 'monthly' ? COLOR.main1 : COLOR.sub45,
+                },
+              ]}
             >
-              월별 모아보기
-            </Text>
-          </Pressable>
-          <Pressable
-            onPress={() => setTab('weekly')}
-            style={[
-              styles.tabItem,
-              {
-                borderBottomWidth: tab === 'weekly' ? 2 : 1,
-                borderBottomColor: tab === 'weekly' ? COLOR.main1 : COLOR.sub45,
-              },
-            ]}
-          >
-            <Text
-              style={{
-                fontSize: 16,
-                color: tab === 'weekly' ? COLOR.main1 : COLOR.sub3,
-                fontFamily: tab === 'weekly' ? 'Apple600' : 'Apple500',
-              }}
+              <Text
+                style={{
+                  fontSize: 16,
+                  color: tab === 'monthly' ? COLOR.main1 : COLOR.sub3,
+                  fontFamily: tab === 'monthly' ? 'Apple600' : 'Apple500',
+                }}
+              >
+                월별 모아보기
+              </Text>
+            </Pressable>
+            <Pressable
+              onPress={() => setTab('weekly')}
+              style={[
+                styles.tabItem,
+                {
+                  borderBottomWidth: tab === 'weekly' ? 2 : 1,
+                  borderBottomColor: tab === 'weekly' ? COLOR.main1 : COLOR.sub45,
+                },
+              ]}
             >
-              주간 모아보기
-            </Text>
-          </Pressable>
-        </View>
-      </SafeAreaView>
+              <Text
+                style={{
+                  fontSize: 16,
+                  color: tab === 'weekly' ? COLOR.main1 : COLOR.sub3,
+                  fontFamily: tab === 'weekly' ? 'Apple600' : 'Apple500',
+                }}
+              >
+                주간 모아보기
+              </Text>
+            </Pressable>
+          </View>
+          {tab === 'summary' && <Summary />}
+        </SafeAreaView>
+      </BottomSheetModalProvider>
     </PageViewContainer>
   );
 };

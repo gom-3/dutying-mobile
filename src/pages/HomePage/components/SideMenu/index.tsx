@@ -10,7 +10,7 @@ import useSideMenu from './index.hook';
 const SideMenu = () => {
   const {
     state: { menuItemList },
-    actions: { closeSideMenu, logout },
+    actions: { closeSideMenu },
   } = useSideMenu();
 
   return (
@@ -40,7 +40,7 @@ const SideMenu = () => {
             </View>
           </Pressable>
         ))}
-        <Pressable style={styles.logoutView} onPress={logout}>
+        <Pressable style={styles.logoutView} >
           <Text style={styles.logoutText}>로그아웃</Text>
         </Pressable>
       </Animated.View>
