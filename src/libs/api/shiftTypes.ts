@@ -10,16 +10,16 @@ type ShiftTypesResponseDTO = {
 };
 
 export type ShiftTypeRequestDTO = Omit<Shift, 'accountShiftTypeId' | 'startTime' | 'endTime'> & {
-  startTime: string;
-  endTime: string;
+  startTime: string | null;
+  endTime: string | null;
 };
 
 export const getShiftTypes = async (userId: number) => {
-  return (await axiosInstance.get<ShiftTypesResponseDTO>(`/account/${userId}/shift-types`)).data;
+  return (await axiosInstance.get<ShiftTypesResponseDTO>(`/accounts/${userId}/shift-types`)).data;
 };
 
 export const addShiftType = async (userId: number, shift: ShiftTypeRequestDTO) => {
-  return (await axiosInstance.post<ShiftTypeResponseDTO>(`/account/${userId}/shift-types`, shift))
+  return (await axiosInstance.post<ShiftTypeResponseDTO>(`/accounts/${userId}/shift-types`, shift))
     .data;
 };
 
@@ -30,12 +30,12 @@ export const editShiftType = async (
 ) => {
   return (
     await axiosInstance.put<ShiftTypeResponseDTO>(
-      `/account/${userId}/shift-types/${shiftId}`,
+      `/accounts/${userId}/shift-types/${shiftId}`,
       shift,
     )
   ).data;
 };
 
 export const deleteShiftType = async (userId: number, shiftId: number) => {
-  return await axiosInstance.delete(`/account/${userId}/shift-types/${shiftId}`);
+  return await axiosInstance.delete(`/accounts/${userId}/shift-types/${shiftId}`);
 };

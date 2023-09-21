@@ -3,6 +3,7 @@ import { DateTimePickerAndroid, DateTimePickerEvent } from '@react-native-commun
 import { useRef } from 'react';
 import { Platform } from 'react-native';
 import { useCaledarDateStore } from 'store/calendar';
+import analytics from '@react-native-firebase/analytics';
 
 const useMonthSelector = () => {
   const [date, setState] = useCaledarDateStore((state) => [state.date, state.setState]);
@@ -13,6 +14,7 @@ const useMonthSelector = () => {
   };
 
   const onPressMonthSelector = () => {
+    analytics().logEvent('change_month');
     if (Platform.OS === 'android') {
       DateTimePickerAndroid.open({
         value: date,

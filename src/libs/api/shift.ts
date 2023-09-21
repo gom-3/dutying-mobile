@@ -17,7 +17,7 @@ export const getAccountShiftList = async (userId: number, year: number, month: n
     .padStart(2, '0')}-${endDate.getDate().toString().padStart(2, '0')}`;
   return (
     await axiosInstance.get<AccountShiftListResponse>(
-      `/account/${userId}/shifts?startDate=${startDateString}&endDate=${endDateString}`,
+      `/accounts/${userId}/shifts?startDate=${startDateString}&endDate=${endDateString}`,
     )
   ).data;
 };
@@ -32,5 +32,5 @@ export const editAccountShiftList = async (
   userId: number,
   shiftList: AccountShiftListRequestDTO,
 ) => {
-  await axiosInstance.patch(`/account/${userId}/shifts/list`, shiftList);
+  await axiosInstance.patch(`/accounts/${userId}/shifts/list`, shiftList);
 };

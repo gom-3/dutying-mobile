@@ -14,6 +14,7 @@ import Notification from './NotificationPage';
 import OnboardingPage from './OnboardingPage';
 import DeviceCalendarPage from './DeviceCalendarPage';
 import MoimDetailPage from './Social/Moim/MoimDetailPage';
+import Term from './LoginPage/Term';
 
 export type StackParams = {
   Login: undefined;
@@ -29,6 +30,7 @@ export type StackParams = {
   Notification: undefined;
   Onboarding: undefined;
   DeviceCalendar: undefined;
+  Term: undefined;
 };
 
 const Stack = createNativeStackNavigator<StackParams>();
@@ -40,6 +42,7 @@ const Router = () => {
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Home" screenOptions={{ headerShown: false }}>
         <Stack.Screen name="Login" component={LoginPage} options={{ gestureEnabled: false }} />
+        <Stack.Screen name='Term' component={Term} />
         <Stack.Screen name="Signup" component={SignupPage} />
         <Stack.Screen name="Home" component={HomePage} options={{ gestureEnabled: false }} />
         <Stack.Screen

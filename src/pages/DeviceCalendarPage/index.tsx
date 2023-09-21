@@ -2,7 +2,7 @@ import PageViewContainer from '@components/PageView';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import useDeviceCalendarPage from './index.hook';
 import PageHeader from '@components/PageHeader';
-import { View, Text, Pressable, StyleSheet } from 'react-native';
+import { View, Text, Pressable, StyleSheet, ScrollView } from 'react-native';
 import PencilIcon from '@assets/svgs/pencil.svg';
 import CheckButtonChecked from '@assets/svgs/check-button-checked.svg';
 import CheckButton from '@assets/svgs/check-button.svg';
@@ -46,34 +46,36 @@ const DeviceCalendarPage = () => {
               <Text style={styles.add}>추가하기</Text>
             </Pressable>
           </View>
-          {dutyingCalendars.map((calendar) => (
-            <View style={styles.item} key={calendar.id}>
-              <View style={styles.itemLeft}>
-                <Pressable onPress={() => pressLinkHandler(calendar.id)}>
-                  {calendarLink[calendar.id] ? <CheckButtonChecked /> : <CheckButton />}
+          <ScrollView>
+            {dutyingCalendars.map((calendar) => (
+              <View style={styles.item} key={calendar.id}>
+                <View style={styles.itemLeft}>
+                  <Pressable onPress={() => pressLinkHandler(calendar.id)}>
+                    {calendarLink[calendar.id] ? <CheckButtonChecked /> : <CheckButton />}
+                  </Pressable>
+                  <View style={[{ backgroundColor: calendar.color }, styles.color]} />
+                  <Text style={styles.itemText}>{calendar.title.slice(3)}</Text>
+                </View>
+                <Pressable onPress={() => openModalEditMode(calendar)}>
+                  <PencilIcon />
                 </Pressable>
-                <View style={[{ backgroundColor: calendar.color }, styles.color]} />
-                <Text style={styles.itemText}>{calendar.title.slice(3)}</Text>
               </View>
-              <Pressable onPress={() => openModalEditMode(calendar)}>
-                <PencilIcon />
-              </Pressable>
+            ))}
+            <View style={styles.header}>
+              <Text style={styles.headerName}>기기 캘린더</Text>
             </View>
-          ))}
-          <View style={styles.header}>
-            <Text style={styles.headerName}>기기 캘린더</Text>
-          </View>
-          {normalCalendars.map((calendar) => (
-            <View style={styles.item} key={calendar.id}>
-              <View style={styles.itemLeft}>
-                <Pressable onPress={() => pressLinkHandler(calendar.id)}>
-                  {calendarLink[calendar.id] ? <CheckButtonChecked /> : <CheckButton />}
-                </Pressable>
-                <View style={[{ backgroundColor: calendar.color }, styles.color]} />
-                <Text style={styles.itemText}>{calendar.title}</Text>
+            {normalCalendars.map((calendar) => (
+              <View style={styles.item} key={calendar.id}>
+                <View style={styles.itemLeft}>
+                  <Pressable onPress={() => pressLinkHandler(calendar.id)}>
+                    {calendarLink[calendar.id] ? <CheckButtonChecked /> : <CheckButton />}
+                  </Pressable>
+                  <View style={[{ backgroundColor: calendar.color }, styles.color]} />
+                  <Text style={styles.itemText}>{calendar.title}</Text>
+                </View>
               </View>
-            </View>
-          ))}
+            ))}
+          </ScrollView>
           <BottomSheetModal
             style={{ padding: 14 }}
             ref={ref}

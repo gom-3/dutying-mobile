@@ -10,8 +10,8 @@ type Shift = {
   name: string;
   shortName: string;
   color: string;
-  startTime: Date | undefined;
-  endTime: Date | undefined;
+  startTime: Date | null;
+  endTime: Date | null;
   isDefault: boolean;
   classification: 'DAY' | 'EVENING' | 'NIGHT' | 'OTHER_WORK' | 'OFF' | 'LEAVE' | 'OTHER_LEAVE';
   isAlarm: boolean;

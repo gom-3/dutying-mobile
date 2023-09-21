@@ -3,7 +3,7 @@ import PageHeader from '@components/PageHeader';
 import PageViewContainer from '@components/PageView';
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { COLOR } from 'index.style';
-import { View, Text, Switch, StyleSheet, Pressable, Modal } from 'react-native';
+import { View, Text, Switch, StyleSheet, TouchableOpacity, Modal } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import ImageIcon from '@assets/svgs/image-save.svg';
 import Header from '@pages/HomePage/components/Header';
@@ -13,6 +13,7 @@ import ViewShot from 'react-native-view-shot';
 import FullLogoIcon from '@assets/svgs/logo-full.svg';
 import * as Sharing from 'expo-sharing';
 import ShiftTypeGuide from './components/ShiftTypeGuide';
+import analytics from '@react-native-firebase/analytics';
 
 const SharePage = () => {
   const [isImageModalVisible, setIsImageModalVisible] = useState(false);
@@ -43,7 +44,10 @@ const SharePage = () => {
                   trackColor={{ true: COLOR.main1 }}
                   thumbColor="white"
                   value={scheduleSwitch}
-                  onValueChange={(value) => setScheduleSwitch(value)}
+                  onValueChange={(value) => {
+                    analytics().logEvent('include_schedule');
+                    setScheduleSwitch(value);
+                  }}
                 />
               </View>
               <View style={styles.typeItem}>
@@ -53,7 +57,10 @@ const SharePage = () => {
                     trackColor={{ true: COLOR.main1 }}
                     thumbColor="white"
                     value={guideSwitch}
-                    onValueChange={(value) => setGuideSwitch(value)}
+                    onValueChange={(value) => {
+                      analytics().logEvent('include_guide');
+                      setGuideSwitch(value);
+                    }}
                   />
                 </View>
                 {guideSwitch && (
@@ -67,10 +74,16 @@ const SharePage = () => {
               </View>
             </View>
             <View style={styles.buttonContainer}>
-              <Pressable style={styles.button} onPress={() => setIsImageModalVisible(true)}>
+              <TouchableOpacity
+                style={styles.button}
+                onPress={() => {
+                  analytics().logEvent('share');
+                  setIsImageModalVisible(true);
+                }}
+              >
                 <ImageIcon />
                 <Text style={styles.buttonText}>이미지로 공유하기</Text>
-              </Pressable>
+              </TouchableOpacity>
             </View>
           </View>
           <Modal animationType="slide" visible={isImageModalVisible}>
@@ -85,7 +98,7 @@ const SharePage = () => {
                     <FullLogoIcon />
                   </View>
                   <Header isImage />
-                  <Calendar withoutSchedule={!scheduleSwitch} isSharing />
+                  <Calendar withoutSchedule={!scheduleSwitch} />
                   {guideSwitch && (
                     <View style={styles.typeItem}>
                       <ShiftTypeGuide />

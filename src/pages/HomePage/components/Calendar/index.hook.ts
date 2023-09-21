@@ -11,9 +11,10 @@ import {
   PanGestureHandlerEventPayload,
   State,
 } from 'react-native-gesture-handler';
+import analytics from '@react-native-firebase/analytics';
 
 const useCalendar = (isRender?: boolean) => {
-  const [userId] = useAccountStore((state) => [state.userId]);
+  const [account, userId] = useAccountStore((state) => [state.account, state.account.accountId]);
   const [date, calendar, setState] = useCaledarDateStore((state) => [
     state.date,
     state.calendar,
@@ -28,11 +29,16 @@ const useCalendar = (isRender?: boolean) => {
     date.getMonth(),
   ];
 
-  const { data: shiftListResponse } = useQuery(getAccountShiftListKey, () =>
-    getAccountShiftList(userId, date.getFullYear(), date.getMonth()),
+  const { data: shiftListResponse } = useQuery(
+    getAccountShiftListKey,
+    () => getAccountShiftList(userId, date.getFullYear(), date.getMonth()),
+    {
+      enabled: userId > 0,
+    },
   );
 
   const dateClickHandler = (date: Date) => {
+    analytics().logEvent('select_date_cell');
     setState('date', date);
     setState('isCardOpen', true);
   };
@@ -43,6 +49,7 @@ const useCalendar = (isRender?: boolean) => {
     const calendar: DateType[] = [];
     let dateIndex = 0;
     if (shiftListResponse) {
+      console.log(shiftListResponse)
       const shiftList = shiftListResponse.accountShiftTypeIdList;
       for (let i = first.getDay() - 1; i >= 0; i--) {
         const date: DateType = {
@@ -89,9 +96,11 @@ const useCalendar = (isRender?: boolean) => {
   const onHandlerStateChange = (event: HandlerStateChangeEvent<PanGestureHandlerEventPayload>) => {
     if (event.nativeEvent.oldState === State.ACTIVE) {
       if (event.nativeEvent.translationX > 100) {
+        analytics().logEvent('swipe_calendar');
         const prevMonth = new Date(date.getFullYear(), date.getMonth() - 1, 1);
         setState('date', prevMonth);
       } else if (event.nativeEvent.translationX < -100) {
+        analytics().logEvent('swipe_calendar');
         const nextMonth = new Date(date.getFullYear(), date.getMonth() + 1, 1);
         setState('date', nextMonth);
       }
