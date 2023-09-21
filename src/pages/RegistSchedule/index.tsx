@@ -1,13 +1,4 @@
-import {
-  Text,
-  TextInput,
-  Pressable,
-  StyleSheet,
-  ScrollView,
-  KeyboardAvoidingView,
-  Platform,
-  View,
-} from 'react-native';
+import { Text, TextInput, Pressable, StyleSheet, Platform, View } from 'react-native';
 import CheckIcon from '@assets/svgs/check.svg';
 import { COLOR, screenHeight, screenWidth } from 'index.style';
 import Time from './components/Time';
@@ -16,38 +7,13 @@ import Repeat from './components/Repeat';
 import useRegistSchedule from './index.hook';
 import PageViewContainer from '@components/PageView';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import React, { ReactNode } from 'react';
 import { BottomSheetModal, BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import ModalContext from './components/ModalContext';
 import PageHeader from '@components/PageHeader';
 import { useRoute } from '@react-navigation/native';
 import TrashIcon from '@assets/svgs/trash.svg';
 import Category from './components/Category';
-
-export const KeyboradAvoidWrapper = React.forwardRef<ScrollView, { children: ReactNode }>(
-  (props, ref) => {
-    const { children } = props;
-    if (Platform.OS === 'android')
-      return (
-        <KeyboardAvoidingView behavior="height">
-          <ScrollView style={styles.container} ref={ref}>
-            {children}
-          </ScrollView>
-        </KeyboardAvoidingView>
-      );
-    else
-      return (
-        <KeyboardAwareScrollView
-          extraScrollHeight={50}
-          resetScrollToCoords={{ x: 0, y: 0 }}
-          style={styles.container}
-        >
-          {children}
-        </KeyboardAwareScrollView>
-      );
-  },
-);
+import KeyboardAvoidWrapper from '@components/KeyboardAvoidWrapper';
 
 const RegistSchedulePage = () => {
   const route = useRoute<any>();
@@ -70,7 +36,7 @@ const RegistSchedulePage = () => {
     <PageViewContainer>
       <BottomSheetModalProvider>
         <SafeAreaView>
-          <KeyboradAvoidWrapper ref={ref}>
+          <KeyboardAvoidWrapper>
             <PageHeader
               title={isEdit ? '일정 수정' : '일정 등록'}
               titleMargin={isEdit ? 38 : 0}
@@ -127,7 +93,7 @@ const RegistSchedulePage = () => {
               value={notes}
               onChangeText={notesChangeHandler}
             />
-          </KeyboradAvoidWrapper>
+          </KeyboardAvoidWrapper>
           <BottomSheetModal
             ref={modalRef}
             index={1}

@@ -8,6 +8,7 @@ import SliderIcon from '@assets/svgs/slider.svg';
 import { useMemo } from 'react';
 import { useAccountStore } from 'store/account';
 import analytics from '@react-native-firebase/analytics';
+import { Alert } from 'react-native';
 
 interface SideMenuItem {
   icon: React.FC<SvgProps>;
@@ -29,9 +30,31 @@ const useSideMenu = () => {
   };
 
   const logout = () => {
-    logoutAccount();
-    setState('isSideMenuOpen', false);
-    onPressLogout();
+    Alert.alert('로그아웃 하시겠습니까?', '', [
+      {
+        text: '네',
+        onPress: () => {
+          logoutAccount();
+          setState('isSideMenuOpen', false);
+          onPressLogout();
+        },
+      },
+      { text: '아니오', onPress: () => {} },
+    ]);
+  };
+
+  const signout = () => {
+    Alert.alert('정말 탈퇴하시겠습니까?', '', [
+      {
+        text: '네',
+        onPress: () => {
+          logoutAccount();
+          setState('isSideMenuOpen', false);
+          onPressLogout();
+        },
+      },
+      { text: '아니오', onPress: () => {} },
+    ]);
   };
 
   const menuItemList: SideMenuItem[] = useMemo(
@@ -71,7 +94,7 @@ const useSideMenu = () => {
     ],
     [],
   );
-  return { state: { account, menuItemList }, actions: { closeSideMenu, logout } };
+  return { state: { account, menuItemList }, actions: { closeSideMenu, logout, signout } };
 };
 
 export default useSideMenu;

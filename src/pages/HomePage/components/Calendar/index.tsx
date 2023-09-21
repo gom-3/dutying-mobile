@@ -71,10 +71,10 @@ const Calendar = ({ withoutSchedule }: Props) => {
                       if (weeks.length === 6 && schedule.level > 4) return;
                       if (weeks.length < 6 && schedule.level > 5) return;
                       if (weeks.length === 6 && schedule.level === 4) {
-                        return <ElseSchedule level={4} lefts={day.schedules.length - 3} />;
+                        return <ElseSchedule key={schedule.id} level={4} lefts={day.schedules.length - 3} />;
                       }
                       if (weeks.length < 6 && schedule.level === 5) {
-                        return <ElseSchedule level={5} lefts={day.schedules.length - 4} />;
+                        return <ElseSchedule key={schedule.id} level={5} lefts={day.schedules.length - 4} />;
                       }
                       return (
                         <View
