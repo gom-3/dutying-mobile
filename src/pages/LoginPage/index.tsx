@@ -12,7 +12,7 @@ import { KakaoOAuthToken, login } from '@react-native-seoul/kakao-login';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { getAccount, oAuthLogin } from '@libs/api/account';
 import { useSignupStore } from '@pages/SignupPage/store';
-import analytics from '@react-native-firebase/analytics';
+import { firebaseLogEvent } from '@libs/utils/event';
 
 const LoginPage = () => {
   const { onPress: navigateHome } = useLinkProps({ to: { screen: 'Home' } });
@@ -55,13 +55,13 @@ const LoginPage = () => {
   }, []);
 
   const onPressKakaoLogin = async () => {
-    analytics().logEvent('kakao');
+    firebaseLogEvent('kakao');
     const token: KakaoOAuthToken = await login();
     oAuthLoginMutate({ idToken: token.idToken, provider: 'kakao' });
   };
 
   const onPressAppleLogin = async () => {
-    analytics().logEvent('apple');
+    firebaseLogEvent('apple');
     const token = await AppleAuthentication.signInAsync();
     oAuthLoginMutate({ idToken: token.identityToken || '', provider: 'apple' });
   };

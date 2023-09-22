@@ -12,7 +12,7 @@ import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 const MoimDetailPage = () => {
   const [tab, setTab] = useState<'summary' | 'monthly' | 'weekly'>('summary');
   return (
-    <PageViewContainer>
+    <PageViewContainer style={{backgroundColor:COLOR.bg}}>
       <BottomSheetModalProvider>
         <SafeAreaView>
           <PageHeader
@@ -23,6 +23,7 @@ const MoimDetailPage = () => {
               </TouchableOpacity>
             }
           />
+          
           <View style={styles.moimWrapper}>
             <Text style={styles.moimName}>곰세마리 병동 동기</Text>
             <View style={styles.profileImages}>
@@ -37,7 +38,7 @@ const MoimDetailPage = () => {
           </View>
           <Text style={styles.moimHospital}>소마 병원</Text>
           <View style={styles.tab}>
-            <Pressable
+            <TouchableOpacity
               onPress={() => setTab('summary')}
               style={[
                 styles.tabItem,
@@ -56,8 +57,8 @@ const MoimDetailPage = () => {
               >
                 요약보기
               </Text>
-            </Pressable>
-            <Pressable
+            </TouchableOpacity>
+            <TouchableOpacity
               onPress={() => setTab('monthly')}
               style={[
                 styles.tabItem,
@@ -76,8 +77,8 @@ const MoimDetailPage = () => {
               >
                 월별 모아보기
               </Text>
-            </Pressable>
-            <Pressable
+            </TouchableOpacity>
+            <TouchableOpacity
               onPress={() => setTab('weekly')}
               style={[
                 styles.tabItem,
@@ -96,9 +97,9 @@ const MoimDetailPage = () => {
               >
                 주간 모아보기
               </Text>
-            </Pressable>
+            </TouchableOpacity>
           </View>
-          {tab === 'summary' && <Summary />}
+          <Summary isVisible={tab === 'summary'} />
         </SafeAreaView>
       </BottomSheetModalProvider>
     </PageViewContainer>

@@ -31,9 +31,16 @@ const ScheduleCard = () => {
         >
           <View style={styles.cardView}>
             <View style={styles.cardHeaderView} />
+            <Pressable style={styles.addButtonIcon} onPress={addSchedulePressHandler}>
+              <AddButtonIcon />
+            </Pressable>
           </View>
           <View style={styles.cardView}>
+            
             <View style={styles.cardHeaderView} />
+            <Pressable style={styles.addButtonIcon} onPress={addSchedulePressHandler}>
+              <AddButtonIcon />
+            </Pressable>
           </View>
           <View style={styles.cardView}>
             <Text style={styles.dateText}>
@@ -73,7 +80,10 @@ const ScheduleCard = () => {
             </View>
             <ScrollView style={{ padding: 24 }}>
               {selectedDateData?.schedules.map((schedule) => (
-                <TouchableOpacity key={schedule.id} onPress={() => editSchedulePressHandler(schedule)}>
+                <TouchableOpacity
+                  key={schedule.id}
+                  onPress={() => editSchedulePressHandler(schedule)}
+                >
                   <View key={schedule.title} style={styles.scheduleView}>
                     <View
                       style={[
@@ -107,9 +117,15 @@ const ScheduleCard = () => {
           </View>
           <View style={styles.cardView}>
             <View style={styles.cardHeaderView} />
+            <Pressable style={styles.addButtonIcon} onPress={addSchedulePressHandler}>
+              <AddButtonIcon />
+            </Pressable>
           </View>
           <View style={styles.cardView}>
             <View style={styles.cardHeaderView} />
+            <Pressable style={styles.addButtonIcon} onPress={addSchedulePressHandler}>
+              <AddButtonIcon />
+            </Pressable>
           </View>
         </Animated.View>
       </GestureDetector>

@@ -12,7 +12,7 @@ import {
   getAccountShiftList,
 } from '@libs/api/shift';
 import { useAccountStore } from 'store/account';
-import analytics from '@react-native-firebase/analytics';
+import { firebaseLogEvent } from '@libs/utils/event';
 
 const useRegistDuty = (dateFrom?: string) => {
   const [date, calendar, setState] = useCaledarDateStore((state) => [
@@ -121,7 +121,7 @@ const useRegistDuty = (dateFrom?: string) => {
   }, [tempCalendar]);
 
   const insertShift = (shift: number) => {
-    analytics().logEvent('insert_shift');
+    firebaseLogEvent('insert_shift');
     const newValue: DateType = {
       ...tempCalendar[index],
       shift,
@@ -138,7 +138,7 @@ const useRegistDuty = (dateFrom?: string) => {
   };
 
   const deleteShift = () => {
-    analytics().logEvent('delete_shift');
+    firebaseLogEvent('delete_shift');
     const newValue: DateType = {
       ...tempCalendar[index],
       shift: null,
@@ -161,7 +161,7 @@ const useRegistDuty = (dateFrom?: string) => {
   };
 
   const saveRegistDutyChange = () => {
-    analytics().logEvent('regist_shift');
+    firebaseLogEvent('regist_shift');
     const accountShiftList: AccountShiftRequest[] = [];
 
     tempCalendar.forEach((date) => {

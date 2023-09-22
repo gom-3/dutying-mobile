@@ -6,7 +6,6 @@ import WardIcon from '@assets/svgs/ward.svg';
 import SelectedWardIcon from '@assets/svgs/ward-selected.svg';
 import { View, Text, StyleSheet, Pressable } from 'react-native';
 import { COLOR, screenWidth } from 'index.style';
-import { Shadow } from 'react-native-shadow-2';
 import { useLinkProps } from '@react-navigation/native';
 
 interface Props {
@@ -20,69 +19,64 @@ const NavigationBar = ({ page }: Props) => {
 
   return (
     <View style={styles.navigationContainer}>
-      <Shadow distance={50} startColor="#c9bfde" offset={[0, 35]} containerStyle={{ height: 100 }}>
-        <View style={styles.navigationView}>
-          <Pressable
-            onPress={navigateToHome}
-            style={[styles.itemView, { backgroundColor: page === 'home' ? COLOR.main4 : COLOR.bg }]}
-          >
-            <View style={{ alignItems: 'center', justifyContent: 'center' }}>
-              {page === 'home' ? <SelectedLogoIcon /> : <LogoIcon />}
-              <Text
-                style={[
-                  styles.itemText,
-                  {
-                    color: page === 'home' ? COLOR.main1 : COLOR.sub3,
-                    fontFamily: page === 'home' ? 'Apple600' : 'Apple500',
-                  },
-                ]}
-              >
-                홈
-              </Text>
-            </View>
-          </Pressable>
-          <Pressable
-            onPress={navigateToSocial}
-            style={[
-              styles.itemView,
-              { backgroundColor: page === 'social' ? COLOR.main4 : COLOR.bg },
-            ]}
-          >
-            <View style={{ alignItems: 'center', justifyContent: 'center' }}>
-              {page === 'social' ? <SelectedSocialIcon /> : <SocialIcon />}
-              <Text
-                style={[
-                  styles.itemText,
-                  {
-                    color: page === 'social' ? COLOR.main1 : COLOR.sub3,
-                    fontFamily: page === 'social' ? 'Apple600' : 'Apple500',
-                  },
-                ]}
-              >
-                소셜
-              </Text>
-            </View>
-          </Pressable>
-          <Pressable
-            style={[styles.itemView, { backgroundColor: page === 'ward' ? COLOR.main4 : COLOR.bg }]}
-          >
-            <View style={{ alignItems: 'center', justifyContent: 'center' }}>
-              {page === 'ward' ? <SelectedWardIcon /> : <WardIcon />}
-              <Text
-                style={[
-                  styles.itemText,
-                  {
-                    color: page === 'ward' ? COLOR.main1 : COLOR.sub3,
-                    fontFamily: page === 'ward' ? 'Apple600' : 'Apple500',
-                  },
-                ]}
-              >
-                병동
-              </Text>
-            </View>
-          </Pressable>
-        </View>
-      </Shadow>
+      <View style={styles.navigationView}>
+        <Pressable
+          onPress={navigateToHome}
+          style={[styles.itemView, { backgroundColor: page === 'home' ? COLOR.main4 : COLOR.bg }]}
+        >
+          <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+            {page === 'home' ? <SelectedLogoIcon /> : <LogoIcon />}
+            <Text
+              style={[
+                styles.itemText,
+                {
+                  color: page === 'home' ? COLOR.main1 : COLOR.sub3,
+                  fontFamily: page === 'home' ? 'Apple600' : 'Apple500',
+                },
+              ]}
+            >
+              홈
+            </Text>
+          </View>
+        </Pressable>
+        <Pressable
+          onPress={navigateToSocial}
+          style={[styles.itemView, { backgroundColor: page === 'social' ? COLOR.main4 : COLOR.bg }]}
+        >
+          <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+            {page === 'social' ? <SelectedSocialIcon /> : <SocialIcon />}
+            <Text
+              style={[
+                styles.itemText,
+                {
+                  color: page === 'social' ? COLOR.main1 : COLOR.sub3,
+                  fontFamily: page === 'social' ? 'Apple600' : 'Apple500',
+                },
+              ]}
+            >
+              소셜
+            </Text>
+          </View>
+        </Pressable>
+        <Pressable
+          style={[styles.itemView, { backgroundColor: page === 'ward' ? COLOR.main4 : COLOR.bg }]}
+        >
+          <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+            {page === 'ward' ? <SelectedWardIcon /> : <WardIcon />}
+            <Text
+              style={[
+                styles.itemText,
+                {
+                  color: page === 'ward' ? COLOR.main1 : COLOR.sub3,
+                  fontFamily: page === 'ward' ? 'Apple600' : 'Apple500',
+                },
+              ]}
+            >
+              병동
+            </Text>
+          </View>
+        </Pressable>
+      </View>
     </View>
   );
 };
@@ -91,6 +85,8 @@ const styles = StyleSheet.create({
   navigationContainer: {
     position: 'absolute',
     bottom: 0,
+    borderTopColor: COLOR.sub45,
+    borderTopWidth: 1,
   },
   navigationView: {
     flexDirection: 'row',

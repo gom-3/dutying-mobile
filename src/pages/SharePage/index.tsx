@@ -13,7 +13,7 @@ import ViewShot from 'react-native-view-shot';
 import FullLogoIcon from '@assets/svgs/logo-full.svg';
 import * as Sharing from 'expo-sharing';
 import ShiftTypeGuide from './components/ShiftTypeGuide';
-import analytics from '@react-native-firebase/analytics';
+import { firebaseLogEvent } from '@libs/utils/event';
 
 const SharePage = () => {
   const [isImageModalVisible, setIsImageModalVisible] = useState(false);
@@ -45,7 +45,7 @@ const SharePage = () => {
                   thumbColor="white"
                   value={scheduleSwitch}
                   onValueChange={(value) => {
-                    analytics().logEvent('include_schedule');
+                    firebaseLogEvent('include_schedule');
                     setScheduleSwitch(value);
                   }}
                 />
@@ -58,7 +58,7 @@ const SharePage = () => {
                     thumbColor="white"
                     value={guideSwitch}
                     onValueChange={(value) => {
-                      analytics().logEvent('include_guide');
+                      firebaseLogEvent('include_guide');
                       setGuideSwitch(value);
                     }}
                   />
@@ -77,7 +77,7 @@ const SharePage = () => {
               <TouchableOpacity
                 style={styles.button}
                 onPress={() => {
-                  analytics().logEvent('share');
+                  firebaseLogEvent('share');
                   setIsImageModalVisible(true);
                 }}
               >

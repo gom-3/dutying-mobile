@@ -17,6 +17,7 @@ import SortIcon from '@assets/svgs/sort.svg';
 import PlusIcon from '@assets/svgs/plus-circle.svg';
 import { images } from '@assets/images/profiles';
 import { useLinkProps } from '@react-navigation/native';
+import BookmarkIcon from '@assets/svgs/bookmark.svg';
 
 const MoimPage = () => {
   const { onPress: navigateDetailMoim } = useLinkProps({ to: { screen: 'MoimDetail' } });
@@ -62,24 +63,29 @@ const MoimPage = () => {
             </View>
           </View>
           <ScrollView style={styles.cardScrollView}>
-            <TouchableOpacity style={styles.shadowWrapper} onPress={navigateDetailMoim}>
-              <View>
-                <Text style={styles.titleText}>곰세마리 병동 동기</Text>
-                <Text style={styles.ownerText}>모임장 김범진</Text>
-              </View>
-              <View style={{ flexDirection: 'row', position: 'relative' }}>
-                {[1, 2, 3].map((_, i) => (
-                  <Image
-                    key={i}
-                    style={[styles.profile, { right: 0 + (3 - i) * 18 }]}
-                    source={images[i * 3]}
-                  />
-                ))}
-                <View style={styles.profileCount}>
-                  <Text style={styles.profileCountText}>+1</Text>
+            <View>
+              <TouchableOpacity style={styles.shadowWrapper} onPress={navigateDetailMoim}>
+                <View>
+                  <Text style={styles.titleText}>곰세마리 병동 동기</Text>
+                  <Text style={styles.ownerText}>모임장 김범진</Text>
                 </View>
-              </View>
-            </TouchableOpacity>
+                <View style={{ flexDirection: 'row', position: 'relative' }}>
+                  {[1, 2, 3].map((_, i) => (
+                    <Image
+                      key={i}
+                      style={[styles.profile, { right: 0 + (3 - i) * 18 }]}
+                      source={images[i * 3]}
+                    />
+                  ))}
+                  <View style={styles.profileCount}>
+                    <Text style={styles.profileCountText}>+1</Text>
+                  </View>
+                </View>
+              </TouchableOpacity>
+              <Pressable style={styles.bookmark}>
+                <BookmarkIcon />
+              </Pressable>
+            </View>
             <TouchableOpacity>
               <View style={styles.addButton}>
                 <PlusIcon />
@@ -199,6 +205,13 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: COLOR.main1,
     marginLeft: 7,
+  },
+  bookmark: {
+    position: 'absolute',
+    top: 8,
+    right: 25,
+    width:30,
+    height:30
   },
 });
 

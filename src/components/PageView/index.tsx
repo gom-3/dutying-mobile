@@ -3,6 +3,8 @@ import { screenHeight, screenWidth } from 'index.style';
 import { ReactNode, useEffect } from 'react';
 import { View, StyleSheet, StyleProp, ViewStyle } from 'react-native';
 import { useAccountStore } from 'store/account';
+import Constants from 'expo-constants';
+import { tempAndroidAccount } from '@mocks/account';
 
 interface Props {
   children: ReactNode;
@@ -10,12 +12,17 @@ interface Props {
   withoutLogin?: boolean;
 }
 
-const PageViewContainer = ({ children, withoutLogin }: Props) => {
-  const [account] = useAccountStore((state) => [state.account]);
+const PageViewContainer = ({ children, withoutLogin, style }: Props) => {
+  const [account, setState] = useAccountStore((state) => [state.account, state.setState]);
   const { onPress: redirectToLoginPage } = useLinkProps({ to: { screen: 'Login' } });
 
   useEffect(() => {
-    if (account.accountId === 0 && !withoutLogin) setTimeout(() => redirectToLoginPage(), 100);
+    // expo go 환경일 때는 소셜로그인이 불가능하니 임시 로그인 처리
+    if (Constants.appOwnership !== 'expo') {
+      if (account.accountId === 0 && !withoutLogin) setTimeout(() => redirectToLoginPage(), 100);
+    } else {
+      setState('account', tempAndroidAccount);
+    }
   }, [account.accountId]);
 
   return <View style={[styles.container, style]}>{children}</View>;

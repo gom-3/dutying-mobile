@@ -1,5 +1,7 @@
 import { Frequency } from 'expo-calendar';
 import { days } from './date';
+import analytics from '@react-native-firebase/analytics';
+import Constants from 'expo-constants';
 
 export const alarmList = [
   { text: '정각', time: 0 },
@@ -18,3 +20,9 @@ export const getRecurrenceRuleList = (startDate: Date) => [
     frequency: Frequency.YEARLY,
   },
 ];
+
+export const firebaseLogEvent = (name:string) => {
+  if(Constants.appOwnership !== 'expo'){
+    analytics().logEvent(name);
+  }
+}
