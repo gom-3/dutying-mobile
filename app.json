@@ -55,7 +55,9 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "googleServicesFile": "./GoogleService-Info.plist",
       "usesAppleSignIn": true,
@@ -64,7 +66,8 @@
         "NSCalendarsUsageDescription": "The app needs to access your calendar.",
         "NSRemindersUsageDescription": "The app needs to access your reminders."
       },
-      "bundleIdentifier": "com.gom3.dutying"
+      "bundleIdentifier": "com.gom3.dutying",
+      "buildNumber": "2"
     },
     "android": {
       "enableProguardInReleaseBuilds": true,
