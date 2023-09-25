@@ -108,7 +108,7 @@ const ScheduleCard = () => {
   return (
     <>
       <BackDrop clickHandler={backDropPressHandler} />
-      <View style={styles.scheduleCardContainer}>
+      <Animated.View entering={FadeInDown.duration(100)} style={styles.scheduleCardContainer}>
         <Carousel
           style={styles.scheduleCardContainer}
           data={calendar}
@@ -122,13 +122,13 @@ const ScheduleCard = () => {
           })}
           firstItem={selectedDateData}
           initialNumToRender={3}
+          maxToRenderPerBatch={9}
           enableMomentum={true}
-          decelerationRate={0.9}
           swipeThreshold={10}
           activeSlideOffset={15}
-          
+          removeClippedSubviews
         />
-      </View>
+      </Animated.View>
       {/* <GestureDetector gesture={panGesture}>
         <Animated.View
           style={[animatedStyles, styles.scheduleCardContainer]}
