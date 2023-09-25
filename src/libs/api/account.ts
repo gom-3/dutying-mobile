@@ -25,6 +25,9 @@ export const getAccount = async (accountId: number) => {
   return (await axiosInstance.get<Account>(`/accounts/${accountId}`)).data;
 };
 
-export const changeAccountStatus = async (accountId: number, status: 'ACTIVE' | 'INITIAL') => {
+export const changeAccountStatus = async (
+  accountId: number,
+  status: 'NURSE_INFO_PENDING' | 'INITIAL',
+) => {
   return (await axiosInstance.patch(`/accounts/${accountId}/status?status=${status}`)).data;
 };

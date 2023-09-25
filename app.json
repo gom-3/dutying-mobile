@@ -2,7 +2,7 @@
   "expo": {
     "name": "dutying-mobile",
     "slug": "dutying-mobile",
-    "version": "1.1.18",
+    "version": "1.1.19",
     "orientation": "portrait",
     "icon": "./src/assets/icon.png",
     "userInterfaceStyle": "light",
@@ -59,6 +59,7 @@
       "**/*"
     ],
     "ios": {
+      "buildNumber": "1.0.2",
       "googleServicesFile": "./GoogleService-Info.plist",
       "usesAppleSignIn": true,
       "supportsTablet": false,
@@ -66,8 +67,7 @@
         "NSCalendarsUsageDescription": "The app needs to access your calendar.",
         "NSRemindersUsageDescription": "The app needs to access your reminders."
       },
-      "bundleIdentifier": "com.gom3.dutying",
-      "buildNumber": "2"
+      "bundleIdentifier": "com.gom3.dutying"
     },
     "android": {
       "enableProguardInReleaseBuilds": true,
@@ -82,7 +82,7 @@
       ],
       "package": "com.gom3.dutying",
       "googleServicesFile": "./google-services.json",
-      "versionCode": 12
+      "versionCode": 14
     },
     "web": {
       "favicon": "./src/assets/favicon.png"

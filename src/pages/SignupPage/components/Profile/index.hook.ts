@@ -28,7 +28,7 @@ const useProfile = () => {
   const { onPress: navigateToHome } = useLinkProps({ to: { screen: 'Onboarding' } });
 
   const { mutate: changeAccountStatusMutate } = useMutation(
-    () => changeAccountStatus(id, 'ACTIVE'),
+    () => changeAccountStatus(id, 'NURSE_INFO_PENDING'),
     {
       onSuccess: () => {
         navigateToHome();
