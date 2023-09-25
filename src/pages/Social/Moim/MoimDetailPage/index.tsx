@@ -1,6 +1,6 @@
 import PageHeader from '@components/PageHeader';
 import PageViewContainer from '@components/PageView';
-import { TouchableOpacity, View, Text, StyleSheet, Image, Pressable } from 'react-native';
+import { TouchableOpacity, View, Text, StyleSheet, Image } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import DotsIcon from '@assets/svgs/dots.svg';
 import { images } from '@assets/images/profiles';
@@ -8,11 +8,12 @@ import { COLOR } from 'index.style';
 import { useState } from 'react';
 import Summary from './components/Summary';
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
+import Collection from './components/Collection';
 
 const MoimDetailPage = () => {
-  const [tab, setTab] = useState<'summary' | 'monthly' | 'weekly'>('summary');
+  const [tab, setTab] = useState<'summary' | 'collection' | 'weekly'>('summary');
   return (
-    <PageViewContainer style={{backgroundColor:COLOR.bg}}>
+    <PageViewContainer style={{ backgroundColor: COLOR.bg }}>
       <BottomSheetModalProvider>
         <SafeAreaView>
           <PageHeader
@@ -23,7 +24,7 @@ const MoimDetailPage = () => {
               </TouchableOpacity>
             }
           />
-          
+
           <View style={styles.moimWrapper}>
             <Text style={styles.moimName}>곰세마리 병동 동기</Text>
             <View style={styles.profileImages}>
@@ -59,20 +60,20 @@ const MoimDetailPage = () => {
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
-              onPress={() => setTab('monthly')}
+              onPress={() => setTab('collection')}
               style={[
                 styles.tabItem,
                 {
-                  borderBottomWidth: tab === 'monthly' ? 2 : 1,
-                  borderBottomColor: tab === 'monthly' ? COLOR.main1 : COLOR.sub45,
+                  borderBottomWidth: tab === 'collection' ? 2 : 1,
+                  borderBottomColor: tab === 'collection' ? COLOR.main1 : COLOR.sub45,
                 },
               ]}
             >
               <Text
                 style={{
                   fontSize: 16,
-                  color: tab === 'monthly' ? COLOR.main1 : COLOR.sub3,
-                  fontFamily: tab === 'monthly' ? 'Apple600' : 'Apple500',
+                  color: tab === 'collection' ? COLOR.main1 : COLOR.sub3,
+                  fontFamily: tab === 'collection' ? 'Apple600' : 'Apple500',
                 }}
               >
                 월별 모아보기
@@ -100,6 +101,7 @@ const MoimDetailPage = () => {
             </TouchableOpacity>
           </View>
           <Summary isVisible={tab === 'summary'} />
+          <Collection isVisible={tab === 'collection'} />
         </SafeAreaView>
       </BottomSheetModalProvider>
     </PageViewContainer>

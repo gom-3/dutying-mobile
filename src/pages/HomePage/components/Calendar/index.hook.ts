@@ -49,13 +49,12 @@ const useCalendar = (isRender?: boolean) => {
     const last = new Date(year, month + 1, 0);
     const calendar: DateType[] = [];
     let dateIndex = 0;
-    if (shiftListResponse) {
-      console.log(shiftListResponse)
-      const shiftList = shiftListResponse.accountShiftTypeIdList;
+    if (true) {
+      const shiftList = shiftListResponse?.accountShiftTypeIdList;
       for (let i = first.getDay() - 1; i >= 0; i--) {
         const date: DateType = {
           date: new Date(year, month, -i),
-          shift: shiftList[dateIndex++],
+          shift: shiftList ? shiftList[dateIndex++] : null,
           schedules: [],
         };
         calendar.push(date);
@@ -63,7 +62,7 @@ const useCalendar = (isRender?: boolean) => {
       for (let i = 1; i <= last.getDate(); i++) {
         const date: DateType = {
           date: new Date(year, month, i),
-          shift: shiftList[dateIndex++],
+          shift: shiftList ? shiftList[dateIndex++] : null,
           schedules: [],
         };
         calendar.push(date);
@@ -71,7 +70,7 @@ const useCalendar = (isRender?: boolean) => {
       for (let i = last.getDay(), j = 1; i < 6; i++, j++) {
         const date: DateType = {
           date: new Date(year, month + 1, j),
-          shift: shiftList[dateIndex++],
+          shift: shiftList ? shiftList[dateIndex++] : null,
           schedules: [],
         };
         calendar.push(date);

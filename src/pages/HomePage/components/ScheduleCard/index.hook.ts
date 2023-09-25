@@ -36,7 +36,7 @@ const useScheduleCard = () => {
     to: { screen: 'RegistDuty', params: { dateFrom: date.toISOString() } },
   });
 
-  const selectedDateData = calendar.find((cell) => isSameDate(cell.date, date));
+  const selectedDateData = calendar.findIndex((cell) => isSameDate(cell.date, date));
 
   const isToday = isSameDate(date, new Date());
 
@@ -96,7 +96,7 @@ const useScheduleCard = () => {
   };
 
   return {
-    state: { animatedStyles, panGesture, date, selectedDateData, shiftTypes, isToday },
+    state: { calendar, animatedStyles, panGesture, date, selectedDateData, shiftTypes, isToday },
     actions: {
       editShiftPressHandler,
       backDropPressHandler,
