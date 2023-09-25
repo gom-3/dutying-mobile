@@ -15,7 +15,7 @@ const days = ['일', '월', '화', '수', '목', '금', '토'];
 
 const ScheduleCard = () => {
   const {
-    state: { calendar, animatedStyles, panGesture, date, selectedDateData, shiftTypes, isToday },
+    state: { animatedStyles, panGesture, date, selectedDateData, shiftTypes, isToday },
     actions: {
       backDropPressHandler,
       addSchedulePressHandler,
@@ -24,13 +24,13 @@ const ScheduleCard = () => {
     },
   } = useScheduleCard();
 
-  const datas = useMemo(() => {
-    return [
-      calendar[selectedDateData - 1],
-      calendar[selectedDateData],
-      calendar[selectedDateData + 1],
-    ];
-  }, [date]);
+  // const datas = useMemo(() => {
+  //   return [
+  //     calendar[selectedDateData - 1],
+  //     calendar[selectedDateData],
+  //     calendar[selectedDateData + 1],
+  //   ];
+  // }, [date]);
 
   const renderItem = ({ item }: { item: DateType }) => {
     return (
@@ -108,7 +108,7 @@ const ScheduleCard = () => {
   return (
     <>
       <BackDrop clickHandler={backDropPressHandler} />
-      <Animated.View entering={FadeInDown.duration(100)} style={styles.scheduleCardContainer}>
+      {/* <Animated.View entering={FadeInDown.duration(100)} style={styles.scheduleCardContainer}>
         <Carousel
           style={styles.scheduleCardContainer}
           data={calendar}
@@ -128,8 +128,8 @@ const ScheduleCard = () => {
           activeSlideOffset={15}
           removeClippedSubviews
         />
-      </Animated.View>
-      {/* <GestureDetector gesture={panGesture}>
+      </Animated.View> */}
+      <GestureDetector gesture={panGesture}>
         <Animated.View
           style={[animatedStyles, styles.scheduleCardContainer]}
           entering={FadeInDown.duration(100)}
@@ -233,7 +233,7 @@ const ScheduleCard = () => {
             </Pressable>
           </View>
         </Animated.View>
-      </GestureDetector> */}
+      </GestureDetector>
     </>
   );
 };
@@ -244,7 +244,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     zIndex: 10,
     top: '25%',
-    // left: -screenWidth * 1.6,
+    left: -screenWidth * 1.6,
   },
   cardView: {
     width: screenWidth * 0.8,

@@ -14,7 +14,7 @@ import { useLinkProps } from '@react-navigation/native';
 import { isSameDate } from '@libs/utils/date';
 import { useScheduleStore } from 'store/schedule';
 import { Schedule } from '@hooks/useDeviceCalendar';
-import { firebaseLogEvent } from '@libs/utils/event';
+import analytics from '@react-native-firebase/analytics';
 
 const useScheduleCard = () => {
   const [date, calendar, setDateOnThread, setState] = useCaledarDateStore((state) => [
@@ -36,7 +36,7 @@ const useScheduleCard = () => {
     to: { screen: 'RegistDuty', params: { dateFrom: date.toISOString() } },
   });
 
-  const selectedDateData = calendar.findIndex((cell) => isSameDate(cell.date, date));
+  const selectedDateData = calendar.find((cell) => isSameDate(cell.date, date));
 
   const isToday = isSameDate(date, new Date());
 
@@ -79,24 +79,24 @@ const useScheduleCard = () => {
   };
 
   const editShiftPressHandler = () => {
-    firebaseLogEvent('move_regist_duty_specific');
+    analytics().logEvent('move_regist_duty_specific');
     onPressRegistShiftButton();
   };
 
   const addSchedulePressHandler = () => {
-    firebaseLogEvent('move_regist_schedule');
+    analytics().logEvent('move_regist_schedule');
     initStateCreate(date);
     onPressAddScheduleButton();
   };
 
   const editSchedulePressHandler = (schedule: Schedule) => {
-    firebaseLogEvent('move_edit_schedule');
+    analytics().logEvent('move_edit_schedule');
     initStateEdit(schedule);
     onPressEditScheduleButton();
   };
 
   return {
-    state: { calendar, animatedStyles, panGesture, date, selectedDateData, shiftTypes, isToday },
+    state: { animatedStyles, panGesture, date, selectedDateData, shiftTypes, isToday },
     actions: {
       editShiftPressHandler,
       backDropPressHandler,

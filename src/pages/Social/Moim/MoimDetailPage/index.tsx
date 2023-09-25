@@ -9,9 +9,12 @@ import { useState } from 'react';
 import Summary from './components/Summary';
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import Collection from './components/Collection';
+import Actions from './components/Actions';
 
 const MoimDetailPage = () => {
   const [tab, setTab] = useState<'summary' | 'collection' | 'weekly'>('summary');
+  const [isActionsOpen, setIsActionsOpen] = useState(false);
+
   return (
     <PageViewContainer style={{ backgroundColor: COLOR.bg }}>
       <BottomSheetModalProvider>
@@ -19,12 +22,11 @@ const MoimDetailPage = () => {
           <PageHeader
             title=""
             rightItems={
-              <TouchableOpacity>
+              <TouchableOpacity onPress={() => setIsActionsOpen(!isActionsOpen)}>
                 <DotsIcon />
               </TouchableOpacity>
             }
           />
-
           <View style={styles.moimWrapper}>
             <Text style={styles.moimName}>곰세마리 병동 동기</Text>
             <View style={styles.profileImages}>
@@ -102,6 +104,7 @@ const MoimDetailPage = () => {
           </View>
           <Summary isVisible={tab === 'summary'} />
           <Collection isVisible={tab === 'collection'} />
+          {isActionsOpen && <Actions close={() => setIsActionsOpen(false)} />}
         </SafeAreaView>
       </BottomSheetModalProvider>
     </PageViewContainer>
