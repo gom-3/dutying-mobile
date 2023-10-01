@@ -10,6 +10,8 @@ import { QueryClient, QueryClientProvider, focusManager, useQuery } from '@tanst
 import { useAppState } from './src/hooks/useAppState';
 import * as SplashScreen from 'expo-splash-screen';
 import useDeviceCalendar from './src/hooks/useDeviceCalendar';
+import { ModalPortal } from 'react-native-modals';
+
 SplashScreen.preventAutoHideAsync();
 
 const onAppStateChange = (status: AppStateStatus) => {
@@ -63,6 +65,7 @@ export default function App() {
         <GestureHandlerRootView style={{ flex: 1 }}>
           <StatusBar style="auto" />
           <Router />
+          <ModalPortal />
         </GestureHandlerRootView>
       </EventProvider>
     </QueryClientProvider>
