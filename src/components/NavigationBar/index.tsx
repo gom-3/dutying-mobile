@@ -1,26 +1,82 @@
 import SelectedLogoIcon from '@assets/svgs/logo-selected.svg';
-import GroupIcon from '@assets/svgs/group.svg';
+import LogoIcon from '@assets/svgs/logo.svg';
+import SocialIcon from '@assets/svgs/social.svg';
+import SelectedSocialIcon from '@assets/svgs/social-selected.svg';
 import WardIcon from '@assets/svgs/ward.svg';
-import { View, Text, StyleSheet } from 'react-native';
+import SelectedWardIcon from '@assets/svgs/ward-selected.svg';
+import { View, Text, StyleSheet, Pressable } from 'react-native';
 import { COLOR, screenWidth } from 'index.style';
-import { Shadow } from 'react-native-shadow-2';
+import { useLinkProps } from '@react-navigation/native';
 
-const NavigationBar = () => {
+interface Props {
+  page: 'home' | 'social' | 'ward';
+}
+
+const NavigationBar = ({ page }: Props) => {
+  const { onPress: navigateToHome } = useLinkProps({ to: { screen: 'Home' } });
+  const { onPress: navigateToSocial } = useLinkProps({ to: { screen: 'Moim' } });
+  const { onPress: navigateToWard } = useLinkProps({ to: { screen: 'Ward' } });
+
   return (
     <View style={styles.navigationContainer}>
-      <Shadow distance={50} startColor="#c9bfde" offset={[0, 35]} containerStyle={{ height: 100 }}>
-        <View style={styles.navigationView}>
-          <View style={styles.itemView}>
-            <GroupIcon />
-            <Text style={styles.itemText}>그룹</Text>
+      <View style={styles.navigationView}>
+        <Pressable
+          onPress={navigateToHome}
+          style={[styles.itemView, { backgroundColor: page === 'home' ? COLOR.main4 : COLOR.bg }]}
+        >
+          <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+            {page === 'home' ? <SelectedLogoIcon /> : <LogoIcon />}
+            <Text
+              style={[
+                styles.itemText,
+                {
+                  color: page === 'home' ? COLOR.main1 : COLOR.sub3,
+                  fontFamily: page === 'home' ? 'Apple600' : 'Apple500',
+                },
+              ]}
+            >
+              홈
+            </Text>
           </View>
-          <SelectedLogoIcon style={styles.logoIcon} />
-          <View style={styles.itemView}>
-            <WardIcon />
-            <Text style={styles.itemText}>병동</Text>
+        </Pressable>
+        <Pressable
+          onPress={navigateToSocial}
+          style={[styles.itemView, { backgroundColor: page === 'social' ? COLOR.main4 : COLOR.bg }]}
+        >
+          <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+            {page === 'social' ? <SelectedSocialIcon /> : <SocialIcon />}
+            <Text
+              style={[
+                styles.itemText,
+                {
+                  color: page === 'social' ? COLOR.main1 : COLOR.sub3,
+                  fontFamily: page === 'social' ? 'Apple600' : 'Apple500',
+                },
+              ]}
+            >
+              소셜
+            </Text>
           </View>
-        </View>
-      </Shadow>
+        </Pressable>
+        <Pressable
+          style={[styles.itemView, { backgroundColor: page === 'ward' ? COLOR.main4 : COLOR.bg }]}
+        >
+          <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+            {page === 'ward' ? <SelectedWardIcon /> : <WardIcon />}
+            <Text
+              style={[
+                styles.itemText,
+                {
+                  color: page === 'ward' ? COLOR.main1 : COLOR.sub3,
+                  fontFamily: page === 'ward' ? 'Apple600' : 'Apple500',
+                },
+              ]}
+            >
+              병동
+            </Text>
+          </View>
+        </Pressable>
+      </View>
     </View>
   );
 };
@@ -29,22 +85,20 @@ const styles = StyleSheet.create({
   navigationContainer: {
     position: 'absolute',
     bottom: 0,
+    borderTopColor: COLOR.sub45,
+    borderTopWidth: 1,
   },
   navigationView: {
     flexDirection: 'row',
     flex: 1,
     width: screenWidth,
+    padding: 2,
     backgroundColor: 'white',
     justifyContent: 'space-evenly',
     alignItems: 'center',
   },
-  itemView: { flex: 1, marginBottom: 34, alignItems: 'center' },
-  itemText: { fontFamily: 'Apple', fontSize: 12, color: COLOR.sub3 },
-  logoIcon: {
-    position: 'absolute',
-    left: '50%',
-    transform: [{ translateX: -44 }, { translateY: -30 }],
-  },
+  itemView: { flex: 1, marginBottom: 40, alignItems: 'center', padding: 6, borderRadius: 10 },
+  itemText: { fontSize: 12 },
 });
 
 export default NavigationBar;

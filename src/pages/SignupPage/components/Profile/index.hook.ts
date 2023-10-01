@@ -8,7 +8,7 @@ import { useLinkProps } from '@react-navigation/native';
 import { useAccountStore } from 'store/account';
 import * as FileSystem from 'expo-file-system';
 import { Asset } from 'expo-asset';
-import analytics from '@react-native-firebase/analytics';
+import { firebaseLogEvent } from '@libs/utils/event';
 
 const useProfile = () => {
   const [id, name, image, photo, setState] = useSignupStore((state) => [
@@ -48,7 +48,7 @@ const useProfile = () => {
   );
 
   const pressSignupButton = async () => {
-    analytics().logEvent('signup');
+    firebaseLogEvent('signup');
     const profile = photo ? photo : image;
     const base64 = await imageToBase64(profile);
     if (base64) {
@@ -69,13 +69,13 @@ const useProfile = () => {
   };
 
   const setRandomImage = () => {
-    analytics().logEvent('change_image');
+    firebaseLogEvent('change_image');
     setState('image', images[Math.floor(Math.random() * 30)]);
     setState('photo', null);
   };
 
   const setPhotoImage = async () => {
-    analytics().logEvent('change_photo');
+    firebaseLogEvent('change_photo');
     const photo = await pickImage();
     if (photo) {
       setState('photo', photo);

@@ -10,7 +10,7 @@ import {
 } from '@libs/api/shiftTypes';
 import { useAccountStore } from 'store/account';
 import { useNavigation } from '@react-navigation/native';
-import analytics from '@react-native-firebase/analytics';
+import { firebaseLogEvent } from '@libs/utils/event';
 
 interface TypeList {
   text: string;
@@ -75,7 +75,7 @@ const useShiftTypeEdit = () => {
     setState('currentShift', newShift);
   };
   const onChangeSwith = (value: boolean) => {
-    analytics().logEvent('change_shift_time');
+    firebaseLogEvent('change_shift_time');
     if (value) {
       const newShift: ShiftWithoutID = shift.startTime
         ? shift
@@ -93,7 +93,7 @@ const useShiftTypeEdit = () => {
     }
   };
   const onChangeColor = (color: string) => {
-    analytics().logEvent('change_shift_color');
+    firebaseLogEvent('change_shift_color');
     const newShift: ShiftWithoutID = { ...shift, color: color };
     setState('currentShift', newShift);
   };
@@ -102,7 +102,7 @@ const useShiftTypeEdit = () => {
     setState('currentShift', newShift);
   };
   const onPressShiftType = (type: Shift['classification']) => {
-    analytics().logEvent('change_shift_classification');
+    firebaseLogEvent('change_shift_classification');
     const newShift: ShiftWithoutID = { ...shift, classification: type };
     if (type === 'OTHER_WORK' || type === 'LEAVE') {
       newShift.startTime = null;
@@ -112,7 +112,7 @@ const useShiftTypeEdit = () => {
     setState('currentShift', newShift);
   };
   const onPressDeleteButton = () => {
-    analytics().logEvent('delete_shfit_type');
+    firebaseLogEvent('delete_shfit_type');
     deleteShiftTypeMutate(accountShiftTypeId);
   };
   const onPressSaveButton = () => {
@@ -132,10 +132,10 @@ const useShiftTypeEdit = () => {
       const reqDTO: ShiftTypeRequestDTO = { ...shift, startTime, endTime };
       console.log(reqDTO);
       if (!isEdit) {
-        analytics().logEvent('add_shfit_type');
+        firebaseLogEvent('add_shfit_type');
         addShiftTypeMutate(reqDTO);
       } else {
-        analytics().logEvent('edit_shift_type');
+        firebaseLogEvent('edit_shift_type');
         editShiftTypeMutate({ shiftId: accountShiftTypeId, shift: reqDTO });
       }
     }

@@ -1,18 +1,21 @@
 import { Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Animated, { FadeInDown } from 'react-native-reanimated';
-import { COLOR, screenWidth } from 'index.style';
+import { COLOR, screenHeight, screenWidth } from 'index.style';
 import { GestureDetector } from 'react-native-gesture-handler';
 import PencilIcon from '@assets/svgs/pencil.svg';
 import AddButtonIcon from '@assets/svgs/add-button.svg';
 import AddShiftIcon from '@assets/svgs/add-shift.svg';
 import BackDrop from '@components/BackDrop';
 import useScheduleCard from './index.hook';
+import Carousel from 'react-native-snap-carousel';
+import { useMemo } from 'react';
+import { DateType } from '../Calendar';
 
 const days = ['일', '월', '화', '수', '목', '금', '토'];
 
 const ScheduleCard = () => {
   const {
-    state: { animatedStyles, panGesture, date, selectedDateData, shiftTypes, isToday },
+    state: { calendar, animatedStyles, panGesture, date, selectedDateData, shiftTypes, isToday },
     actions: {
       backDropPressHandler,
       addSchedulePressHandler,
@@ -21,19 +24,128 @@ const ScheduleCard = () => {
     },
   } = useScheduleCard();
 
+  const datas = useMemo(() => {
+    return [
+      calendar[selectedDateData - 1],
+      calendar[selectedDateData],
+      calendar[selectedDateData + 1],
+    ];
+  }, [date]);
+
+  const renderItem = ({ item }: { item: DateType }) => {
+    return (
+      <View style={styles.cardView}>
+        <Text style={styles.dateText}>
+          {item.date.getMonth() + 1}월 {item.date.getDate()}일 {days[item.date.getDay()]}
+        </Text>
+        {isToday && <Text style={styles.todayText}>오늘</Text>}
+        <View style={styles.cardHeaderView}>
+          {item?.shift ? (
+            <View style={styles.shiftWrapperView}>
+              <View
+                style={[
+                  styles.shiftBoxView,
+                  { backgroundColor: shiftTypes.get(item.shift)?.color },
+                ]}
+              >
+                <Text style={styles.shiftBoxText}>{shiftTypes.get(item.shift)?.shortName}</Text>
+              </View>
+              <Text style={styles.shiftNameText}>{shiftTypes.get(item.shift)?.name}</Text>
+            </View>
+          ) : (
+            <TouchableOpacity onPress={editShiftPressHandler}>
+              <View style={styles.shiftWrapperView}>
+                <AddShiftIcon />
+                <Text style={styles.registShiftText}>근무를 등록해주세요.</Text>
+              </View>
+            </TouchableOpacity>
+          )}
+          {item?.shift && (
+            <Pressable onPress={editShiftPressHandler}>
+              <PencilIcon />
+            </Pressable>
+          )}
+        </View>
+        <ScrollView style={{ padding: 24 }}>
+          {item?.schedules.map((schedule) => (
+            <TouchableOpacity key={schedule.id} onPress={() => editSchedulePressHandler(schedule)}>
+              <View key={schedule.title} style={styles.scheduleView}>
+                <View
+                  style={[
+                    styles.scheduleColorView,
+                    {
+                      backgroundColor: schedule.color,
+                    },
+                  ]}
+                />
+                <View>
+                  <Text style={styles.scheduleNameText}>{schedule.title}</Text>
+                  <Text style={styles.scheduleDateText}>
+                    {schedule.allDay
+                      ? '하루 종일'
+                      : schedule.startTime.getHours().toString().padStart(2, '0') +
+                        ':' +
+                        schedule.startTime.getMinutes().toString().padStart(2, '0') +
+                        ' - ' +
+                        schedule.endTime.getHours().toString().padStart(2, '0') +
+                        ':' +
+                        schedule.endTime.getMinutes().toString().padStart(2, '0')}
+                  </Text>
+                </View>
+              </View>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
+        <Pressable style={styles.addButtonIcon} onPress={addSchedulePressHandler}>
+          <AddButtonIcon />
+        </Pressable>
+      </View>
+    );
+  };
+
+  console.log(selectedDateData);
+
   return (
     <>
       <BackDrop clickHandler={backDropPressHandler} />
-      <GestureDetector gesture={panGesture}>
+      <Animated.View entering={FadeInDown.duration(100)} style={styles.scheduleCardContainer}>
+        <Carousel
+          style={styles.scheduleCardContainer}
+          data={calendar}
+          renderItem={renderItem}
+          sliderWidth={screenWidth}
+          itemWidth={screenWidth * 0.8}
+          getItemLayout={(_, index) => ({
+            length: screenWidth * 0.8,
+            offset: screenWidth * 0.8 * index,
+            index,
+          })}
+          firstItem={selectedDateData}
+          initialNumToRender={3}
+          maxToRenderPerBatch={9}
+          enableMomentum={true}
+          swipeThreshold={10}
+          activeSlideOffset={15}
+          removeClippedSubviews
+        />
+      </Animated.View>
+      {/* <GestureDetector gesture={panGesture}>
         <Animated.View
           style={[animatedStyles, styles.scheduleCardContainer]}
           entering={FadeInDown.duration(100)}
         >
           <View style={styles.cardView}>
             <View style={styles.cardHeaderView} />
+            <Pressable style={styles.addButtonIcon} onPress={addSchedulePressHandler}>
+              <AddButtonIcon />
+            </Pressable>
           </View>
           <View style={styles.cardView}>
+            
             <View style={styles.cardHeaderView} />
+            <Pressable style={styles.addButtonIcon} onPress={addSchedulePressHandler}>
+              <AddButtonIcon />
+            </Pressable>
           </View>
           <View style={styles.cardView}>
             <Text style={styles.dateText}>
@@ -73,7 +185,10 @@ const ScheduleCard = () => {
             </View>
             <ScrollView style={{ padding: 24 }}>
               {selectedDateData?.schedules.map((schedule) => (
-                <TouchableOpacity key={schedule.id} onPress={() => editSchedulePressHandler(schedule)}>
+                <TouchableOpacity
+                  key={schedule.id}
+                  onPress={() => editSchedulePressHandler(schedule)}
+                >
                   <View key={schedule.title} style={styles.scheduleView}>
                     <View
                       style={[
@@ -107,12 +222,18 @@ const ScheduleCard = () => {
           </View>
           <View style={styles.cardView}>
             <View style={styles.cardHeaderView} />
+            <Pressable style={styles.addButtonIcon} onPress={addSchedulePressHandler}>
+              <AddButtonIcon />
+            </Pressable>
           </View>
           <View style={styles.cardView}>
             <View style={styles.cardHeaderView} />
+            <Pressable style={styles.addButtonIcon} onPress={addSchedulePressHandler}>
+              <AddButtonIcon />
+            </Pressable>
           </View>
         </Animated.View>
-      </GestureDetector>
+      </GestureDetector> */}
     </>
   );
 };
@@ -123,7 +244,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     zIndex: 10,
     top: '25%',
-    left: -screenWidth * 1.6,
+    // left: -screenWidth * 1.6,
   },
   cardView: {
     width: screenWidth * 0.8,

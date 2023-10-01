@@ -7,10 +7,9 @@ import ShareIcon from '@assets/svgs/share.svg';
 import SliderIcon from '@assets/svgs/slider.svg';
 import { useMemo } from 'react';
 import { useAccountStore } from 'store/account';
-import analytics from '@react-native-firebase/analytics';
-import { Alert } from 'react-native';
 import { navigateToLoginAndResetHistory } from '@libs/utils/navigate';
-
+import { Alert } from 'react-native';
+import { firebaseLogEvent } from '@libs/utils/event';
 
 interface SideMenuItem {
   icon: React.FC<SvgProps>;
@@ -64,7 +63,7 @@ const useSideMenu = () => {
         icon: PlusIcon,
         title: '근무 등록',
         onPress: () => {
-          analytics().logEvent('move_regist_duty');
+          firebaseLogEvent('move_regist_duty');
           onPressLinkRegistDuty();
         },
       },
@@ -72,7 +71,7 @@ const useSideMenu = () => {
         icon: EditShiftTypeIcon,
         title: '근무 유형 수정',
         onPress: () => {
-          analytics().logEvent('move_edit_shfit_type');
+          firebaseLogEvent('move_edit_shfit_type');
           onPressEditShiftType();
         },
       },
@@ -80,7 +79,7 @@ const useSideMenu = () => {
         icon: ShareIcon,
         title: '공유하기',
         onPress: () => {
-          analytics().logEvent('move_share');
+          firebaseLogEvent('move_share');
           onPressShare();
         },
       },
@@ -88,7 +87,7 @@ const useSideMenu = () => {
         icon: SliderIcon,
         title: '캘린더 연동',
         onPress: () => {
-          analytics().logEvent('move_calendar_link');
+          firebaseLogEvent('move_calendar_link');
           onPressDeviceCalendar();
         },
       },

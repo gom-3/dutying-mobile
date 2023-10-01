@@ -12,6 +12,7 @@ import {
   State,
 } from 'react-native-gesture-handler';
 import analytics from '@react-native-firebase/analytics';
+import { firebaseLogEvent } from '@libs/utils/event';
 
 const useCalendar = (isRender?: boolean) => {
   const [account, userId] = useAccountStore((state) => [state.account, state.account.accountId]);
@@ -38,7 +39,7 @@ const useCalendar = (isRender?: boolean) => {
   );
 
   const dateClickHandler = (date: Date) => {
-    analytics().logEvent('select_date_cell');
+    firebaseLogEvent('select_date_cell');
     setState('date', date);
     setState('isCardOpen', true);
   };
@@ -48,13 +49,12 @@ const useCalendar = (isRender?: boolean) => {
     const last = new Date(year, month + 1, 0);
     const calendar: DateType[] = [];
     let dateIndex = 0;
-    if (shiftListResponse) {
-      console.log(shiftListResponse)
-      const shiftList = shiftListResponse.accountShiftTypeIdList;
+    if (true) {
+      const shiftList = shiftListResponse?.accountShiftTypeIdList;
       for (let i = first.getDay() - 1; i >= 0; i--) {
         const date: DateType = {
           date: new Date(year, month, -i),
-          shift: shiftList[dateIndex++],
+          shift: shiftList ? shiftList[dateIndex++] : null,
           schedules: [],
         };
         calendar.push(date);
@@ -62,7 +62,7 @@ const useCalendar = (isRender?: boolean) => {
       for (let i = 1; i <= last.getDate(); i++) {
         const date: DateType = {
           date: new Date(year, month, i),
-          shift: shiftList[dateIndex++],
+          shift: shiftList ? shiftList[dateIndex++] : null,
           schedules: [],
         };
         calendar.push(date);
@@ -70,7 +70,7 @@ const useCalendar = (isRender?: boolean) => {
       for (let i = last.getDay(), j = 1; i < 6; i++, j++) {
         const date: DateType = {
           date: new Date(year, month + 1, j),
-          shift: shiftList[dateIndex++],
+          shift: shiftList ? shiftList[dateIndex++] : null,
           schedules: [],
         };
         calendar.push(date);
@@ -96,11 +96,11 @@ const useCalendar = (isRender?: boolean) => {
   const onHandlerStateChange = (event: HandlerStateChangeEvent<PanGestureHandlerEventPayload>) => {
     if (event.nativeEvent.oldState === State.ACTIVE) {
       if (event.nativeEvent.translationX > 100) {
-        analytics().logEvent('swipe_calendar');
+        firebaseLogEvent('swipe_calendar');
         const prevMonth = new Date(date.getFullYear(), date.getMonth() - 1, 1);
         setState('date', prevMonth);
       } else if (event.nativeEvent.translationX < -100) {
-        analytics().logEvent('swipe_calendar');
+        firebaseLogEvent('swipe_calendar');
         const nextMonth = new Date(date.getFullYear(), date.getMonth() + 1, 1);
         setState('date', nextMonth);
       }

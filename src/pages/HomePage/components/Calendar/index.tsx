@@ -78,7 +78,7 @@ const Calendar = ({ withoutSchedule }: Props) => {
                       }
                       return (
                         <View
-                          key={schedule.title}
+                          key={schedule.id}
                           style={[
                             styles.scheduleView,
                             {
