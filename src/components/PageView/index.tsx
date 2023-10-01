@@ -15,7 +15,6 @@ interface Props {
 
 const PageViewContainer = ({ children, withoutLogin, style }: Props) => {
   const [account, setState] = useAccountStore((state) => [state.account, state.setState]);
-  const { onPress: redirectToLoginPage } = useLinkProps({ to: { screen: 'Login' } });
 
   useEffect(() => {
     // expo go 환경일 때는 소셜로그인이 불가능하니 임시 로그인 처리

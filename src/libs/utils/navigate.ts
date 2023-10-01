@@ -1,5 +1,5 @@
-import { createNavigationContainerRef } from "@react-navigation/native";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { createNavigationContainerRef } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 export type StackParams = {
   Login: undefined;
@@ -15,6 +15,8 @@ export type StackParams = {
   Onboarding: undefined;
   DeviceCalendar: undefined;
   Term: undefined;
+  Moim: undefined;
+  MoimDetail: undefined;
 };
 
 export const Stack = createNativeStackNavigator<StackParams>();
