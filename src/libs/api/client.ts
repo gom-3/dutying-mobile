@@ -1,5 +1,4 @@
 import axios from 'axios';
-import CookieManager from '@react-native-cookies/cookies';
 import { navigate } from '@libs/utils/navigate';
 
 interface Cookie {

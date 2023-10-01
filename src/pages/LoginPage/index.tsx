@@ -114,7 +114,12 @@ const LoginPage = () => {
 
   const onPressAppleLogin = async () => {
     firebaseLogEvent('apple');
-    const token = await AppleAuthentication.signInAsync();
+    const token = await AppleAuthentication.signInAsync({
+      requestedScopes: [
+        AppleAuthentication.AppleAuthenticationScope.FULL_NAME,
+        AppleAuthentication.AppleAuthenticationScope.EMAIL,
+      ],
+    });
     oAuthLoginMutate({ idToken: token.identityToken || '', provider: 'apple' });
   };
 

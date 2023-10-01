@@ -15,41 +15,40 @@ const SideMenu = () => {
   return (
     <>
       <BackDrop clickHandler={closeSideMenu} />
-      <Animated.View
-        style={styles.sideMenuContainer}
-        entering={SlideInRight.duration(350)}
-        exiting={SlideOutRight.duration(350)}
-      >
-        <TouchableOpacity onPress={closeSideMenu}>
-          <ExitIcon style={styles.exitIcon} />
-        </TouchableOpacity>
-        <View style={styles.profileView}>
-          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-            <Image
-              source={{ uri: `data:image/png;base64,${account.profileImgBase64}` }}
-              style={{ width: 28, height: 28 }}
-            />
-            <Text style={styles.profileText}>{account.name}</Text>
-          </View>
-          {/* <SettingIcon /> */}
-        </View>
-        <View style={styles.deviderView} />
-        {menuItemList.map((item) => (
-          <TouchableOpacity key={item.title} onPress={item.onPress}>
-            <View style={styles.menuItemView}>
-              <item.icon />
-              <Text style={styles.menuItemText}>{item.title}</Text>
-            </View>
+        <Animated.View
+          style={styles.sideMenuContainer}
+          entering={SlideInRight.duration(350)}
+          exiting={SlideOutRight.duration(350)}
+        >
+          <TouchableOpacity onPress={closeSideMenu}>
+            <ExitIcon style={styles.exitIcon} />
           </TouchableOpacity>
-        ))}
-        <TouchableOpacity style={styles.logoutView} onPress={logout}>
-          <Text style={styles.logoutText}>로그아웃</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={[styles.logoutView,{left:100}]} onPress={signout}>
-          <Text style={styles.logoutText}>회원탈퇴</Text>
-        </TouchableOpacity>
-
-      </Animated.View>
+          <View style={styles.profileView}>
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              <Image
+                source={{ uri: `data:image/png;base64,${account.profileImgBase64}` }}
+                style={{ width: 28, height: 28 }}
+              />
+              <Text style={styles.profileText}>{account.name}</Text>
+            </View>
+            {/* <SettingIcon /> */}
+          </View>
+          <View style={styles.deviderView} />
+          {menuItemList.map((item) => (
+            <TouchableOpacity key={item.title} onPress={item.onPress}>
+              <View style={styles.menuItemView}>
+                <item.icon />
+                <Text style={styles.menuItemText}>{item.title}</Text>
+              </View>
+            </TouchableOpacity>
+          ))}
+          <TouchableOpacity style={styles.logoutView} onPress={logout}>
+            <Text style={styles.logoutText}>로그아웃</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={[styles.logoutView, { left: 100 }]} onPress={signout}>
+            <Text style={styles.logoutText}>회원탈퇴</Text>
+          </TouchableOpacity>
+        </Animated.View>
     </>
   );
 };
@@ -62,7 +61,7 @@ const styles = StyleSheet.create({
     right: 0,
     width: screenWidth * 0.8,
     maxWidth: 310,
-    height: screenHeight,
+    height: screenHeight * 0.95,
     borderTopLeftRadius: 20,
     borderBottomLeftRadius: 20,
     shadowColor: '#19181b',
@@ -70,6 +69,7 @@ const styles = StyleSheet.create({
     shadowRadius: 20,
     shadowOpacity: 0.4,
     elevation: 8,
+    flex: 1,
   },
   exitIcon: {
     marginTop: 66,
