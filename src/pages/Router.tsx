@@ -1,5 +1,4 @@
 import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import HomePage from './HomePage';
 import MoimPage from './Social/Moim';
 import RegistDuty from './RegistDuty';
@@ -15,34 +14,16 @@ import OnboardingPage from './OnboardingPage';
 import DeviceCalendarPage from './DeviceCalendarPage';
 import MoimDetailPage from './Social/Moim/MoimDetailPage';
 import Term from './LoginPage/Term';
-
-export type StackParams = {
-  Login: undefined;
-  Signup: undefined;
-  Home: undefined;
-  Moim: undefined;
-  MoimDetail: undefined;
-  RegistDuty: undefined;
-  RegistSchedule: undefined;
-  ShiftType: undefined;
-  ShiftTypeEdit: undefined;
-  Share: undefined;
-  Notification: undefined;
-  Onboarding: undefined;
-  DeviceCalendar: undefined;
-  Term: undefined;
-};
-
-const Stack = createNativeStackNavigator<StackParams>();
+import { Stack, navigationRef } from '@libs/utils/navigate';
 
 const Router = () => {
   useShiftType();
 
   return (
-    <NavigationContainer>
+    <NavigationContainer ref={navigationRef}>
       <Stack.Navigator initialRouteName="Home" screenOptions={{ headerShown: false }}>
         <Stack.Screen name="Login" component={LoginPage} options={{ gestureEnabled: false }} />
-        <Stack.Screen name='Term' component={Term} />
+        <Stack.Screen name="Term" component={Term} />
         <Stack.Screen name="Signup" component={SignupPage} />
         <Stack.Screen name="Home" component={HomePage} options={{ gestureEnabled: false }} />
         <Stack.Screen

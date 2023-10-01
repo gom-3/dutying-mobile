@@ -1,10 +1,10 @@
 import BackDrop from '@components/BackDrop';
-import SettingIcon from '@assets/svgs/setting.svg';
 import { StyleSheet, View, Text, Image, TouchableOpacity } from 'react-native';
 import Animated, { SlideInRight, SlideOutRight } from 'react-native-reanimated';
 import { COLOR, screenHeight, screenWidth } from 'index.style';
 import ExitIcon from '@assets/svgs/exit.svg';
 import useSideMenu from './index.hook';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const SideMenu = () => {
   const {

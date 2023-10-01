@@ -7,9 +7,9 @@ import ShareIcon from '@assets/svgs/share.svg';
 import SliderIcon from '@assets/svgs/slider.svg';
 import { useMemo } from 'react';
 import { useAccountStore } from 'store/account';
+import { navigateToLoginAndResetHistory } from '@libs/utils/navigate';
 import { Alert } from 'react-native';
 import { firebaseLogEvent } from '@libs/utils/event';
-
 
 interface SideMenuItem {
   icon: React.FC<SvgProps>;
@@ -24,7 +24,6 @@ const useSideMenu = () => {
   const { onPress: onPressEditShiftType } = useLinkProps({ to: { screen: 'ShiftType' } });
   const { onPress: onPressShare } = useLinkProps({ to: { screen: 'Share' } });
   const { onPress: onPressDeviceCalendar } = useLinkProps({ to: { screen: 'DeviceCalendar' } });
-  const { onPress: onPressLogout } = useLinkProps({ to: { screen: 'Login' } });
 
   const closeSideMenu = () => {
     setState('isSideMenuOpen', false);
@@ -37,7 +36,7 @@ const useSideMenu = () => {
         onPress: () => {
           logoutAccount();
           setState('isSideMenuOpen', false);
-          onPressLogout();
+          navigateToLoginAndResetHistory();
         },
       },
       { text: '아니오', onPress: () => {} },
@@ -51,7 +50,7 @@ const useSideMenu = () => {
         onPress: () => {
           logoutAccount();
           setState('isSideMenuOpen', false);
-          onPressLogout();
+          navigateToLoginAndResetHistory();
         },
       },
       { text: '아니오', onPress: () => {} },
