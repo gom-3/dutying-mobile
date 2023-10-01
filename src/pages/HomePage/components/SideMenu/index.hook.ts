@@ -11,6 +11,7 @@ import analytics from '@react-native-firebase/analytics';
 import { Alert } from 'react-native';
 import { navigateToLoginAndResetHistory } from '@libs/utils/navigate';
 
+
 interface SideMenuItem {
   icon: React.FC<SvgProps>;
   title: string;
@@ -95,6 +96,7 @@ const useSideMenu = () => {
     [],
   );
   return { state: { account, menuItemList }, actions: { closeSideMenu, logout, signout } };
+
 };
 
 export default useSideMenu;

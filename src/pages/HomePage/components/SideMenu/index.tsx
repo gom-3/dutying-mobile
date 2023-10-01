@@ -48,6 +48,7 @@ const SideMenu = () => {
         <TouchableOpacity style={[styles.logoutView,{left:100}]} onPress={signout}>
           <Text style={styles.logoutText}>회원탈퇴</Text>
         </TouchableOpacity>
+
       </Animated.View>
     </>
   );
