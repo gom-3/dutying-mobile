@@ -9,6 +9,7 @@ import { useMemo } from 'react';
 import { useAccountStore } from 'store/account';
 import analytics from '@react-native-firebase/analytics';
 import { Alert } from 'react-native';
+import { navigateToLoginAndResetHistory } from '@libs/utils/navigate';
 
 interface SideMenuItem {
   icon: React.FC<SvgProps>;
@@ -23,7 +24,6 @@ const useSideMenu = () => {
   const { onPress: onPressEditShiftType } = useLinkProps({ to: { screen: 'ShiftType' } });
   const { onPress: onPressShare } = useLinkProps({ to: { screen: 'Share' } });
   const { onPress: onPressDeviceCalendar } = useLinkProps({ to: { screen: 'DeviceCalendar' } });
-  const { onPress: onPressLogout } = useLinkProps({ to: { screen: 'Login' } });
 
   const closeSideMenu = () => {
     setState('isSideMenuOpen', false);
@@ -36,7 +36,7 @@ const useSideMenu = () => {
         onPress: () => {
           logoutAccount();
           setState('isSideMenuOpen', false);
-          onPressLogout();
+          navigateToLoginAndResetHistory();
         },
       },
       { text: '아니오', onPress: () => {} },
@@ -50,7 +50,7 @@ const useSideMenu = () => {
         onPress: () => {
           logoutAccount();
           setState('isSideMenuOpen', false);
-          onPressLogout();
+          navigateToLoginAndResetHistory();
         },
       },
       { text: '아니오', onPress: () => {} },

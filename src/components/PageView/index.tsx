@@ -1,4 +1,4 @@
-import { useLinkProps } from '@react-navigation/native';
+import { navigateToLoginAndResetHistory } from '@libs/utils/navigate';
 import { screenHeight, screenWidth } from 'index.style';
 import { ReactNode, useEffect } from 'react';
 import { View, StyleSheet } from 'react-native';
@@ -11,10 +11,10 @@ interface Props {
 
 const PageViewContainer = ({ children, withoutLogin }: Props) => {
   const [account] = useAccountStore((state) => [state.account]);
-  const { onPress: redirectToLoginPage } = useLinkProps({ to: { screen: 'Login' } });
 
   useEffect(() => {
-    if (account.accountId === 0 && !withoutLogin) setTimeout(() => redirectToLoginPage(), 100);
+    if (account.accountId === 0 && !withoutLogin)
+      setTimeout(() => navigateToLoginAndResetHistory(), 100);
   }, [account.accountId]);
 
   return <View style={styles.container}>{children}</View>;

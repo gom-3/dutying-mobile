@@ -7,5 +7,10 @@ type Account = {
   name: string;
   isManager: boolean;
   profileImgBase64: string;
-  status: 'ACTIVE' | 'INITIAL';
+  status:
+    | 'INITIAL'
+    | 'NURSE_INFO_PENDING'
+    | 'WARD_SELECT_PENDING'
+    | 'WARD_ENTRY_PENDING'
+    | 'LINKED';
 };

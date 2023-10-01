@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "dutying-mobile",
-    "slug": "dutying-mobile",
+    "name": "듀팅",
+    "slug": "듀팅",
     "version": "1.1.19",
     "orientation": "portrait",
     "icon": "./src/assets/icon.png",
@@ -12,15 +12,15 @@
       [
         "expo-calendar",
         {
-          "calendarPermission": "The app needs to access your calendar.",
-          "remindersPermission": "The app needs to access your reminders."
+          "calendarPermission": "개인 일정을 앱에서 함께 관리하기 위해 캘린더 권한이 필요합니다.",
+          "remindersPermission": "개인 일정을 앱에서 함께 관리하기 위해 캘린더 권한이 필요합니다."
         }
       ],
       [
         "expo-image-picker",
         {
-          "photosPermission": "The app accesses your photos to let you share them with your friends.",
-          "cameraPermission": "The app accesses your camera to let you share them with your friends."
+          "photosPermission": "프로필 사진 업로드를 위해 앨범 접근 권한이 필요합니다.",
+          "cameraPermission": "프로필 사진 업로드를 위해 카메라 접근 권한이 필요합니다."
         }
       ],
       [
@@ -64,8 +64,8 @@
       "usesAppleSignIn": true,
       "supportsTablet": false,
       "infoPlist": {
-        "NSCalendarsUsageDescription": "The app needs to access your calendar.",
-        "NSRemindersUsageDescription": "The app needs to access your reminders."
+        "NSCalendarsUsageDescription": "개인 일정을 앱에서 함께 관리하기 위해 캘린더 접근 권한이 필요합니다.",
+        "NSRemindersUsageDescription": "개인 일정을 앱에서 함께 관리하기 위해 리마인더 접근 권한이 필요합니다."
       },
       "bundleIdentifier": "com.gom3.dutying"
     },
