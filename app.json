@@ -6,7 +6,7 @@
     "orientation": "portrait",
     "icon": "./src/assets/icon.png",
     "userInterfaceStyle": "light",
-    "scheme": "dutying://",
+    "scheme": "dutying",
     "plugins": [
       "expo-apple-authentication",
       "@react-native-firebase/app",
