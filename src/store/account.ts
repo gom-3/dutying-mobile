@@ -16,6 +16,7 @@ const initialAccount: Account = {
   name: '',
   isManager: false,
   profileImgBase64: '',
+  status: 'INITIAL',
 };
 
 interface Store extends State {

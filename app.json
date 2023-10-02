@@ -1,11 +1,12 @@
 {
   "expo": {
     "name": "듀팅",
-    "slug": "듀팅",
-    "version": "1.1.19",
+    "slug": "dutying-mobile",
+    "version": "1.1.20",
     "orientation": "portrait",
     "icon": "./src/assets/icon.png",
     "userInterfaceStyle": "light",
+    "scheme": "dutying://",
     "plugins": [
       "expo-apple-authentication",
       "@react-native-firebase/app",
@@ -64,10 +65,14 @@
       "usesAppleSignIn": true,
       "supportsTablet": false,
       "infoPlist": {
-        "NSCalendarsUsageDescription": "개인 일정을 앱에서 함께 관리하기 위해 캘린더 접근 권한이 필요합니다.",
-        "NSRemindersUsageDescription": "개인 일정을 앱에서 함께 관리하기 위해 리마인더 접근 권한이 필요합니다."
+        "NSCalendarsUsageDescription": "개인 일정을 앱에서 함께 관리하기 위해 캘린더 권한이 필요합니다.",
+        "NSRemindersUsageDescription": "개인 일정을 앱에서 함께 관리하기 위해 캘린더 권한이 필요합니다."
       },
-      "bundleIdentifier": "com.gom3.dutying"
+      "bundleIdentifier": "com.gom3.dutying",
+      "associatedDomains": [
+        "applinks:dutying.airbridge.io",
+        "applinks:dutying.deeplink.page"
+      ]
     },
     "android": {
       "enableProguardInReleaseBuilds": true,
@@ -82,15 +87,66 @@
       ],
       "package": "com.gom3.dutying",
       "googleServicesFile": "./google-services.json",
-      "versionCode": 14
+      "versionCode": 16,
+      "intentFilters": [
+        {
+          "autoVerify": true,
+          "action": "VIEW",
+          "data": {
+            "scheme": "https",
+            "host": "dutying.airbridge.io"
+          },
+          "category": [
+            "BROWSABLE",
+            "DEFAULT"
+          ]
+        },
+        {
+          "autoVerify": true,
+          "action": "VIEW",
+          "data": {
+            "scheme": "https",
+            "host": "dutying.deeplink.page"
+          },
+          "category": [
+            "BROWSABLE",
+            "DEFAULT"
+          ]
+        },
+        {
+          "autoVerify": true,
+          "action": "VIEW",
+          "data": {
+            "scheme": "http",
+            "host": "dutying.airbridge.io"
+          },
+          "category": [
+            "BROWSABLE",
+            "DEFAULT"
+          ]
+        },
+        {
+          "autoVerify": true,
+          "action": "VIEW",
+          "data": {
+            "scheme": "http",
+            "host": "dutying.deeplink.page"
+          },
+          "category": [
+            "BROWSABLE",
+            "DEFAULT"
+          ]
+        }
+      ]
     },
     "web": {
       "favicon": "./src/assets/favicon.png"
     },
     "extra": {
       "eas": {
-        "projectId": "fc14acf6-383b-46ff-a52b-40a3abab080a"
+        "projectId": "4f3009ff-f032-4d32-b711-054b0d76e953"
       }
-    }
+    },
+    "owner": "cksrb63"
   }
 }

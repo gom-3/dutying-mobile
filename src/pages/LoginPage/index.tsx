@@ -99,7 +99,6 @@ const LoginPage = () => {
   }, [accountData]);
 
   useEffect(() => {
-    //
     const backAction = () => true;
     const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction);
 
@@ -124,7 +123,7 @@ const LoginPage = () => {
   };
 
   return (
-    <PageViewContainer>
+    <PageViewContainer withoutLogin>
       <SafeAreaView>
         <View style={styles.pageContainer}>
           <View style={styles.guidTextWrapper}>
