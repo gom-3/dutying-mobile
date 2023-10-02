@@ -1,6 +1,10 @@
 import NavigationBar from '@components/NavigationBar';
 import PageViewContainer from '@components/PageView';
-import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
+import {
+  BottomSheetBackdrop,
+  BottomSheetModal,
+  BottomSheetModalProvider,
+} from '@gorhom/bottom-sheet';
 import { COLOR } from 'index.style';
 import {
   Pressable,
@@ -18,9 +22,15 @@ import PlusIcon from '@assets/svgs/plus-circle.svg';
 import { images } from '@assets/images/profiles';
 import { useLinkProps } from '@react-navigation/native';
 import BookmarkIcon from '@assets/svgs/bookmark.svg';
+import BottomSheetHeader from '@components/BottomSheetHeader';
+import CheckIcon from '@assets/svgs/check.svg';
+import { useCallback, useRef } from 'react';
+import TextInputBox from '@components/TextInputBox';
 
 const MoimPage = () => {
   const { onPress: navigateDetailMoim } = useLinkProps({ to: { screen: 'MoimDetail' } });
+  const createRef = useRef<BottomSheetModal>(null);
+  const renderBackdrop = useCallback((props: any) => <BottomSheetBackdrop {...props} />, []);
 
   return (
     <PageViewContainer style={{ backgroundColor: '#fdfcfe' }}>
@@ -86,7 +96,7 @@ const MoimPage = () => {
                 <BookmarkIcon />
               </Pressable>
             </View>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={() => createRef.current?.present()}>
               <View style={styles.addButton}>
                 <PlusIcon />
                 <Text style={styles.addButtonText}>새로운 모임 생성하기</Text>
@@ -94,6 +104,28 @@ const MoimPage = () => {
             </TouchableOpacity>
           </ScrollView>
         </SafeAreaView>
+        <BottomSheetModal
+          backdropComponent={renderBackdrop}
+          index={1}
+          ref={createRef}
+          handleComponent={null}
+          snapPoints={[100, 300]}
+        >
+          <View style={{ padding: 14 }}>
+            <BottomSheetHeader
+              title="모임 생성하기"
+              onPressExit={() => createRef.current?.close()}
+              rightItems={
+                <Pressable>
+                  <CheckIcon />
+                </Pressable>
+              }
+            />
+            <View style={{ padding: 10 }}>
+              <TextInputBox placeholder="모임명" style={{ width: '100%' }} />
+            </View>
+          </View>
+        </BottomSheetModal>
         <NavigationBar page="social" />
       </BottomSheetModalProvider>
     </PageViewContainer>
@@ -210,8 +242,8 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 8,
     right: 25,
-    width:30,
-    height:30
+    width: 30,
+    height: 30,
   },
 });
 
