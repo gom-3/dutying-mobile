@@ -1,4 +1,4 @@
-import { NavigationContainer } from '@react-navigation/native';
+import { LinkingOptions, NavigationContainer } from '@react-navigation/native';
 import HomePage from './HomePage';
 import MoimPage from './Social/Moim';
 import RegistDuty from './RegistDuty';
@@ -14,13 +14,24 @@ import OnboardingPage from './OnboardingPage';
 import DeviceCalendarPage from './DeviceCalendarPage';
 import MoimDetailPage from './Social/Moim/MoimDetailPage';
 import Term from './LoginPage/Term';
-import { Stack, navigationRef } from '@libs/utils/navigate';
+import { Stack, StackParams, navigationRef } from '@libs/utils/navigate';
+import * as Linking from 'expo-linking';
+
+const prefix = Linking.createURL('/');
 
 const Router = () => {
+  const linking: LinkingOptions<StackParams> = {
+    prefixes: [prefix],
+    config: {
+      screens: {
+        Login: 'login',
+      },
+    },
+  };
   useShiftType();
 
   return (
-    <NavigationContainer ref={navigationRef}>
+    <NavigationContainer linking={linking} ref={navigationRef}>
       <Stack.Navigator initialRouteName="Home" screenOptions={{ headerShown: false }}>
         <Stack.Screen name="Login" component={LoginPage} options={{ gestureEnabled: false }} />
         <Stack.Screen name="Term" component={Term} />

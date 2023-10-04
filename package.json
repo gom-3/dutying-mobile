@@ -62,7 +62,8 @@
     "react-native-webview": "13.2.2",
     "reanimated-color-picker": "^2.3.4",
     "styled-components": "^6.0.5",
-    "zustand": "^4.3.9"
+    "zustand": "^4.3.9",
+    "expo-linking": "~5.0.2"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
