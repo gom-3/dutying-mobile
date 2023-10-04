@@ -19,9 +19,9 @@ const HomePage = () => {
         <SafeAreaView>
           <Header />
           <Calendar />
-        {isSideMenuOpen && <SideMenu />}
         </SafeAreaView>
-        {/* <NavigationBar page="home" /> */}
+        <NavigationBar page="home" />
+        {isSideMenuOpen && <SideMenu />}
         {isCardOpen && <ScheduleCard />}
       </BottomSheetModalProvider>
     </PageViewContainer>

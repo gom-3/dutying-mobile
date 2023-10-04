@@ -103,8 +103,6 @@ const ScheduleCard = () => {
     );
   };
 
-  console.log(selectedDateData);
-
   return (
     <>
       <BackDrop clickHandler={backDropPressHandler} />

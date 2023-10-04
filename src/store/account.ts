@@ -5,6 +5,7 @@ import { createWithEqualityFn } from 'zustand/traditional';
 
 interface State {
   account: Account;
+  accessToken: string;
 }
 
 const initialAccount: Account = {
@@ -30,6 +31,7 @@ export const useAccountStore = createWithEqualityFn<Store>()(
     persist(
       (set, _) => ({
         account: initialAccount,
+        accessToken: '',
         setState: (state, value) => set((prev) => ({ ...prev, [state]: value })),
         logout: () => set(() => ({ account: initialAccount })),
       }),

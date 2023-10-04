@@ -130,7 +130,6 @@ const useShiftTypeEdit = () => {
             .padStart(2, '0')}`
         : null;
       const reqDTO: ShiftTypeRequestDTO = { ...shift, startTime, endTime };
-      console.log(reqDTO);
       if (!isEdit) {
         firebaseLogEvent('add_shfit_type');
         addShiftTypeMutate(reqDTO);

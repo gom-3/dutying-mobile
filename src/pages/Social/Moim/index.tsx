@@ -4,6 +4,7 @@ import {
   BottomSheetBackdrop,
   BottomSheetModal,
   BottomSheetModalProvider,
+  BottomSheetTextInput,
 } from '@gorhom/bottom-sheet';
 import { COLOR } from 'index.style';
 import {
@@ -17,20 +18,18 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import SortIcon from '@assets/svgs/sort.svg';
 import PlusIcon from '@assets/svgs/plus-circle.svg';
-import { images } from '@assets/images/profiles';
-import { useLinkProps } from '@react-navigation/native';
-import BookmarkIcon from '@assets/svgs/bookmark.svg';
 import BottomSheetHeader from '@components/BottomSheetHeader';
 import CheckIcon from '@assets/svgs/check.svg';
 import { useCallback, useRef } from 'react';
-import TextInputBox from '@components/TextInputBox';
+import useMoimPage from './index.hook';
 
 const MoimPage = () => {
-  const { onPress: navigateDetailMoim } = useLinkProps({ to: { screen: 'MoimDetail' } });
-  const createRef = useRef<BottomSheetModal>(null);
   const renderBackdrop = useCallback((props: any) => <BottomSheetBackdrop {...props} />, []);
+  const {
+    states: { moimList, enteredInput, createRef, textInputRef },
+    actions: { setEnteredInput, pressMoimCard, pressCheck },
+  } = useMoimPage();
 
   return (
     <PageViewContainer style={{ backgroundColor: '#fdfcfe' }}>
@@ -60,42 +59,40 @@ const MoimPage = () => {
           </View>
           <View style={styles.textWrapper}>
             <View>
-              <Text style={styles.countText}>총 5모임</Text>
+              <Text style={styles.countText}>총 {moimList?.length}모임</Text>
               <Text style={styles.guideText}>
                 모임을 만들어 친구들의 근무표를 한번에 볼 수 있어요.
               </Text>
             </View>
-            <View style={styles.sortOption}>
-              <SortIcon />
-              <Pressable>
-                <Text style={styles.sortOptionText}>최신순</Text>
-              </Pressable>
-            </View>
           </View>
           <ScrollView style={styles.cardScrollView}>
-            <View>
-              <TouchableOpacity style={styles.shadowWrapper} onPress={navigateDetailMoim}>
-                <View>
-                  <Text style={styles.titleText}>곰세마리 병동 동기</Text>
-                  <Text style={styles.ownerText}>모임장 김범진</Text>
-                </View>
-                <View style={{ flexDirection: 'row', position: 'relative' }}>
-                  {[1, 2, 3].map((_, i) => (
-                    <Image
-                      key={i}
-                      style={[styles.profile, { right: 0 + (3 - i) * 18 }]}
-                      source={images[i * 3]}
-                    />
-                  ))}
-                  <View style={styles.profileCount}>
-                    <Text style={styles.profileCountText}>+1</Text>
+            {moimList?.map((moim) => (
+              <View key={moim.moimId}>
+                <TouchableOpacity
+                  style={styles.shadowWrapper}
+                  onPress={() => pressMoimCard(moim.moimId)}
+                >
+                  <View>
+                    <Text style={styles.titleText}>{moim.moimName}</Text>
+                    <Text style={styles.ownerText}>모임장 {moim.hostInfo.name}</Text>
                   </View>
-                </View>
-              </TouchableOpacity>
-              <Pressable style={styles.bookmark}>
-                <BookmarkIcon />
-              </Pressable>
-            </View>
+                  <View style={{ flexDirection: 'row', position: 'relative' }}>
+                    {moim.memberInfoList.map((member, i) => (
+                      <Image
+                        key={i}
+                        style={[styles.profile, { right: 0 + (moim.memberCount - i) * 18 }]}
+                        source={{ uri: `data:image/png;base64,${member.profileImgBase64}` }}
+                      />
+                    ))}
+                    {moim.memberCount > 4 && (
+                      <View style={styles.profileCount}>
+                        <Text style={styles.profileCountText}>+{moim.memberCount - 3}</Text>
+                      </View>
+                    )}
+                  </View>
+                </TouchableOpacity>
+              </View>
+            ))}
             <TouchableOpacity onPress={() => createRef.current?.present()}>
               <View style={styles.addButton}>
                 <PlusIcon />
@@ -110,19 +107,28 @@ const MoimPage = () => {
           ref={createRef}
           handleComponent={null}
           snapPoints={[100, 300]}
+          keyboardBehavior="interactive"
+          onChange={(index) => {
+            if (index !== 1) createRef.current?.close();
+          }}
         >
           <View style={{ padding: 14 }}>
             <BottomSheetHeader
               title="모임 생성하기"
               onPressExit={() => createRef.current?.close()}
               rightItems={
-                <Pressable>
+                <Pressable onPress={pressCheck}>
                   <CheckIcon />
                 </Pressable>
               }
             />
             <View style={{ padding: 10 }}>
-              <TextInputBox placeholder="모임명" style={{ width: '100%' }} />
+              <BottomSheetTextInput
+                style={styles.input}
+                onChangeText={(text) => {
+                  textInputRef.current = text;
+                }}
+              />
             </View>
           </View>
         </BottomSheetModal>
@@ -133,6 +139,17 @@ const MoimPage = () => {
 };
 
 const styles = StyleSheet.create({
+  input: {
+    borderRadius: 5,
+    borderWidth: 0.5,
+    borderColor: COLOR.main4,
+    width: '100%',
+    fontSize: 20,
+    fontFamily: 'Apple',
+    color: COLOR.sub1,
+    paddingVertical: 7,
+    paddingHorizontal: 14,
+  },
   header: {
     marginTop: 24,
     paddingHorizontal: 24,

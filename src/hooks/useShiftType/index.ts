@@ -16,7 +16,6 @@ const useShiftType = () => {
   const [setState] = useShiftTypeStore((state) => [state.setState]);
 
   useEffect(() => {
-    console.log(userId, shiftTypesResponse);
     const shiftTypes = new Map<number, Shift>();
     shiftTypesResponse?.shiftTypes?.filter((type) =>
       shiftTypes.set(type.accountShiftTypeId, {

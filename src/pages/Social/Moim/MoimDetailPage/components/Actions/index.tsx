@@ -14,20 +14,34 @@ import {
 } from 'react-native';
 import OutsidePressHandler from 'react-native-outside-press';
 import PlusIcon from '@assets/svgs/plus.svg';
-import CheckIcon from '@assets/svgs/check.svg';
 import AlertModal from '@components/AlertModal';
-import { images } from '@assets/images/profiles';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { deleteMoim } from '@libs/api/moim';
+import { useNavigation } from '@react-navigation/native';
+import { useAccountStore } from 'store/account';
 
 interface Props {
+  moim: Moim;
   isActionOpen: boolean;
   close: () => void;
 }
 
-const Actions = ({ isActionOpen, close }: Props) => {
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+const Actions = ({ isActionOpen, moim, close }: Props) => {
   const [name, setName] = useState('');
+  const [accountId] = useAccountStore((state) => [state.account.accountId]);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isKickModalOpen, setIsKickModalOpen] = useState(false);
+  const [isChangeMasterModalOpen, setIsChangeMasterModalOpen] = useState(false);
   const renderBackdrop = useCallback((props: any) => <BottomSheetBackdrop {...props} />, []);
+  const navigate = useNavigation();
+  const queryClient = useQueryClient();
+
+  const { mutate: deleteMoimMutate } = useMutation(() => deleteMoim(moim.moimId), {
+    onSuccess: () => {
+      queryClient.invalidateQueries(['getMoimList', accountId]);
+      navigate.goBack();
+    },
+  });
 
   const openBottomSheet = (sheet: 'invite' | 'change' | 'kick') => {
     if (sheet === 'invite') inviteRef.current?.present();
@@ -44,6 +58,17 @@ const Actions = ({ isActionOpen, close }: Props) => {
   const inviteRef = useRef<BottomSheetModal>(null);
   const changeRef = useRef<BottomSheetModal>(null);
   const kickRef = useRef<BottomSheetModal>(null);
+
+  const openChangeMasterModal = (name: string) => {
+    setName(name);
+    setIsChangeMasterModalOpen(true);
+    changeRef.current?.close();
+  };
+
+  const closeChangeMasterModal = () => {
+    setIsChangeMasterModalOpen(false);
+    changeRef.current?.present();
+  };
 
   const openKickModal = (name: string) => {
     setName(name);
@@ -75,8 +100,18 @@ const Actions = ({ isActionOpen, close }: Props) => {
         isOpen={isDeleteModalOpen}
         close={() => setIsDeleteModalOpen(false)}
         cancelText="아니요"
-        accept={() => setIsDeleteModalOpen(false)}
+        accept={() => deleteMoimMutate()}
         acceptText="네, 내보낼게요"
+      />
+      <AlertModal
+        text={`모임장을 ${name}님으로 변경하시겠어요?`}
+        highlight={`${name}`}
+        subText={`모임에 대한 모든 권한을 ${name}님께 전달합니다.`}
+        isOpen={isChangeMasterModalOpen}
+        close={closeChangeMasterModal}
+        cancelText="아니요"
+        accept={closeChangeMasterModal}
+        acceptText="네, 변경할게요"
       />
       {isActionOpen && (
         <OutsidePressHandler disabled={false} onOutsidePress={close}>
@@ -120,78 +155,18 @@ const Actions = ({ isActionOpen, close }: Props) => {
       </BottomSheetModal>
       <BottomSheetModal
         ref={changeRef}
-        // handleComponent={null}
-        snapPoints={[100, 300]}
-        backdropComponent={renderBackdrop}
-        index={1}
-      >
-        <View style={{ padding: 14 }}>
-          <BottomSheetHeader
-            rightItems={
-              <TouchableOpacity>
-                <CheckIcon />
-              </TouchableOpacity>
-            }
-            title="모임장 변경"
-            onPressExit={() => inviteRef.current?.close()}
-          />
-          <ScrollView>
-            {['김범진', '황인서', '김찬규', '조성연', '류원경', '강명구', '안재홍'].map(
-              (name, i) => (
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    paddingHorizontal: 20,
-                    paddingVertical: 10,
-                    borderBottomColor: COLOR.sub45,
-                    borderBottomWidth: 0.5,
-                  }}
-                >
-                  <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                    <Image source={images[i]} style={{ width: 24, height: 24, marginRight: 8 }} />
-                    <Text>{name}</Text>
-                  </View>
-                  <View
-                    style={{
-                      paddingHorizontal: 8,
-                      paddingVertical: 2,
-                      borderRadius: 30,
-                      borderColor: i === 0 ? COLOR.main1 : COLOR.sub3,
-                      borderWidth: 1,
-                    }}
-                  >
-                    <Text
-                      style={{
-                        color: i === 0 ? COLOR.main1 : COLOR.sub3,
-                        fontFamily: 'Apple',
-                        fontSize: 12,
-                      }}
-                    >
-                      {i === 0 ? '모임장' : '변경'}
-                    </Text>
-                  </View>
-                </View>
-              ),
-            )}
-          </ScrollView>
-        </View>
-      </BottomSheetModal>
-      <BottomSheetModal
-        ref={kickRef}
-        handleIndicatorStyle={{ backgroundColor: COLOR.sub45, width: 50 }}
         snapPoints={[100, 350, 700]}
+        handleIndicatorStyle={{ backgroundColor: COLOR.sub45, width: 50 }}
         backdropComponent={renderBackdrop}
         index={1}
       >
-        <View style={{ marginVertical: 5, justifyContent: 'center', alignItems: 'center' }}>
-          <Text style={{ fontFamily: 'Apple', fontSize: 16, color: COLOR.sub2 }}>
-            모임 내보내기
-          </Text>
+        <View
+          style={{ justifyContent: 'center', alignItems: 'center', marginTop: 5, marginBottom: 15 }}
+        >
+          <Text style={{ fontFamily: 'Apple', fontSize: 16, color: COLOR.sub2 }}>모임장 변경</Text>
         </View>
         <ScrollView>
-          {['김범진', '황인서', '김찬규', '조성연', '류원경', '강명구', '안재홍'].map((name, i) => (
+          {moim.memberInfoList.map((member, i) => (
             <View
               style={{
                 flexDirection: 'row',
@@ -204,10 +179,71 @@ const Actions = ({ isActionOpen, close }: Props) => {
               }}
             >
               <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                <Image source={images[i]} style={{ width: 24, height: 24, marginRight: 8 }} />
-                <Text>{name}</Text>
+                <Image
+                  source={{ uri: `data:image/png;base64,${member.profileImgBase64}` }}
+                  style={{ width: 24, height: 24, marginRight: 8 }}
+                />
+                <Text>{member.name}</Text>
               </View>
-              {i === 0 ? (
+              <TouchableOpacity
+                onPress={() => openChangeMasterModal(member.name)}
+                style={{
+                  paddingHorizontal: 8,
+                  paddingVertical: 2,
+                  borderRadius: 30,
+                  borderColor: i === 0 ? COLOR.main1 : COLOR.sub3,
+                  borderWidth: 1,
+                }}
+              >
+                <Text
+                  style={{
+                    color: i === 0 ? COLOR.main1 : COLOR.sub3,
+                    fontFamily: 'Apple',
+                    fontSize: 12,
+                  }}
+                >
+                  {i === 0 ? '모임장' : '변경'}
+                </Text>
+              </TouchableOpacity>
+            </View>
+          ))}
+        </ScrollView>
+      </BottomSheetModal>
+      <BottomSheetModal
+        ref={kickRef}
+        handleIndicatorStyle={{ backgroundColor: COLOR.sub45, width: 50 }}
+        snapPoints={[100, 350, 700]}
+        backdropComponent={renderBackdrop}
+        index={1}
+      >
+        <View
+          style={{ justifyContent: 'center', alignItems: 'center', marginTop: 5, marginBottom: 15 }}
+        >
+          <Text style={{ fontFamily: 'Apple', fontSize: 16, color: COLOR.sub2 }}>
+            모임 내보내기
+          </Text>
+        </View>
+        <ScrollView>
+          {moim.memberInfoList.map((member) => (
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                paddingHorizontal: 20,
+                paddingVertical: 10,
+                borderBottomColor: COLOR.sub45,
+                borderBottomWidth: 0.5,
+              }}
+            >
+              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                <Image
+                  source={{ uri: `data:image/png;base64,${member.profileImgBase64}` }}
+                  style={{ width: 24, height: 24, marginRight: 8 }}
+                />
+                <Text>{member.name}</Text>
+              </View>
+              {moim.hostInfo.accountId === member.accountId ? (
                 <View
                   style={{
                     paddingHorizontal: 8,
@@ -237,7 +273,7 @@ const Actions = ({ isActionOpen, close }: Props) => {
                     paddingVertical: 4,
                     backgroundColor: pressed ? COLOR.sub3 : 'white',
                   })}
-                  onPress={() => openKickModal(name)}
+                  onPress={() => openKickModal(member.name)}
                 >
                   {({ pressed }) => (
                     <Text

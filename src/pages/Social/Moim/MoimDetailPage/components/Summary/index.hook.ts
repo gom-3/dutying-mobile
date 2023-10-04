@@ -16,7 +16,7 @@ const useSummary = () => {
   const pressShiftTypeHandler = (id: number) => {
     setSelectedShiftType(id);
   };
-
+  const [index, setIndex] = useState(10);
   const threeDates = useMemo(() => {
     const prevDate = new Date(date.getFullYear(), date.getMonth(), date.getDate() - 1);
     const nextDate = new Date(date.getFullYear(), date.getMonth(), date.getDate() + 1);
@@ -27,9 +27,14 @@ const useSummary = () => {
     initCalendar(date.getFullYear(), date.getMonth());
   }, [date.getFullYear(), date.getMonth()]);
 
+  const pressDate = (day:Date, i:number) => {
+    setState('date', day);
+    setIndex(i);
+  };
+
   return {
-    states: { date, shiftTypes, page, selectedShiftType, account, weeks, threeDates },
-    actions: { pressShiftTypeHandler, setPage, setState },
+    states: { index, date, shiftTypes, page, selectedShiftType, account, weeks, threeDates },
+    actions: { pressShiftTypeHandler, setPage, pressDate },
   };
 };
 
