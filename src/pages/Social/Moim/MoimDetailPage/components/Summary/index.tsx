@@ -13,17 +13,18 @@ import {
 import MoimShift from './Shift';
 import Carousel from 'react-native-snap-carousel';
 import useSummary from './index.hook';
+import { MoimCollectionResponseDTO } from '@libs/api/moim';
 
 const datas = [8, 13, 23];
 
 interface Props {
-  isVisible: boolean;
+  collection: MoimCollectionResponseDTO;
 }
 
-const Summary = ({ isVisible }: Props) => {
+const Summary = ({ collection }: Props) => {
   const {
-    states: { date, shiftTypes, page, selectedShiftType, account, weeks, threeDates },
-    actions: { pressShiftTypeHandler, setPage, setState },
+    states: { index, date, shiftTypes, page, selectedShiftType, weeks, threeDates },
+    actions: { pressShiftTypeHandler, setPage, pressDate },
   } = useSummary();
 
   const renderItem = ({ item }: { item: number }) => {
@@ -53,8 +54,6 @@ const Summary = ({ isVisible }: Props) => {
       </View>
     );
   };
-
-  if (!isVisible || weeks.length === 0) return;
 
   return (
     <ScrollView showsVerticalScrollIndicator={false}>
@@ -122,11 +121,11 @@ const Summary = ({ isVisible }: Props) => {
         </View>
         {weeks.map((week, i) => (
           <View key={`week${i}`} style={styles.week}>
-            {week.map((day) => {
+            {week.map((day, j) => {
               const isToday = isSameDate(date, day);
               return (
                 <TouchableOpacity
-                  onPress={() => setState('date', day)}
+                  onPress={() => pressDate(day, i * 7 + j)}
                   key={`${day.getMonth()}.${day.getDate()}`}
                   style={styles.dateWrapper}
                 >
@@ -165,29 +164,35 @@ const Summary = ({ isVisible }: Props) => {
           {date.getMonth() + 1}월 {date.getDate()}일, {days[date.getDay()]}
         </Text>
         <View style={styles.memberShiftDateList}>
-          <Text style={styles.memberShiftDateBlur}>
-            {threeDates[0].getMonth() + 1}월 {threeDates[0].getDate()}일
-          </Text>
+          {index - 1 >= 0 && (
+            <Text style={styles.memberShiftDateBlur}>
+              {threeDates[0].getMonth() + 1}월 {threeDates[0].getDate()}일
+            </Text>
+          )}
           <Text style={styles.memberShiftDateFoucs}>
             {threeDates[1].getMonth() + 1}월 {threeDates[1].getDate()}일
           </Text>
-          <Text style={styles.memberShiftDateBlur}>
-            {threeDates[2].getMonth() + 1}월 {threeDates[2].getDate()}일
-          </Text>
+          {index + 1 <= collection.memberViews[0].accountShiftTypes.length && (
+            <Text style={styles.memberShiftDateBlur}>
+              {threeDates[2].getMonth() + 1}월 {threeDates[2].getDate()}일
+            </Text>
+          )}
         </View>
-        {[1, 2, 3, 4].map((a) => (
-          <View key={`name ${a}`} style={styles.member}>
+        {collection.memberViews.map((member) => (
+          <View key={`name ${member.accountId}`} style={styles.member}>
             <View style={{ flexDirection: 'row' }}>
               <Image
                 style={styles.memberProfile}
-                source={{ uri: `data:image/png;base64,${account.profileImgBase64}` }}
+                source={{ uri: `data:image/png;base64,${member.profileImgBase64}` }}
               />
-              <Text style={styles.memberName}>김찬규</Text>
+              <Text style={styles.memberName}>{member.name}</Text>
             </View>
             <View style={{ flexDirection: 'row' }}>
-              <MoimShift shiftTypeId={selectedShiftType} />
-              <MoimShift shiftTypeId={selectedShiftType} isToday />
-              <MoimShift shiftTypeId={selectedShiftType} />
+              {index - 1 >= 0 && <MoimShift shift={member.accountShiftTypes[index - 1]} />}
+              <MoimShift shift={member.accountShiftTypes[index]} isToday />
+              {index + 1 <= collection.memberViews[0].accountShiftTypes.length && (
+                <MoimShift shift={member.accountShiftTypes[index + 1]} />
+              )}
             </View>
           </View>
         ))}

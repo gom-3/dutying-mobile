@@ -6,14 +6,16 @@ import { useShiftTypeStore } from 'store/shift';
 
 interface Props {
   isToday?: boolean;
-  shiftTypeId: number;
+  shift:Pick<Shift, 'color'|'name'|'shortName'|'startTime'|'endTime'> | null;
 }
 
-const MoimShift = ({ isToday, shiftTypeId }: Props) => {
+const MoimShift = ({ isToday, shift }: Props) => {
   const [shiftTypes] = useShiftTypeStore((state) => [state.shiftTypes]);
   const [isPressed, setIsPressed] = useState(false);
 
-  const shift = shiftTypes.get(shiftTypeId);
+  console.log(shift);
+  if(!shift) return <View style={styles.shiftBox}/>;
+  // return;
 
   return (
     <Pressable onPressIn={() => setIsPressed(true)} onPressOut={() => setIsPressed(false)}>
@@ -21,13 +23,13 @@ const MoimShift = ({ isToday, shiftTypeId }: Props) => {
         style={[
           styles.shiftBox,
           {
-            backgroundColor: isToday ? shift!.color : hexToRgba(shift!.color, 0.45),
+            backgroundColor: isToday ? `#${shift.color}` : hexToRgba(`#${shift.color}`, 0.45),
           },
         ]}
       >
-        <Text style={styles.shoftName}>{shift?.shortName}</Text>
+        <Text style={styles.shoftName}>{shift.shortName}</Text>
         <Text numberOfLines={1} style={styles.name}>
-          {shift?.name}
+          {shift.name}
         </Text>
       </View>
       {isPressed && (
@@ -56,9 +58,9 @@ const MoimShift = ({ isToday, shiftTypeId }: Props) => {
               fontSize: 8,
             }}
           >
-            {shift?.startTime?.getHours()}:
+            {/* {shift?.startTime?.getHours()}:
             {shift?.startTime?.getMinutes().toString().padStart(2, '0')} ~{' '}
-            {shift?.endTime?.getHours()}:{shift?.endTime?.getMinutes().toString().padStart(2, '0')}
+            {shift?.endTime?.getHours()}:{shift?.endTime?.getMinutes().toString().padStart(2, '0')} */}
           </Text>
         </View>
       )}

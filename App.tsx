@@ -11,6 +11,8 @@ import { useAppState } from './src/hooks/useAppState';
 import * as SplashScreen from 'expo-splash-screen';
 import useDeviceCalendar from './src/hooks/useDeviceCalendar';
 import { ModalPortal } from 'react-native-modals';
+import axiosInstance from './src/libs/api/client';
+import { useAccountStore } from './src/store/account';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -25,7 +27,13 @@ const queryClient = new QueryClient({
 });
 
 export default function App() {
+  const [account] = useAccountStore((state) => [state.account]);
   useDeviceCalendar();
+
+  useEffect(() => {
+    axiosInstance.defaults.headers.common.Authorization = `Bearer ${useAccountStore.getState().accessToken}`;
+  }, [account.accountId]);
+
   useEffect(() => {
     if (Platform.OS === 'android') {
       NavigationBar.setBackgroundColorAsync('white');

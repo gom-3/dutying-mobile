@@ -3,7 +3,6 @@ import PageViewContainer from '@components/PageView';
 import { TouchableOpacity, View, Text, StyleSheet, Image, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import DotsIcon from '@assets/svgs/dots.svg';
-import { images } from '@assets/images/profiles';
 import { COLOR } from 'index.style';
 import { useCallback, useRef, useState } from 'react';
 import Summary from './components/Summary';
@@ -14,16 +13,30 @@ import {
 } from '@gorhom/bottom-sheet';
 import Collection from './components/Collection';
 import Actions from './components/Actions';
-
-const mockMembers = ['김범진', '황인서', '김찬규', '조성연', '류원경', '강명구', '안재홍'];
+import { useQuery } from '@tanstack/react-query';
+import { useMoimStore } from '../store';
+import { getMoimCollection, getMoimMembers } from '@libs/api/moim';
+import { useCaledarDateStore } from 'store/calendar';
 
 const MoimDetailPage = () => {
   const [tab, setTab] = useState<'summary' | 'collection' | 'weekly'>('summary');
   const [isActionsOpen, setIsActionsOpen] = useState(false);
-  console.log(1);
+  const [date] = useCaledarDateStore((state) => [state.date]);
   const memberRef = useRef<BottomSheetModal>(null);
+  const [moimId] = useMoimStore((state) => [state.moimId]);
+  console.log(moimId);
+  const { data: moim } = useQuery(['getMemberList', moimId], () => getMoimMembers(moimId), {
+    enabled: moimId !== 0,
+  });
+
+  const { data: moimCollection } = useQuery(
+    ['getMoimCollection', moimId, date.getFullYear(), date.getMonth()],
+    () => getMoimCollection(moimId, date.getFullYear(), date.getMonth()),
+  );
 
   const renderBackdrop = useCallback((props: any) => <BottomSheetBackdrop {...props} />, []);
+
+  if (!moim) return;
 
   return (
     <PageViewContainer style={{ backgroundColor: COLOR.bg }}>
@@ -43,16 +56,21 @@ const MoimDetailPage = () => {
               onPress={() => memberRef.current?.present()}
               style={styles.profileImages}
             >
-              {mockMembers.slice(0, 3).map((_, i) => (
-                <Image
-                  key={i}
-                  style={[styles.profileImage, { right: 0 + (3 - i) * 18 }]}
-                  source={images[i * 3]}
-                />
-              ))}
-              {mockMembers.length - 3 > 0 && (
+              {moim?.memberInfoList
+                .slice(0, 3)
+                .map((member, i) => (
+                  <Image
+                    key={i}
+                    style={[
+                      styles.profileImage,
+                      { right: 0 + (Math.min(3, moim.memberCount) - i) * 18 },
+                    ]}
+                    source={{ uri: `data:image/png;base64,${member.profileImgBase64}` }}
+                  />
+                ))}
+              {moim && moim.memberCount > 4 && (
                 <View style={styles.profileCount}>
-                  <Text style={styles.profileCountText}>+{mockMembers.length - 3}</Text>
+                  <Text style={styles.profileCountText}>+{moim.memberCount - 3}</Text>
                 </View>
               )}
             </TouchableOpacity>
@@ -120,9 +138,13 @@ const MoimDetailPage = () => {
               </Text>
             </TouchableOpacity>
           </View>
-          {tab === 'summary' && <Summary isVisible={tab === 'summary'} />}
-          {tab === 'collection' && <Collection isVisible={tab === 'collection'} />}
-          <Actions isActionOpen={isActionsOpen} close={() => setIsActionsOpen(false)} />
+          {tab === 'summary' && moimCollection && (
+            <Summary collection={moimCollection} />
+          )}
+          {tab === 'collection' && moimCollection && (
+            <Collection collection={moimCollection}  />
+          )}
+          <Actions moim={moim} isActionOpen={isActionsOpen} close={() => setIsActionsOpen(false)} />
           <BottomSheetModal
             backdropComponent={renderBackdrop}
             handleIndicatorStyle={{ backgroundColor: COLOR.sub45, width: 50 }}
@@ -134,7 +156,7 @@ const MoimDetailPage = () => {
               <Text style={{ fontFamily: 'Apple', fontSize: 16, color: COLOR.sub2 }}>모임원</Text>
             </View>
             <ScrollView>
-              {mockMembers.map((name, i) => (
+              {moim?.memberInfoList.map((member, i) => (
                 <View
                   style={{
                     flexDirection: 'row',
@@ -147,8 +169,11 @@ const MoimDetailPage = () => {
                   }}
                 >
                   <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                    <Image source={images[i]} style={{ width: 24, height: 24, marginRight: 8 }} />
-                    <Text>{name}</Text>
+                    <Image
+                      source={{ uri: `data:image/png;base64,${member.profileImgBase64}` }}
+                      style={{ width: 24, height: 24, marginRight: 8 }}
+                    />
+                    <Text>{member.name}</Text>
                   </View>
                   {i === 0 && (
                     <View

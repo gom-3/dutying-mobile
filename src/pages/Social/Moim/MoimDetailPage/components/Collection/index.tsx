@@ -5,18 +5,22 @@ import MonthIcon from '@assets/svgs/month-view.svg';
 import { days } from '@libs/utils/date';
 import { COLOR } from 'index.style';
 import { useMoimStore } from '@pages/Social/Moim/store';
-import { useState } from 'react';
-import { collections } from '@mocks/social';
+import { useEffect, useState } from 'react';
+import { MoimCollectionResponseDTO } from '@libs/api/moim';
+import { useCaledarDateStore } from 'store/calendar';
 
 interface Props {
-  isVisible: boolean;
+  collection: MoimCollectionResponseDTO;
 }
 
-const Collection = ({ isVisible }: Props) => {
+const Collection = ({ collection }: Props) => {
   const [weeks, initCalendar] = useMoimStore((state) => [state.weeks, state.initCalendar]);
   const [weekView, setWeekView] = useState(false);
+  const [date] = useCaledarDateStore((state) => [state.date]);
 
-  if (!isVisible && weeks.length === 0) return;
+  useEffect(() => {
+    initCalendar(date.getFullYear(), date.getMonth());
+  }, [date.getFullYear(), date.getMonth()]);
 
   return (
     <ScrollView>
@@ -36,7 +40,7 @@ const Collection = ({ isVisible }: Props) => {
       <View style={{ flexDirection: 'row', flex: 1, paddingHorizontal: 10, paddingBottom: 8 }}>
         <View style={{ flex: 1 }} />
         {days.map((day) => (
-          <View style={{ flex: 1, alignItems: 'center' }}>
+          <View key={day} style={{ flex: 1, alignItems: 'center' }}>
             <Text
               style={{
                 fontFamily: 'Apple',
@@ -49,67 +53,83 @@ const Collection = ({ isVisible }: Props) => {
           </View>
         ))}
       </View>
-      {weeks.map((week) => {
-        return (
-          <View>
-            <View
-              style={{
-                flexDirection: 'row',
-                flex: 1,
-                backgroundColor: COLOR.sub5,
-                paddingVertical: 3,
-                paddingHorizontal: 10,
-              }}
-            >
-              <View style={{ flex: 1 }} />
-              {week.map((day, i) => (
-                <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-                  <Text
+      {weeks.length > 0 &&
+        weeks.map((week, i) => {
+          return (
+            <View key={`week ${i}`}>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  flex: 1,
+                  backgroundColor: COLOR.sub5,
+                  paddingVertical: 3,
+                  paddingHorizontal: 10,
+                }}
+              >
+                <View style={{ flex: 1 }} />
+                {week.map((day, j) => (
+                  <View
+                    key={i * 7 + j}
+                    style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}
+                  >
+                    <Text
+                      style={{
+                        fontFamily: 'Poppins',
+                        fontSize: 12,
+                        color: j === 0 ? '#ff99aa' : j === 6 ? '#8b9bff' : COLOR.sub25,
+                      }}
+                    >
+                      {day.getDate()}
+                    </Text>
+                  </View>
+                ))}
+              </View>
+              {collection.memberViews.map((member) => (
+                <View
+                  key={`member ${i}`}
+                  style={{ flexDirection: 'row', flex: 1, padding: 10, alignItems: 'center' }}
+                >
+                  <View
                     style={{
-                      fontFamily: 'Poppins',
-                      fontSize: 12,
-                      color: i === 0 ? '#ff99aa' : i === 6 ? '#8b9bff' : COLOR.sub25,
+                      flex: 1,
                     }}
                   >
-                    {day.getDate()}
-                  </Text>
+                    <Text
+                      style={{
+                        fontSize: 12,
+                        fontFamily: 'Apple500',
+                        color: COLOR.sub1,
+                        textAlign: 'center',
+                        paddingHorizontal: 6,
+                        paddingVertical: 2,
+                        backgroundColor: COLOR.main4,
+                        borderRadius: 3,
+                      }}
+                    >
+                      {member.name}
+                    </Text>
+                  </View>
+                  {[0, 1, 2, 3, 4, 5, 6].map((j) => {
+                    if (member.accountShiftTypes[i * 7 + j])
+                      return (
+                        <Text
+                          key={`shift ${i * 7 + j}`}
+                          style={[
+                            styles.shiftText,
+                            { color: `#${member.accountShiftTypes[i * 7 + j].color}` },
+                          ]}
+                        >
+                          {member.accountShiftTypes[i * 7 + j] &&
+                            member.accountShiftTypes[i * 7 + j].name}
+                        </Text>
+                      );
+                    else return <Text key={`shift ${i * 7 + j}`} style={styles.shiftText} />;
+                  })}
                 </View>
               ))}
             </View>
-            {collections.map((collection) => (
-              <View style={{ flexDirection: 'row', flex: 1, padding: 10, alignItems: 'center' }}>
-                <View
-                  style={{
-                    flex: 1,
-                  }}
-                >
-                  <Text
-                    style={{
-                      fontSize: 12,
-                      fontFamily: 'Apple500',
-                      color: COLOR.sub1,
-                      textAlign: 'center',
-                      paddingHorizontal: 6,
-                      paddingVertical: 2,
-                      backgroundColor: COLOR.main4,
-                      borderRadius: 3,
-                    }}
-                  >
-                    {collection.name}
-                  </Text>
-                </View>
-                <Text style={styles.shiftText}>나이트</Text>
-                <Text style={styles.shiftText}>나이트</Text>
-                <Text style={styles.shiftText}>나이트</Text>
-                <Text style={styles.shiftText}>나이트</Text>
-                <Text style={styles.shiftText}>나이트</Text>
-                <Text style={styles.shiftText}>나이트</Text>
-                <Text style={styles.shiftText}>나이트</Text>
-              </View>
-            ))}
-          </View>
-        );
-      })}
+          );
+        })}
       <View style={{ height: 200, backgroundColor: 'white' }} />
     </ScrollView>
   );
@@ -121,7 +141,6 @@ const styles = StyleSheet.create({
     fontSize: 12,
     flex: 1,
     textAlign: 'center',
-    color: '#3580ff',
   },
 });
 

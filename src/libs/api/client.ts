@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { navigate } from '@libs/utils/navigate';
+import { useAccountStore } from 'store/account';
 
 interface Cookie {
   name: string;
@@ -25,9 +26,9 @@ const axiosInstance = axios.create({
 
 axiosInstance.interceptors.response.use(
   (response) => response,
-  // 에러가 발생하면 각 에러에 대한 처리
-  (error) => {
+  async (error) => {
     if (error.response) {
+      console.log(error);
       if (error.response.status === 400) {
         return {
           code: '400',
@@ -35,12 +36,14 @@ axiosInstance.interceptors.response.use(
         };
       }
       if (error.response.status === 401) {
-        // 토큰 만료되었을 때 refreshToken으로 accessToken 재발급
-        refresh();
-        return {
-          code: '401',
-          message: '401',
-        };
+        try {
+          const accessToken = await refresh();
+          const originalRequest = error.config;
+          originalRequest.headers['Authorization'] = `Bearer $${accessToken}`;
+          return axiosInstance(originalRequest);
+        } catch {
+          navigate('Login');
+        }
       }
       if (error.response.status === 403) {
         return {
@@ -62,12 +65,11 @@ axiosInstance.interceptors.response.use(
 export type AccessToken = { accessToken: string };
 
 export const refresh = async () => {
-  try {
-    const data = (await axiosInstance.post<AccessToken>(`/token/refresh`)).data;
-    axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${data.accessToken}`;
-  } catch {
-    navigate('Login');
-  }
+  const data = (await axios.post<AccessToken>(`https://api.dutying.net/token/refresh`)).data;
+  axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${data.accessToken}`;
+  useAccountStore.getState().setState('accessToken', data.accessToken);
+
+  return data.accessToken;
 };
 
 export default axiosInstance;

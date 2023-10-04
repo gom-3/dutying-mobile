@@ -32,8 +32,6 @@ const LoginPage = () => {
   const [accountId, setAccountId] = useState(0);
   const [click, setClick] = useState(0);
 
-  console.log(click);
-
   useEffect(() => {
     if (click === 10) {
       if (Platform.OS === 'ios') {
@@ -70,7 +68,6 @@ const LoginPage = () => {
         navigateHome();
       }
     }
-    setTimeout(() => setClick(0), 8000);
   }, [click]);
 
   const { data: accountData } = useQuery(['getAccount', accountId], () => getAccount(accountId), {
