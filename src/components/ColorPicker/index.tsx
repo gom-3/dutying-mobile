@@ -38,6 +38,7 @@ const ColorPicker = ({ color, onChange }: Props) => {
       <BottomSheetModal
         ref={ref}
         index={1}
+        enableContentPanningGesture={false}
         snapPoints={[300, 500]}
         handleComponent={null}
         backdropComponent={renderBackdrop}

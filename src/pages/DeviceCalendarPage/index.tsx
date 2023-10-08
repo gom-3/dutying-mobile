@@ -80,6 +80,7 @@ const DeviceCalendarPage = () => {
             style={{ padding: 14 }}
             ref={ref}
             index={1}
+            enableContentPanningGesture={false}
             snapPoints={[100, 400]}
             handleComponent={null}
             backdropComponent={renderBackdrop}

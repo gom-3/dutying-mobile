@@ -13,7 +13,6 @@ const MoimShift = ({ isToday, shift }: Props) => {
   const [shiftTypes] = useShiftTypeStore((state) => [state.shiftTypes]);
   const [isPressed, setIsPressed] = useState(false);
 
-  console.log(shift);
   if(!shift) return <View style={styles.shiftBox}/>;
   // return;
 

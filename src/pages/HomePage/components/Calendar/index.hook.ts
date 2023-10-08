@@ -1,5 +1,5 @@
 import { useShiftTypeStore } from 'store/shift';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useCaledarDateStore } from 'store/calendar';
 import { shallow } from 'zustand/shallow';
 import { DateType } from '.';
@@ -11,11 +11,10 @@ import {
   PanGestureHandlerEventPayload,
   State,
 } from 'react-native-gesture-handler';
-import analytics from '@react-native-firebase/analytics';
 import { firebaseLogEvent } from '@libs/utils/event';
 
 const useCalendar = (isRender?: boolean) => {
-  const [account, userId] = useAccountStore((state) => [state.account, state.account.accountId]);
+  const [userId] = useAccountStore((state) => [state.account.accountId]);
   const [date, calendar, setState] = useCaledarDateStore((state) => [
     state.date,
     state.calendar,
@@ -37,6 +36,8 @@ const useCalendar = (isRender?: boolean) => {
       enabled: userId > 0,
     },
   );
+
+  // console.log(shiftListResponse, calendar);
 
   const dateClickHandler = (date: Date) => {
     firebaseLogEvent('select_date_cell');

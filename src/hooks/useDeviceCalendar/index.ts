@@ -49,6 +49,7 @@ const useDeviceCalendar = () => {
       .filter((calendar) => calendarLinks[calendar.id])
       .map((calendar) => calendar.id);
     const events = await getEventsAsync(idList, first, last);
+    console.log(events);
     const newCalendar = [...calendar];
 
     if (isScheduleUpdated) {
@@ -103,7 +104,7 @@ const useDeviceCalendar = () => {
 
     if (status === 'granted') {
       let calendars = await getCalendarsAsync(EntityTypes.EVENT);
-
+      calendars = calendars.filter((calendar) => calendar.accessLevel === 'owner');
       /**
        * 디바이스에서 캘린더들을 가져와 기존 zustand에 calendarLinks에 등록되지 않은 캘린더면 새로 등록하고 true 값을 넣는다.
        * 이것은 새로 생긴 캘린더들은 기본적으로 듀팅 캘린더에 연동되는 것을 의미한다. 이미 이전에 정의된 캘린더는 그대로 둔다.

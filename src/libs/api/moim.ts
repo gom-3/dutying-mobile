@@ -14,6 +14,10 @@ export const getMoimList = async () => {
   return (await axiosInstance.get<Moim[]>('/moims')).data;
 };
 
+export const getMoimInfo = async (moimId: number) => {
+  return (await axiosInstance.get<Moim>(`/moims/${moimId}`)).data;
+};
+
 export type MoimDetailResponseDTO = Pick<Account, 'accountId' | 'name' | 'profileImgBase64'>[];
 
 export const getMoimMembers = async (moimId: number) => {
@@ -35,6 +39,12 @@ export type MoimCollectionResponseDTO = {
       date: string;
     })[];
   })[];
+  summaryView: {
+    day: any[];
+    evening: any[];
+    night: any[];
+    off: any[];
+  };
 };
 
 export const getMoimCollection = async (moimId: number, year: number, month: number) => {

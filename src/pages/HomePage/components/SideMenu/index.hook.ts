@@ -5,11 +5,12 @@ import PlusIcon from '@assets/svgs/plus-box.svg';
 import EditShiftTypeIcon from '@assets/svgs/edit-shift-type.svg';
 import ShareIcon from '@assets/svgs/share.svg';
 import SliderIcon from '@assets/svgs/slider.svg';
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useAccountStore } from 'store/account';
 import { navigateToLoginAndResetHistory } from '@libs/utils/navigate';
-import { Alert } from 'react-native';
+import { Alert, Platform } from 'react-native';
 import { firebaseLogEvent } from '@libs/utils/event';
+import * as NavigationBar from 'expo-navigation-bar';
 
 interface SideMenuItem {
   icon: React.FC<SvgProps>;
@@ -24,6 +25,15 @@ const useSideMenu = () => {
   const { onPress: onPressEditShiftType } = useLinkProps({ to: { screen: 'ShiftType' } });
   const { onPress: onPressShare } = useLinkProps({ to: { screen: 'Share' } });
   const { onPress: onPressDeviceCalendar } = useLinkProps({ to: { screen: 'DeviceCalendar' } });
+
+  useEffect(() => {
+    if (Platform.OS === 'android') {
+      NavigationBar.setVisibilityAsync('hidden');
+    }
+    return () => {
+      if (Platform.OS === 'android') NavigationBar.setVisibilityAsync('visible');
+    };
+  }, []);
 
   const closeSideMenu = () => {
     setState('isSideMenuOpen', false);
@@ -95,7 +105,6 @@ const useSideMenu = () => {
     [],
   );
   return { state: { account, menuItemList }, actions: { closeSideMenu, logout, signout } };
-
 };
 
 export default useSideMenu;

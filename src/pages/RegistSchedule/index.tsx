@@ -95,6 +95,7 @@ const RegistSchedulePage = () => {
             />
           </KeyboardAvoidWrapper>
           <BottomSheetModal
+            enableContentPanningGesture={false}
             ref={modalRef}
             index={1}
             snapPoints={[200, 350]}

@@ -84,7 +84,7 @@ const NavigationBar = ({ page }: Props) => {
 const styles = StyleSheet.create({
   navigationContainer: {
     position: 'absolute',
-    bottom: 0,
+    bottom: 10,
     borderTopColor: COLOR.sub45,
     borderTopWidth: 1,
   },

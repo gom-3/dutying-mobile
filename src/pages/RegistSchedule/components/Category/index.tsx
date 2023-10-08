@@ -35,6 +35,7 @@ const Category = () => {
         backdropComponent={renderBackdrop}
         style={{ padding: 14 }}
         handleComponent={null}
+        enableContentPanningGesture={false}
         index={1}
         snapPoints={[100, 300]}
         onChange={(index) => {

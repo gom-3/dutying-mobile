@@ -16,6 +16,13 @@ import MoimDetailPage from './Social/Moim/MoimDetailPage';
 import Term from './LoginPage/Term';
 import { Stack, StackParams, navigationRef } from '@libs/utils/navigate';
 import * as Linking from 'expo-linking';
+// import Airbridge from 'airbridge-react-native-sdk';
+
+// Airbridge.deeplink.setDeeplinkListener((deeplink) => {
+//   // code that will run when app is opened with deep-link or deferred-deep-link
+//   // deeplink = YOUR_SCHEME://...
+//   console.log(deeplink);
+// });
 
 const prefix = Linking.createURL('/');
 
@@ -25,9 +32,11 @@ const Router = () => {
     config: {
       screens: {
         Login: 'login',
+        Moim: 'moim',
       },
     },
   };
+
   useShiftType();
 
   return (
