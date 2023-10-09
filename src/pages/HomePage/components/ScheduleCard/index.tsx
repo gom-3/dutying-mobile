@@ -1,5 +1,5 @@
 import { Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import Animated, { FadeInDown } from 'react-native-reanimated';
+import Animated, { FadeInDown, SlideInDown } from 'react-native-reanimated';
 import { COLOR, screenHeight, screenWidth } from 'index.style';
 import { GestureDetector } from 'react-native-gesture-handler';
 import PencilIcon from '@assets/svgs/pencil.svg';
@@ -7,32 +7,28 @@ import AddButtonIcon from '@assets/svgs/add-button.svg';
 import AddShiftIcon from '@assets/svgs/add-shift.svg';
 import BackDrop from '@components/BackDrop';
 import useScheduleCard from './index.hook';
-import Carousel from 'react-native-snap-carousel';
+// import Carousel from 'react-native-snap-carousel';
+import Carousel from 'react-native-reanimated-carousel';
 import { useMemo } from 'react';
 import { DateType } from '../Calendar';
+import { isSameDate } from '@libs/utils/date';
 
 const days = ['일', '월', '화', '수', '목', '금', '토'];
 
 const ScheduleCard = () => {
   const {
-    state: { animatedStyles, panGesture, date, selectedDateData, shiftTypes, isToday },
+    state: { carouselRef, calendar, cardDefaultIndex, shiftTypes },
     actions: {
       backDropPressHandler,
       addSchedulePressHandler,
       editSchedulePressHandler,
       editShiftPressHandler,
+      changeDate,
     },
   } = useScheduleCard();
 
-  // const datas = useMemo(() => {
-  //   return [
-  //     calendar[selectedDateData - 1],
-  //     calendar[selectedDateData],
-  //     calendar[selectedDateData + 1],
-  //   ];
-  // }, [date]);
-
   const renderItem = ({ item }: { item: DateType }) => {
+    const isToday = isSameDate(item.date, new Date());
     return (
       <View style={styles.cardView}>
         <Text style={styles.dateText}>
@@ -66,7 +62,14 @@ const ScheduleCard = () => {
             </Pressable>
           )}
         </View>
-        <ScrollView style={{ padding: 24 }}>
+        <ScrollView
+          style={{
+            padding: 24,
+            backgroundColor: 'white',
+            borderBottomLeftRadius: 20,
+            borderBottomRightRadius: 20,
+          }}
+        >
           {item?.schedules.map((schedule) => (
             <TouchableOpacity key={schedule.id} onPress={() => editSchedulePressHandler(schedule)}>
               <View key={schedule.title} style={styles.scheduleView}>
@@ -106,28 +109,21 @@ const ScheduleCard = () => {
   return (
     <>
       <BackDrop clickHandler={backDropPressHandler} />
-      {/* <Animated.View entering={FadeInDown.duration(100)} style={styles.scheduleCardContainer}>
+      <Animated.View entering={FadeInDown.duration(250)} style={styles.scheduleCardContainer}>
         <Carousel
+          loop={false}
+          ref={carouselRef}
           style={styles.scheduleCardContainer}
           data={calendar}
           renderItem={renderItem}
-          sliderWidth={screenWidth}
-          itemWidth={screenWidth * 0.8}
-          getItemLayout={(_, index) => ({
-            length: screenWidth * 0.8,
-            offset: screenWidth * 0.8 * index,
-            index,
-          })}
-          firstItem={selectedDateData}
-          initialNumToRender={3}
-          maxToRenderPerBatch={9}
-          enableMomentum={true}
-          swipeThreshold={10}
-          activeSlideOffset={15}
-          removeClippedSubviews
+          width={screenWidth * 0.95}
+          mode="parallax"
+          height={500}
+          onScrollEnd={changeDate}
+          defaultIndex={cardDefaultIndex}
         />
-      </Animated.View> */}
-      <GestureDetector gesture={panGesture}>
+      </Animated.View>
+      {/* <GestureDetector gesture={panGesture}>
         <Animated.View
           style={[animatedStyles, styles.scheduleCardContainer]}
           entering={FadeInDown.duration(100)}
@@ -231,22 +227,23 @@ const ScheduleCard = () => {
             </Pressable>
           </View>
         </Animated.View>
-      </GestureDetector>
+      </GestureDetector> */}
     </>
   );
 };
 
 const styles = StyleSheet.create({
   scheduleCardContainer: {
+    width: screenWidth,
     position: 'absolute',
     flexDirection: 'row',
     zIndex: 10,
-    top: '25%',
-    left: -screenWidth * 1.6,
+    top: '20%',
+    // left: -screenWidth * 1.6,
   },
   cardView: {
-    width: screenWidth * 0.8,
-    height: 448,
+    width: screenWidth,
+    height: 550,
     backgroundColor: 'white',
     margin: screenWidth * 0.02,
     borderRadius: 20,
@@ -288,6 +285,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: 'white',
   },
   shiftBoxText: {
     fontSize: 16,

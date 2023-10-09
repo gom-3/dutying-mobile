@@ -6,6 +6,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import DoubleArrowIcon from '@assets/svgs/double-right-arrow.svg';
 import LogoIcon from '@assets/svgs/logo-selected.svg';
 import { COLOR } from 'index.style';
+import * as Linking from 'expo-linking';
 
 const WardPage = () => {
   return (
@@ -29,7 +30,13 @@ const WardPage = () => {
           <Text>더 간편한 듀팅이 될 수 있어요!</Text>
         </View>
         <View style={{ width: '100%', margin: 30 }}>
-          <NextButton text="우리 병동에 도입하기" onPress={() => {}} Icon={DoubleArrowIcon} />
+          <NextButton
+            text="우리 병동에 도입하기"
+            onPress={() => {
+              Linking.openURL('https://www.naver.com');
+            }}
+            Icon={DoubleArrowIcon}
+          />
         </View>
       </SafeAreaView>
       <NavigationBar page="ward" />

@@ -1,5 +1,5 @@
 import { useShiftTypeStore } from 'store/shift';
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useCaledarDateStore } from 'store/calendar';
 import { shallow } from 'zustand/shallow';
 import { DateType } from '.';
@@ -39,9 +39,10 @@ const useCalendar = (isRender?: boolean) => {
 
   // console.log(shiftListResponse, calendar);
 
-  const dateClickHandler = (date: Date) => {
+  const dateClickHandler = (date: Date, index: number) => {
     firebaseLogEvent('select_date_cell');
     setState('date', date);
+    setState('cardDefaultIndex', index);
     setState('isCardOpen', true);
   };
 

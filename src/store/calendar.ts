@@ -6,6 +6,7 @@ import { createWithEqualityFn } from 'zustand/traditional';
 interface State {
   date: Date;
   calendar: DateType[];
+  cardDefaultIndex: number;
   isCardOpen: boolean;
   isSideMenuOpen: boolean;
   isScheduleUpdated: boolean;
@@ -21,6 +22,7 @@ export const useCaledarDateStore = createWithEqualityFn<Store>()(
   devtools((set, _) => ({
     date: new Date(),
     calendar: [],
+    cardDefaultIndex: 0,
     isSideMenuOpen: false,
     isCardOpen: false,
     isScheduleUpdated: false,
