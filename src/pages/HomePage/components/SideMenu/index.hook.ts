@@ -44,9 +44,9 @@ const useSideMenu = () => {
       {
         text: '네',
         onPress: () => {
-          logoutAccount();
-          setState('isSideMenuOpen', false);
           navigateToLoginAndResetHistory();
+          setState('isSideMenuOpen', false);
+          logoutAccount();
         },
       },
       { text: '아니오', onPress: () => {} },
@@ -58,9 +58,9 @@ const useSideMenu = () => {
       {
         text: '네',
         onPress: () => {
-          logoutAccount();
-          setState('isSideMenuOpen', false);
           navigateToLoginAndResetHistory();
+          setState('isSideMenuOpen', false);
+          logoutAccount();
         },
       },
       { text: '아니오', onPress: () => {} },

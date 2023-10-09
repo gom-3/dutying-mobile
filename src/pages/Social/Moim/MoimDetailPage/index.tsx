@@ -56,7 +56,7 @@ const MoimDetailPage = () => {
   };
 
   const renderBackdrop = useCallback((props: any) => <BottomSheetBackdrop {...props} />, []);
-  if (!moim || !moimCollection)
+  if (!moim)
     return (
       <View>
         <ActivityIndicator color={COLOR.main1} />
