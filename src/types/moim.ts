@@ -17,8 +17,10 @@ type Summary = {
 type Collection = {
   targetAccountIds: number[];
   memberViews: (Pick<Account, 'accountId' | 'name' | 'profileImgBase64'> & {
-    accountShiftTypes: (Pick<Shift, 'color' | 'startTime' | 'endTime' | 'name' | 'shortName'> & {
+    accountShiftTypes: (Pick<Shift, 'color' | 'name' | 'shortName'> & {
       date: string;
+      startTime: string;
+      endTime: string;
     })[];
   })[];
   summaryView: {

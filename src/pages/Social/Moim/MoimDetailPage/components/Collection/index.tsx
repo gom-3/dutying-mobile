@@ -6,7 +6,6 @@ import { days, getCurrentWeekIndex } from '@libs/utils/date';
 import { COLOR } from 'index.style';
 import { useMoimStore } from '@pages/Social/Moim/store';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { MoimCollectionResponseDTO } from '@libs/api/moim';
 import { useCaledarDateStore } from 'store/calendar';
 import ArrowLeftIcon from '@assets/svgs/arrow-left.svg';
 import ArrowRightIcon from '@assets/svgs/arrow-right.svg';
@@ -14,7 +13,7 @@ import ArrowRightIcon from '@assets/svgs/arrow-right.svg';
 const weekEnum = ['첫째 주', '둘째 주', '셋째 주', '넷째 주', '다섯째 주', '여섯째 주'];
 
 interface Props {
-  collection: MoimCollectionResponseDTO | undefined;
+  collection: Collection | undefined;
 }
 
 const Collection = ({ collection }: Props) => {

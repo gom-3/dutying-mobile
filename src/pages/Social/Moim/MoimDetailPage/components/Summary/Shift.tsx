@@ -6,14 +6,21 @@ import { useShiftTypeStore } from 'store/shift';
 
 interface Props {
   isToday?: boolean;
-  shift:Pick<Shift, 'color'|'name'|'shortName'|'startTime'|'endTime'> | null;
+  shift:
+    | (Pick<Shift, 'color' | 'name' | 'shortName'> & {
+        startTime: string | null;
+        endTime: string | null;
+      })
+    | null;
 }
 
 const MoimShift = ({ isToday, shift }: Props) => {
   const [shiftTypes] = useShiftTypeStore((state) => [state.shiftTypes]);
   const [isPressed, setIsPressed] = useState(false);
 
-  if(!shift) return <View style={styles.shiftBox}/>;
+  console.log(shift);
+
+  if (!shift) return <View style={styles.shiftBox} />;
   // return;
 
   return (
@@ -31,18 +38,18 @@ const MoimShift = ({ isToday, shift }: Props) => {
           {shift.name}
         </Text>
       </View>
-      {isPressed && (
+      {isPressed && shift.startTime && shift.endTime && (
         <View
           style={{
             position: 'absolute',
-            width: 50,
-            bottom: -16,
+            width: 60,
+            top: -18,
             left: '50%',
-            transform: [{ translateX: -23 }],
+            transform: [{ translateX: -28 }],
             alignItems: 'center',
             backgroundColor: 'white',
             borderRadius: 5,
-            padding: 2,
+            padding: 3,
             shadowColor: '#9c9c9c',
             shadowOffset: { width: 1, height: 1 },
             shadowOpacity: 1,
@@ -54,12 +61,10 @@ const MoimShift = ({ isToday, shift }: Props) => {
             style={{
               color: COLOR.sub25,
               fontFamily: 'Poppins',
-              fontSize: 8,
+              fontSize: 9,
             }}
           >
-            {/* {shift?.startTime?.getHours()}:
-            {shift?.startTime?.getMinutes().toString().padStart(2, '0')} ~{' '}
-            {shift?.endTime?.getHours()}:{shift?.endTime?.getMinutes().toString().padStart(2, '0')} */}
+            {shift.startTime.slice(0, 5)}~{shift.endTime.slice(0, 5)}
           </Text>
         </View>
       )}

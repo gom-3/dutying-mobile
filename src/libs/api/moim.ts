@@ -32,25 +32,10 @@ export const deleteMoim = async (moimId: number) => {
   await axiosInstance.delete(`moims/${moimId}`);
 };
 
-export type MoimCollectionResponseDTO = {
-  targetAccountIds: number[];
-  memberViews: (Pick<Account, 'accountId' | 'name' | 'profileImgBase64'> & {
-    accountShiftTypes: (Pick<Shift, 'color' | 'startTime' | 'endTime' | 'name' | 'shortName'> & {
-      date: string;
-    })[];
-  })[];
-  summaryView: {
-    day: any[];
-    evening: any[];
-    night: any[];
-    off: any[];
-  };
-};
-
 export const getMoimCollection = async (moimId: number, year: number, month: number) => {
   const [startDateString, endDateString] = yearMonthToDateString(year, month);
   return (
-    await axiosInstance.get<MoimCollectionResponseDTO>(
+    await axiosInstance.get<Collection>(
       `/moims/${moimId}/collect?startDate=${startDateString}&endDate=${endDateString}`,
     )
   ).data;

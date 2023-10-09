@@ -239,7 +239,7 @@ const Summary = ({ collection }: Props) => {
           </View>
         ))}
       </View>
-      <View style={{ height: 200, backgroundColor: 'white' }} />
+      <View style={{ height: 150, backgroundColor: 'white' }} />
     </ScrollView>
   );
 };
@@ -387,6 +387,7 @@ const styles = StyleSheet.create({
     shadowColor: 'rgba(210, 199, 231, 0.50)',
     shadowOpacity: 1,
     shadowRadius: 22,
+    paddingBottom: 50,
   },
   membersShiftDate: {
     marginTop: 16,
