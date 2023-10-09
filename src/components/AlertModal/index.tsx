@@ -3,8 +3,11 @@ import { View, Text, TouchableOpacity, Pressable, Share } from 'react-native';
 import { Modal, ModalContent } from 'react-native-modals';
 import CopyIcon from '@assets/svgs/copy.svg';
 import * as Clipboard from 'expo-clipboard';
+import { SearchMoimFromCodeResponseDTO, joinMoim } from '@libs/api/moim';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useNavigation } from '@react-navigation/native';
 
-interface Props {
+type ModalProps = {
   text: string;
   highlight: string;
   subText?: string;
@@ -13,13 +16,9 @@ interface Props {
   acceptText: string;
   accept: () => void;
   isOpen: boolean;
-}
+};
 
-interface InviteProps {
-  moimCode: string;
-  isOpen: boolean;
-  close: () => void;
-}
+type InviteProps = Pick<ModalProps, 'isOpen' | 'close'> & { moimCode: string };
 
 export const AlertModalInvite = ({ moimCode, isOpen, close }: InviteProps) => {
   const copyMoimCode = async () => {
@@ -81,6 +80,79 @@ export const AlertModalInvite = ({ moimCode, isOpen, close }: InviteProps) => {
   );
 };
 
+type EnterProps = Pick<ModalProps, 'isOpen' | 'close'> & {
+  moim: SearchMoimFromCodeResponseDTO;
+  accountId: number;
+};
+
+export const AlertModalEnter = ({ isOpen, close, moim, accountId }: EnterProps) => {
+  const navigate = useNavigation();
+  const queryClient = useQueryClient();
+  const { mutate: enterMoimMutate } = useMutation(() => joinMoim(moim?.moimId, accountId), {
+    onSuccess: () => {
+      queryClient.invalidateQueries(['getMoimList', accountId]);
+      queryClient.refetchQueries(['getMoimList', accountId]);
+      navigate.goBack();
+    },
+  });
+
+  const pressEnterButton = () => {
+    enterMoimMutate();
+  };
+
+  return (
+    <Modal visible={isOpen} onTouchOutside={close}>
+      <ModalContent
+        style={{
+          marginHorizontal: -20,
+          marginVertical: -25,
+        }}
+      >
+        <View style={{ justifyContent: 'center', alignItems: 'center', width: screenWidth * 0.84 }}>
+          <View style={{ alignItems: 'center', margin: 42 }}>
+            <Text style={{ fontSize: 20, fontFamily: 'Apple500' }}>
+              <Text style={{ color: COLOR.main1, fontFamily: 'Apple600' }}>{moim.moimName}</Text>에
+            </Text>
+            <Text style={{ fontSize: 20, fontFamily: 'Apple500' }}>입장하시겠어요?</Text>
+          </View>
+          <View style={{ flexDirection: 'row' }}>
+            <Pressable
+              style={{
+                justifyContent: 'center',
+                alignItems: 'center',
+                backgroundColor: COLOR.sub4,
+                flex: 1.1,
+                marginTop: 49,
+                paddingVertical: 15,
+              }}
+              onPress={close}
+            >
+              <Text style={{ color: COLOR.sub1, fontFamily: 'Apple500', fontSize: 16 }}>
+                아니요
+              </Text>
+            </Pressable>
+            <Pressable
+              style={{
+                marginTop: 49,
+                flex: 1,
+                backgroundColor: COLOR.main1,
+                justifyContent: 'center',
+                alignItems: 'center',
+                padding: 15,
+              }}
+              onPress={pressEnterButton}
+            >
+              <Text style={{ color: 'white', fontSize: 16, fontFamily: 'Apple500' }}>
+                입장 하기
+              </Text>
+            </Pressable>
+          </View>
+        </View>
+      </ModalContent>
+    </Modal>
+  );
+};
+
 const AlertModal = ({
   text,
   highlight,
@@ -90,7 +162,7 @@ const AlertModal = ({
   accept,
   cancelText,
   acceptText,
-}: Props) => {
+}: ModalProps) => {
   const textArray = text.split(new RegExp(`(${highlight})`, 'gi'));
   return (
     <Modal visible={isOpen} onTouchOutside={close}>

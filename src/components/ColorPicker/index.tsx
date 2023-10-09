@@ -1,7 +1,7 @@
 import { BottomSheetBackdrop, BottomSheetModal } from '@gorhom/bottom-sheet';
 import { COLOR } from 'index.style';
 import { useCallback, useRef } from 'react';
-import { Pressable, StyleSheet, View } from 'react-native';
+import { Keyboard, Pressable, StyleSheet, View } from 'react-native';
 import ColorPickers, {
   Panel1,
   Swatches,
@@ -30,7 +30,12 @@ const ColorPicker = ({ color, onChange }: Props) => {
 
   return (
     <View>
-      <Pressable onPress={() => ref.current?.present()}>
+      <Pressable
+        onPress={() => {
+          Keyboard.dismiss();
+          ref.current?.present();
+        }}
+      >
         <View style={[styles.color, { backgroundColor: color }]}>
           {color === 'white' && <PlusIcon />}
         </View>

@@ -13,7 +13,6 @@ import {
 import MoimShift from './Shift';
 import Carousel from 'react-native-snap-carousel';
 import useSummary from './index.hook';
-import { useEffect } from 'react';
 
 const Classification = ['day', 'evening', 'night', 'off'];
 const countEnum = ['가장', '두 번째', '세 번째', '네 번째'];
@@ -30,7 +29,7 @@ const Summary = ({ collection }: Props) => {
       date,
       shiftTypes,
       page,
-      selectedShiftType,
+      selectedShiftTypeName,
       weeks,
       threeDates,
     },
@@ -60,7 +59,7 @@ const Summary = ({ collection }: Props) => {
       <View style={styles.card} key={`card${index}`}>
         <View style={styles.cardContent}>
           <Text style={styles.cardHeaderText}>
-            {countEnum[index]} 많이 겹치는 {shiftTypes.get(selectedShiftType)?.name}
+            {countEnum[index]} 많이 겹치는 {selectedShiftTypeName?.name}
           </Text>
           <Text style={styles.cardNumberText}>
             {item.count}/{collection.memberViews.length}
@@ -108,9 +107,7 @@ const Summary = ({ collection }: Props) => {
                         : COLOR.main2,
                   },
                 ]}
-                onPress={() =>
-                  pressShiftTypeHandler(type.classification.toLowerCase(), type.accountShiftTypeId)
-                }
+                onPress={() => pressShiftTypeHandler(type.classification.toLowerCase())}
               >
                 <Text
                   style={[

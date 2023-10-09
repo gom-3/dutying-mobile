@@ -13,6 +13,8 @@ const useShiftType = () => {
       enabled: userId > 0,
     },
   );
+
+  console.log(shiftTypesResponse);
   const [setState] = useShiftTypeStore((state) => [state.setState]);
 
   useEffect(() => {

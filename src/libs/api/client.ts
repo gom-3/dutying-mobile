@@ -25,7 +25,7 @@ axiosInstance.interceptors.response.use(
     if (error.response) {
       console.log(error);
       if (error.response.status === 400) {
-        return {
+        throw {
           code: '400',
           message: '400',
         };

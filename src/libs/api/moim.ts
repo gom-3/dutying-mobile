@@ -55,3 +55,18 @@ export const getMoimCollection = async (moimId: number, year: number, month: num
     )
   ).data;
 };
+
+export type SearchMoimFromCodeResponseDTO = Pick<
+  Moim,
+  'moimId' | 'moimName' | 'isPublic' | 'hostInfo'
+>;
+
+export const searchMoimCode = async (moimCode: string) => {
+  console.log(moimCode);
+  return (await axiosInstance.get<SearchMoimFromCodeResponseDTO>(`/moims/search?code=${moimCode}`))
+    .data;
+};
+
+export const joinMoim = async (moimId: number, accountId: number) => {
+  return await axiosInstance.post(`/moims/${moimId}/join?accountId=${accountId}`);
+};

@@ -9,18 +9,16 @@ import { useShiftTypeStore } from 'store/shift';
 const useSummary = () => {
   const [date, setState] = useCaledarDateStore((state) => [state.date, state.setState]);
   const [shiftTypes] = useShiftTypeStore((state) => [state.shiftTypes]);
-  const [selectedShiftType, setSelectedShiftType] = useState<number>(
-    shiftTypes.keys().next().value,
-  );
   const [page, setPage] = useState(0);
   const [account] = useAccountStore((state) => [state.account]);
   const [weeks, initCalendar] = useMoimStore((state) => [state.weeks, state.initCalendar]);
 
   const [selectedClassification, setSelectedClassification] = useState<string>('off');
-
-  const pressShiftTypeHandler = (text: string, shiftId:number) => {
+  const selectedShiftTypeName = Array.from(shiftTypes.values()).find(
+    (shift) => shift.classification === selectedClassification.toUpperCase(),
+  );
+  const pressShiftTypeHandler = (text: string) => {
     setSelectedClassification(text);
-    setSelectedShiftType(shiftId);
   };
 
   const [index, setIndex] = useState(10);
@@ -29,8 +27,6 @@ const useSummary = () => {
     const nextDate = new Date(date.getFullYear(), date.getMonth(), date.getDate() + 1);
     return [prevDate, date, nextDate];
   }, [date]);
-
-  
 
   useEffect(() => {
     initCalendar(date.getFullYear(), date.getMonth());
@@ -48,7 +44,7 @@ const useSummary = () => {
       date,
       shiftTypes,
       page,
-      selectedShiftType,
+      selectedShiftTypeName,
       account,
       weeks,
       threeDates,

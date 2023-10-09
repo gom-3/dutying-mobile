@@ -21,6 +21,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import PlusIcon from '@assets/svgs/plus-circle.svg';
 import BottomSheetHeader from '@components/BottomSheetHeader';
 import CheckIcon from '@assets/svgs/check.svg';
+import EnterIcon from '@assets/svgs/enter.svg';
 import { useCallback } from 'react';
 import useMoimPage from './index.hook';
 
@@ -28,7 +29,7 @@ const MoimPage = () => {
   const renderBackdrop = useCallback((props: any) => <BottomSheetBackdrop {...props} />, []);
   const {
     states: { moimList, createRef, textInputRef },
-    actions: { pressMoimCard, pressCheck },
+    actions: { pressMoimCard, pressCheck, navigateMoimEnter },
   } = useMoimPage();
 
   return (
@@ -36,17 +37,17 @@ const MoimPage = () => {
       <BottomSheetModalProvider>
         <SafeAreaView>
           <View style={styles.header}>
-            <Pressable>
+            {/* <Pressable>
               <Text style={[styles.headerText, { color: COLOR.sub25, fontFamily: 'Apple500' }]}>
                 친구
               </Text>
-            </Pressable>
+            </Pressable> */}
             <Pressable>
               <Text
                 style={[
                   styles.headerText,
                   {
-                    marginLeft: 18,
+                    // marginLeft: 18,
                     color: COLOR.main1,
                     fontFamily: 'Apple600',
                     textDecorationLine: 'underline',
@@ -56,6 +57,13 @@ const MoimPage = () => {
                 모임
               </Text>
             </Pressable>
+            <TouchableOpacity
+              onPress={() => navigateMoimEnter()}
+              style={{ width: 35, height: 40, alignItems: 'center', justifyContent: 'center' }}
+            >
+              <EnterIcon />
+              <Text style={{ fontSize: 12, fontFamily: 'Apple500', color: COLOR.main2 }}>입장</Text>
+            </TouchableOpacity>
           </View>
           <View style={styles.textWrapper}>
             <View>
@@ -159,6 +167,7 @@ const styles = StyleSheet.create({
     marginTop: 24,
     paddingHorizontal: 24,
     flexDirection: 'row',
+    justifyContent: 'space-between',
   },
   headerText: {
     fontSize: 20,
@@ -167,7 +176,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     paddingHorizontal: 24,
-    marginTop: 40,
+    marginTop: 18,
   },
   countText: {
     fontFamily: 'Apple',

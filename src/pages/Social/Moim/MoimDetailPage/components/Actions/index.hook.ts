@@ -1,5 +1,5 @@
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
-import { deleteMoim } from '@libs/api/moim';
+import { deleteMoim, withdrawMoim } from '@libs/api/moim';
 import { useMoimStore } from '@pages/Social/Moim/store';
 import { useNavigation } from '@react-navigation/native';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
@@ -14,8 +14,11 @@ const useAction = (moim: Moim, close: () => void) => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isKickModalOpen, setIsKickModalOpen] = useState(false);
   const [isChangeMasterModalOpen, setIsChangeMasterModalOpen] = useState(false);
+  const [isOutModalOpen, setIsOutModalOpen] = useState(false);
   const navigate = useNavigation();
   const queryClient = useQueryClient();
+
+  const isHost = moim.hostInfo.accountId === accountId;
 
   const { mutate: deleteMoimMutate } = useMutation(() => deleteMoim(moim.moimId), {
     onSuccess: () => {
@@ -23,6 +26,18 @@ const useAction = (moim: Moim, close: () => void) => {
       navigate.goBack();
     },
   });
+
+  const { mutate: outMoimMutate } = useMutation(() => withdrawMoim(moim.moimId), {
+    onSuccess: () => {
+      queryClient.invalidateQueries(['getMoimList', accountId]);
+      navigate.goBack();
+    },
+  });
+
+  const pressAccetOutModal = () => {
+    setIsOutModalOpen(false);
+    outMoimMutate();
+  };
 
   const openBottomSheet = (sheet: 'invite' | 'change' | 'kick') => {
     if (sheet === 'invite') inviteRef.current?.present();
@@ -40,7 +55,15 @@ const useAction = (moim: Moim, close: () => void) => {
   const changeRef = useRef<BottomSheetModal>(null);
   const kickRef = useRef<BottomSheetModal>(null);
 
-  
+  const openOutModal = () => {
+    setIsOutModalOpen(true);
+    close();
+  };
+
+  const closeOutModal = () => {
+    setIsOutModalOpen(false);
+    close();
+  };
 
   const openInviteModal = () => {
     setIsInviteModalOpen(true);
@@ -83,7 +106,9 @@ const useAction = (moim: Moim, close: () => void) => {
       isDeleteModalOpen,
       isKickModalOpen,
       isChangeMasterModalOpen,
+      isOutModalOpen,
       moimCode,
+      isHost,
     },
     actions: {
       openInviteModal,
@@ -96,6 +121,9 @@ const useAction = (moim: Moim, close: () => void) => {
       openKickModal,
       closeChangeMasterModal,
       setIsDeleteModalOpen,
+      openOutModal,
+      closeOutModal,
+      pressAccetOutModal
     },
   };
 };

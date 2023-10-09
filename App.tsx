@@ -50,6 +50,7 @@ export default function App() {
     Poppins: require('./src/assets/fonts/Poppins-Regular.ttf'),
     Poppins500: require('./src/assets/fonts/Poppins-Medium.ttf'),
     Poppins600: require('./src/assets/fonts/Poppins-Bold.ttf'),
+    Line300: require('./src/assets/fonts/LINESeedKR-Th.ttf'),
     Line: require('./src/assets/fonts/LINESeedKR-Rg.ttf'),
     Line500: require('./src/assets/fonts/LINESeedKR-Bd.ttf'),
   });

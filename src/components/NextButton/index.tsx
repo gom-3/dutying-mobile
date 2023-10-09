@@ -14,7 +14,7 @@ const NextButton = ({ text, Icon, disabled, onPress }: Props) => {
     <TouchableOpacity disabled={disabled} onPress={onPress}>
       <View style={[styles.container, { backgroundColor: disabled ? COLOR.main3 : COLOR.main1 }]}>
         <Text style={styles.text}>{text}</Text>
-        {Icon && <Icon />}
+        {Icon && <Icon style={{ marginLeft: 10, marginTop: 2 }} />}
       </View>
     </TouchableOpacity>
   );

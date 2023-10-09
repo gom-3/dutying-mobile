@@ -11,7 +11,6 @@ import {
 import { useAccountStore } from 'store/account';
 import { useNavigation } from '@react-navigation/native';
 import { firebaseLogEvent } from '@libs/utils/event';
-
 interface TypeList {
   text: string;
   key: Shift['classification'];
@@ -43,13 +42,17 @@ const useShiftTypeEdit = () => {
 
   const onSuccessMutate = () => {
     queryClient.invalidateQueries(['getShiftTypes', userId]);
+    queryClient.refetchQueries(['getShiftTypes', userId]);
     navigation.goBack();
   };
 
   const { mutate: addShiftTypeMutate } = useMutation(
     (shift: ShiftTypeRequestDTO) => addShiftType(userId, shift),
     {
-      onSuccess: onSuccessMutate,
+      onSuccess: (data)=>{
+        console.log(data);
+        onSuccessMutate();
+      },
     },
   );
   const { mutate: editShiftTypeMutate } = useMutation(

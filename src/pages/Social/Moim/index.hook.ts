@@ -9,6 +9,7 @@ import { useMoimStore } from './store';
 const useMoimPage = () => {
   const [accountId] = useAccountStore((state) => [state.account.accountId]);
   const { onPress: navigateDetailMoim } = useLinkProps({ to: { screen: 'MoimDetail' } });
+  const { onPress: navigateMoimEnter } = useLinkProps({ to: { screen: 'MoimEnter' } });
   const textInputRef = useRef<string>('');
   const queryClient = useQueryClient();
   const createRef = useRef<BottomSheetModal>(null);
@@ -27,6 +28,8 @@ const useMoimPage = () => {
 
   const { data: moimList } = useQuery(['getMoimList', accountId], () => getMoimList());
 
+  console.log(moimList);
+
   const pressMoimCard = (moimId: number, moimCode: string) => {
     setMoimState('moimId', moimId);
     setMoimState('moimCode', moimCode);
@@ -35,7 +38,7 @@ const useMoimPage = () => {
 
   return {
     states: { createRef, moimList, textInputRef },
-    actions: { pressMoimCard, pressCheck, setMoimState },
+    actions: { pressMoimCard, pressCheck, setMoimState, navigateMoimEnter },
   };
 };
 

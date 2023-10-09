@@ -33,9 +33,13 @@ const Actions = ({ isActionOpen, moim, close }: Props) => {
       isDeleteModalOpen,
       isChangeMasterModalOpen,
       isKickModalOpen,
+      isOutModalOpen,
       moimCode,
+      isHost,
     },
     actions: {
+      openOutModal,
+      closeOutModal,
       openInviteModal,
       closeInviteModal,
       setIsDeleteModalOpen,
@@ -46,6 +50,7 @@ const Actions = ({ isActionOpen, moim, close }: Props) => {
       deleteMoimMutate,
       closeChangeMasterModal,
       closeKickModal,
+      pressAccetOutModal,
     },
   } = useAction(moim, close);
   const renderBackdrop = useCallback((props: any) => <BottomSheetBackdrop {...props} />, []);
@@ -53,6 +58,17 @@ const Actions = ({ isActionOpen, moim, close }: Props) => {
   return (
     <View style={styles.container}>
       <AlertModalInvite moimCode={moimCode} isOpen={isInviteModalOpen} close={closeInviteModal} />
+      {!isHost && (
+        <AlertModal
+          text="모임을 탈퇴하시겠어요?"
+          highlight="탈퇴"
+          isOpen={isOutModalOpen}
+          close={closeOutModal}
+          cancelText="아니요"
+          acceptText="네, 탈퇴할게요"
+          accept={pressAccetOutModal}
+        />
+      )}
       <AlertModal
         text={`${name}님을 모임에서 내보내시겠어요?`}
         highlight={`${name}님`}
@@ -90,18 +106,32 @@ const Actions = ({ isActionOpen, moim, close }: Props) => {
             <TouchableOpacity style={styles.item} onPress={() => openBottomSheet('invite')}>
               <Text style={styles.itemText}>모임 초대</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.item} onPress={() => openBottomSheet('change')}>
-              <Text style={styles.itemText}>모임장 변경</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.item} onPress={() => openBottomSheet('kick')}>
-              <Text style={styles.itemText}>모임 내보내기</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={openDeleteModal}
-              style={[styles.item, { borderBottomWidth: 0 }]}
-            >
-              <Text style={styles.itemText}>모임 삭제</Text>
-            </TouchableOpacity>
+            {isHost && (
+              <TouchableOpacity style={styles.item} onPress={() => openBottomSheet('change')}>
+                <Text style={styles.itemText}>모임장 변경</Text>
+              </TouchableOpacity>
+            )}
+            {isHost && (
+              <TouchableOpacity style={styles.item} onPress={() => openBottomSheet('kick')}>
+                <Text style={styles.itemText}>모임 내보내기</Text>
+              </TouchableOpacity>
+            )}
+            {isHost && (
+              <TouchableOpacity
+                onPress={openDeleteModal}
+                style={[styles.item, { borderBottomWidth: 0 }]}
+              >
+                <Text style={styles.itemText}>모임 삭제</Text>
+              </TouchableOpacity>
+            )}
+            {!isHost && (
+              <TouchableOpacity
+                onPress={openOutModal}
+                style={[styles.item, { borderBottomWidth: 0 }]}
+              >
+                <Text style={styles.itemText}>모임 탈퇴</Text>
+              </TouchableOpacity>
+            )}
           </View>
         </OutsidePressHandler>
       )}

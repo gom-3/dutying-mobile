@@ -1,6 +1,14 @@
 import PageHeader from '@components/PageHeader';
 import PageViewContainer from '@components/PageView';
-import { TouchableOpacity, View, Text, StyleSheet, Image, ScrollView } from 'react-native';
+import {
+  TouchableOpacity,
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  ScrollView,
+  ActivityIndicator,
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import DotsIcon from '@assets/svgs/dots.svg';
 import { COLOR } from 'index.style';
@@ -27,6 +35,7 @@ const MoimDetailPage = () => {
   const [date] = useCaledarDateStore((state) => [state.date]);
   const memberRef = useRef<BottomSheetModal>(null);
   const [moimId] = useMoimStore((state) => [state.moimId]);
+
   const { data: moim } = useQuery(['getMemberList', moimId], () => getMoimMembers(moimId), {
     enabled: moimId !== 0,
   });
@@ -47,13 +56,22 @@ const MoimDetailPage = () => {
   };
 
   const renderBackdrop = useCallback((props: any) => <BottomSheetBackdrop {...props} />, []);
-  if (!moim) return;
+  if (!moim || !moimCollection)
+    return (
+      <View>
+        <ActivityIndicator color={COLOR.main1} />
+      </View>
+    );
 
   return (
     <PageViewContainer style={{ backgroundColor: COLOR.bg }}>
       <BottomSheetModalProvider>
         <SafeAreaView>
-          <AlertModalInvite moimCode="434567" isOpen={isInviteModalOpen} close={closeInviteModal} />
+          <AlertModalInvite
+            moimCode={moim.moimCode}
+            isOpen={isInviteModalOpen}
+            close={closeInviteModal}
+          />
           <PageHeader
             title=""
             rightItems={
