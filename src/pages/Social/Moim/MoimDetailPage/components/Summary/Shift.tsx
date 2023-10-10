@@ -2,7 +2,6 @@ import { hexToRgba } from '@libs/utils/color';
 import { COLOR } from 'index.style';
 import { useState } from 'react';
 import { View, Text, StyleSheet, Pressable } from 'react-native';
-import { useShiftTypeStore } from 'store/shift';
 
 interface Props {
   isToday?: boolean;
@@ -15,10 +14,7 @@ interface Props {
 }
 
 const MoimShift = ({ isToday, shift }: Props) => {
-  const [shiftTypes] = useShiftTypeStore((state) => [state.shiftTypes]);
   const [isPressed, setIsPressed] = useState(false);
-
-  console.log(shift);
 
   if (!shift) return <View style={styles.shiftBox} />;
   // return;
@@ -60,7 +56,7 @@ const MoimShift = ({ isToday, shift }: Props) => {
           <Text
             style={{
               color: COLOR.sub25,
-              fontFamily: 'Poppins',
+              fontFamily: 'Apple',
               fontSize: 9,
             }}
           >
@@ -78,16 +74,17 @@ const styles = StyleSheet.create({
     width: 54,
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 3,
+    paddingVertical: 5,
     borderRadius: 7,
     marginLeft: 4,
   },
   shoftName: {
     fontSize: 14,
-    fontFamily: 'Poppins500',
+    fontFamily: 'Apple500',
     color: 'white',
   },
   name: {
+    marginLeft: 5,
     fontFamily: 'Apple500',
     fontSize: 10,
     color: 'white',
@@ -103,7 +100,6 @@ const styles = StyleSheet.create({
     borderLeftColor: 'transparent',
     borderRightColor: 'transparent',
     borderBottomColor: 'white',
-    // transform: [{ rotate: '180deg' }],
   },
 });
 

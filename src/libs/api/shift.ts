@@ -14,7 +14,10 @@ export const getAccountShiftList = async (userId: number, year: number, month: n
   ).data;
 };
 
-export type AccountShiftRequest = Pick<Shift, 'accountShiftTypeId'> & { shiftDate: string };
+export type AccountShiftRequest = {
+  shiftDate: string;
+  accountShiftTypeId: number | null;
+};
 
 export type AccountShiftListRequestDTO = {
   accountShifts: AccountShiftRequest[];

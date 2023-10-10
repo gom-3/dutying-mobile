@@ -22,7 +22,6 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import { demoLogin, getAccount, oAuthLogin } from '@libs/api/account';
 import { useSignupStore } from '@pages/SignupPage/store';
 import { firebaseLogEvent } from '@libs/utils/event';
-import { Share } from 'react-native';
 import { demoLoginAccount } from '@mocks/account';
 import axiosInstance from '@libs/api/client';
 
@@ -65,7 +64,6 @@ const LoginPage = () => {
     ({ idToken, provider }: { idToken: string; provider: string }) => oAuthLogin(idToken, provider),
     {
       onSuccess: (data) => {
-        console.log(data);
         if (data.status === 'INITIAL' || data.name === null) {
           setSignupState('id', data.accountId);
           navigateSignup();
@@ -106,23 +104,19 @@ const LoginPage = () => {
     });
     oAuthLoginMutate({ idToken: token.identityToken || '', provider: 'apple' });
   };
-
-  const link = async () => {
-    const result = await Share.share({
-      message: 'is Sharing',
-      url: 'dutying://login',
-      title: 'dutying://login',
-    });
-    console.log(result);
-  };
+  // const link = async () => {
+  //   const result = await Share.share({
+  //     message: 'is Sharing',
+  //     url: 'dutying://login',
+  //     title: 'dutying://login',
+  //   });
+  //   console.log(result);
+  // };
 
   return (
     <PageViewContainer withoutLogin>
       <SafeAreaView>
         <View style={styles.pageContainer}>
-          <Pressable onPress={() => link()}>
-            <Text>링크</Text>
-          </Pressable>
           <View style={styles.guidTextWrapper}>
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
               <Pressable onPress={() => setClick(click + 1)}>

@@ -14,7 +14,6 @@ const useShiftType = () => {
     },
   );
 
-  console.log(shiftTypesResponse);
   const [setState] = useShiftTypeStore((state) => [state.setState]);
 
   useEffect(() => {

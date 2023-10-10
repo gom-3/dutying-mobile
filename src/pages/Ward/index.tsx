@@ -33,7 +33,7 @@ const WardPage = () => {
           <NextButton
             text="우리 병동에 도입하기"
             onPress={() => {
-              Linking.openURL('https://www.naver.com');
+              Linking.openURL('https://www.dutying.net');
             }}
             Icon={DoubleArrowIcon}
           />

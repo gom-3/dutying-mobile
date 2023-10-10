@@ -1,21 +1,21 @@
 import { Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import Animated, { FadeInDown, SlideInDown } from 'react-native-reanimated';
+import Animated, { FadeInDown } from 'react-native-reanimated';
 import { COLOR, screenHeight, screenWidth } from 'index.style';
-import { GestureDetector } from 'react-native-gesture-handler';
 import PencilIcon from '@assets/svgs/pencil.svg';
 import AddButtonIcon from '@assets/svgs/add-button.svg';
 import AddShiftIcon from '@assets/svgs/add-shift.svg';
 import BackDrop from '@components/BackDrop';
 import useScheduleCard from './index.hook';
-// import Carousel from 'react-native-snap-carousel';
 import Carousel from 'react-native-reanimated-carousel';
-import { useMemo } from 'react';
 import { DateType } from '../Calendar';
-import { isSameDate } from '@libs/utils/date';
+
+interface Props {
+  isCardOpen: boolean;
+}
 
 const days = ['일', '월', '화', '수', '목', '금', '토'];
 
-const ScheduleCard = () => {
+const ScheduleCard = ({ isCardOpen }: Props) => {
   const {
     state: { carouselRef, calendar, cardDefaultIndex, shiftTypes },
     actions: {
@@ -28,25 +28,24 @@ const ScheduleCard = () => {
   } = useScheduleCard();
 
   const renderItem = ({ item }: { item: DateType }) => {
-    const isToday = isSameDate(item.date, new Date());
+    const shift = shiftTypes.get(item.shift || 0);
     return (
       <View style={styles.cardView}>
         <Text style={styles.dateText}>
           {item.date.getMonth() + 1}월 {item.date.getDate()}일 {days[item.date.getDay()]}
         </Text>
-        {isToday && <Text style={styles.todayText}>오늘</Text>}
         <View style={styles.cardHeaderView}>
           {item?.shift ? (
             <View style={styles.shiftWrapperView}>
               <View
                 style={[
                   styles.shiftBoxView,
-                  { backgroundColor: shiftTypes.get(item.shift)?.color },
+                  { backgroundColor: shift?.color },
                 ]}
               >
-                <Text style={styles.shiftBoxText}>{shiftTypes.get(item.shift)?.shortName}</Text>
+                <Text style={styles.shiftBoxText}>{shift?.shortName}</Text>
               </View>
-              <Text style={styles.shiftNameText}>{shiftTypes.get(item.shift)?.name}</Text>
+              <Text style={styles.shiftNameText}>{shift?.name}</Text>
             </View>
           ) : (
             <TouchableOpacity onPress={editShiftPressHandler}>
@@ -106,8 +105,16 @@ const ScheduleCard = () => {
     );
   };
 
+  if (!isCardOpen) return;
+
   return (
-    <>
+    <View
+      style={{
+        position: 'absolute',
+        width: screenWidth,
+        height: screenHeight,
+      }}
+    >
       <BackDrop clickHandler={backDropPressHandler} />
       <Animated.View entering={FadeInDown.duration(250)} style={styles.scheduleCardContainer}>
         <Carousel
@@ -116,119 +123,15 @@ const ScheduleCard = () => {
           style={styles.scheduleCardContainer}
           data={calendar}
           renderItem={renderItem}
-          width={screenWidth * 0.95}
+          width={screenWidth}
           mode="parallax"
           height={500}
           onScrollEnd={changeDate}
           defaultIndex={cardDefaultIndex}
+          windowSize={3}
         />
       </Animated.View>
-      {/* <GestureDetector gesture={panGesture}>
-        <Animated.View
-          style={[animatedStyles, styles.scheduleCardContainer]}
-          entering={FadeInDown.duration(100)}
-        >
-          <View style={styles.cardView}>
-            <View style={styles.cardHeaderView} />
-            <Pressable style={styles.addButtonIcon} onPress={addSchedulePressHandler}>
-              <AddButtonIcon />
-            </Pressable>
-          </View>
-          <View style={styles.cardView}>
-            
-            <View style={styles.cardHeaderView} />
-            <Pressable style={styles.addButtonIcon} onPress={addSchedulePressHandler}>
-              <AddButtonIcon />
-            </Pressable>
-          </View>
-          <View style={styles.cardView}>
-            <Text style={styles.dateText}>
-              {date.getMonth() + 1}월 {date.getDate()}일 {days[date.getDay()]}
-            </Text>
-            {isToday && <Text style={styles.todayText}>오늘</Text>}
-            <View style={styles.cardHeaderView}>
-              {selectedDateData?.shift ? (
-                <View style={styles.shiftWrapperView}>
-                  <View
-                    style={[
-                      styles.shiftBoxView,
-                      { backgroundColor: shiftTypes.get(selectedDateData.shift)?.color },
-                    ]}
-                  >
-                    <Text style={styles.shiftBoxText}>
-                      {shiftTypes.get(selectedDateData.shift)?.shortName}
-                    </Text>
-                  </View>
-                  <Text style={styles.shiftNameText}>
-                    {shiftTypes.get(selectedDateData.shift)?.name}
-                  </Text>
-                </View>
-              ) : (
-                <TouchableOpacity onPress={editShiftPressHandler}>
-                  <View style={styles.shiftWrapperView}>
-                    <AddShiftIcon />
-                    <Text style={styles.registShiftText}>근무를 등록해주세요.</Text>
-                  </View>
-                </TouchableOpacity>
-              )}
-              {selectedDateData?.shift && (
-                <Pressable onPress={editShiftPressHandler}>
-                  <PencilIcon />
-                </Pressable>
-              )}
-            </View>
-            <ScrollView style={{ padding: 24 }}>
-              {selectedDateData?.schedules.map((schedule) => (
-                <TouchableOpacity
-                  key={schedule.id}
-                  onPress={() => editSchedulePressHandler(schedule)}
-                >
-                  <View key={schedule.title} style={styles.scheduleView}>
-                    <View
-                      style={[
-                        styles.scheduleColorView,
-                        {
-                          backgroundColor: schedule.color,
-                        },
-                      ]}
-                    />
-                    <View>
-                      <Text style={styles.scheduleNameText}>{schedule.title}</Text>
-                      <Text style={styles.scheduleDateText}>
-                        {schedule.allDay
-                          ? '하루 종일'
-                          : schedule.startTime.getHours().toString().padStart(2, '0') +
-                            ':' +
-                            schedule.startTime.getMinutes().toString().padStart(2, '0') +
-                            ' - ' +
-                            schedule.endTime.getHours().toString().padStart(2, '0') +
-                            ':' +
-                            schedule.endTime.getMinutes().toString().padStart(2, '0')}
-                      </Text>
-                    </View>
-                  </View>
-                </TouchableOpacity>
-              ))}
-            </ScrollView>
-            <Pressable style={styles.addButtonIcon} onPress={addSchedulePressHandler}>
-              <AddButtonIcon />
-            </Pressable>
-          </View>
-          <View style={styles.cardView}>
-            <View style={styles.cardHeaderView} />
-            <Pressable style={styles.addButtonIcon} onPress={addSchedulePressHandler}>
-              <AddButtonIcon />
-            </Pressable>
-          </View>
-          <View style={styles.cardView}>
-            <View style={styles.cardHeaderView} />
-            <Pressable style={styles.addButtonIcon} onPress={addSchedulePressHandler}>
-              <AddButtonIcon />
-            </Pressable>
-          </View>
-        </Animated.View>
-      </GestureDetector> */}
-    </>
+    </View>
   );
 };
 
@@ -239,7 +142,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     zIndex: 10,
     top: '20%',
-    // left: -screenWidth * 1.6,
   },
   cardView: {
     width: screenWidth,
@@ -289,6 +191,7 @@ const styles = StyleSheet.create({
   },
   shiftBoxText: {
     fontSize: 16,
+    height: 22,
     fontFamily: 'Poppins',
     color: 'white',
   },

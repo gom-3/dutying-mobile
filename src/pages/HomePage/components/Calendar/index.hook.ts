@@ -37,8 +37,6 @@ const useCalendar = (isRender?: boolean) => {
     },
   );
 
-  // console.log(shiftListResponse, calendar);
-
   const dateClickHandler = (date: Date, index: number) => {
     firebaseLogEvent('select_date_cell');
     setState('date', date);

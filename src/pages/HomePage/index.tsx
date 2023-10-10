@@ -7,7 +7,6 @@ import NavigationBar from '@components/NavigationBar';
 import PageViewContainer from '@components/PageView';
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { screenHeight } from 'index.style';
 import useDeviceCalendar from '@hooks/useDeviceCalendar';
 
 const HomePage = () => {
@@ -26,7 +25,7 @@ const HomePage = () => {
           <NavigationBar page="home" />
         </SafeAreaView>
         {isSideMenuOpen && <SideMenu />}
-        {isCardOpen && <ScheduleCard />}
+        <ScheduleCard isCardOpen={isCardOpen} />
       </BottomSheetModalProvider>
     </PageViewContainer>
   );

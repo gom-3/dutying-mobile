@@ -23,10 +23,11 @@ import Collection from './components/Collection';
 import Actions from './components/Actions';
 import { useQuery } from '@tanstack/react-query';
 import { useMoimStore } from '../store';
-import { getMoimCollection, getMoimInfo, getMoimMembers } from '@libs/api/moim';
+import { getMoimCollection, getMoimMembers } from '@libs/api/moim';
 import { useCaledarDateStore } from 'store/calendar';
 import PlusIcon from '@assets/svgs/plus.svg';
 import { AlertModalInvite } from '@components/AlertModal';
+import { useAccountStore } from 'store/account';
 
 const MoimDetailPage = () => {
   const [tab, setTab] = useState<'summary' | 'collection' | 'weekly'>('summary');
@@ -35,7 +36,7 @@ const MoimDetailPage = () => {
   const [date] = useCaledarDateStore((state) => [state.date]);
   const memberRef = useRef<BottomSheetModal>(null);
   const [moimId] = useMoimStore((state) => [state.moimId]);
-
+  const [account] = useAccountStore(state=>[state.account]);
   const { data: moim } = useQuery(['getMemberList', moimId], () => getMoimMembers(moimId), {
     enabled: moimId !== 0,
   });

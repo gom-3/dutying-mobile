@@ -6,6 +6,8 @@ import { Schedule } from '@hooks/useDeviceCalendar';
 import { firebaseLogEvent } from '@libs/utils/event';
 import { useEffect, useRef } from 'react';
 import { isSameDate } from '@libs/utils/date';
+import { Platform } from 'react-native';
+import * as NavigationBar from 'expo-navigation-bar';
 
 const useScheduleCard = () => {
   const [date, calendar, setDateOnThread, cardDefaultIndex, setState] = useCaledarDateStore(
@@ -66,6 +68,15 @@ const useScheduleCard = () => {
     const index = calendar.findIndex((c) => isSameDate(c.date, date));
     carouselRef?.current?.scrollTo({ index, animated: false });
   }, [calendar]);
+
+  useEffect(()=>{
+    if (Platform.OS === 'android') {
+      NavigationBar.setVisibilityAsync('hidden');
+    }
+    return () => {
+      if (Platform.OS === 'android') NavigationBar.setVisibilityAsync('visible');
+    };
+  }, []);
 
   return {
     state: {

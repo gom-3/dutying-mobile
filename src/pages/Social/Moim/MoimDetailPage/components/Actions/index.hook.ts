@@ -1,13 +1,15 @@
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
-import { deleteMoim, withdrawMoim } from '@libs/api/moim';
+import { changeMoimHost, deleteMoim, kickMemberFromMoim, withdrawMoim } from '@libs/api/moim';
 import { useMoimStore } from '@pages/Social/Moim/store';
 import { useNavigation } from '@react-navigation/native';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useRef, useState } from 'react';
 import { useAccountStore } from 'store/account';
 
+type ActionsAccountType = Pick<Account, 'accountId' | 'name'>;
+
 const useAction = (moim: Moim, close: () => void) => {
-  const [name, setName] = useState('');
+  const [member, setMember] = useState<ActionsAccountType>({ accountId: 0, name: '' });
   const [accountId] = useAccountStore((state) => [state.account.accountId]);
   const [moimCode] = useMoimStore((state) => [state.moimCode]);
   const [isInviteModalOpen, setIsInviteModalOpen] = useState(false);
@@ -17,6 +19,10 @@ const useAction = (moim: Moim, close: () => void) => {
   const [isOutModalOpen, setIsOutModalOpen] = useState(false);
   const navigate = useNavigation();
   const queryClient = useQueryClient();
+
+  const inviteRef = useRef<BottomSheetModal>(null);
+  const changeRef = useRef<BottomSheetModal>(null);
+  const kickRef = useRef<BottomSheetModal>(null);
 
   const isHost = moim.hostInfo.accountId === accountId;
 
@@ -34,6 +40,29 @@ const useAction = (moim: Moim, close: () => void) => {
     },
   });
 
+  const { mutate: kickMemberMutate } = useMutation(
+    (memberId: number) => kickMemberFromMoim(moim.moimId, memberId),
+    {
+      onSuccess: () => {
+        // queryClient.invalidateQueries(['getMoimCollection', moim.moimId, ])
+        queryClient.invalidateQueries(['getMemberList', moim.moimId]);
+        setIsKickModalOpen(false);
+        kickRef.current?.present();
+      },
+    },
+  );
+
+  const { mutate: changeHostMutate } = useMutation(
+    (memberId: number) => changeMoimHost(moim.moimId, memberId),
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries(['getMemberList', moim.moimId]);
+        setIsChangeMasterModalOpen(false);
+        changeRef.current?.present();
+      },
+    },
+  );
+
   const pressAccetOutModal = () => {
     setIsOutModalOpen(false);
     outMoimMutate();
@@ -50,10 +79,6 @@ const useAction = (moim: Moim, close: () => void) => {
     setIsDeleteModalOpen(true);
     close();
   };
-
-  const inviteRef = useRef<BottomSheetModal>(null);
-  const changeRef = useRef<BottomSheetModal>(null);
-  const kickRef = useRef<BottomSheetModal>(null);
 
   const openOutModal = () => {
     setIsOutModalOpen(true);
@@ -75,8 +100,8 @@ const useAction = (moim: Moim, close: () => void) => {
     inviteRef.current?.present();
   };
 
-  const openChangeMasterModal = (name: string) => {
-    setName(name);
+  const openChangeMasterModal = (member: ActionsAccountType) => {
+    setMember(member);
     setIsChangeMasterModalOpen(true);
     changeRef.current?.close();
   };
@@ -86,8 +111,8 @@ const useAction = (moim: Moim, close: () => void) => {
     changeRef.current?.present();
   };
 
-  const openKickModal = (name: string) => {
-    setName(name);
+  const openKickModal = (member: ActionsAccountType) => {
+    setMember(member);
     setIsKickModalOpen(true);
     kickRef.current?.close();
   };
@@ -102,7 +127,7 @@ const useAction = (moim: Moim, close: () => void) => {
       inviteRef,
       changeRef,
       kickRef,
-      name,
+      member,
       isDeleteModalOpen,
       isKickModalOpen,
       isChangeMasterModalOpen,
@@ -123,7 +148,9 @@ const useAction = (moim: Moim, close: () => void) => {
       setIsDeleteModalOpen,
       openOutModal,
       closeOutModal,
-      pressAccetOutModal
+      pressAccetOutModal,
+      kickMemberMutate,
+      changeHostMutate
     },
   };
 };

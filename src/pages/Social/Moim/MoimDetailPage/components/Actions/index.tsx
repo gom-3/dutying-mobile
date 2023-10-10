@@ -29,7 +29,7 @@ const Actions = ({ isActionOpen, moim, close }: Props) => {
       inviteRef,
       changeRef,
       kickRef,
-      name,
+      member,
       isDeleteModalOpen,
       isChangeMasterModalOpen,
       isKickModalOpen,
@@ -51,6 +51,8 @@ const Actions = ({ isActionOpen, moim, close }: Props) => {
       closeChangeMasterModal,
       closeKickModal,
       pressAccetOutModal,
+      kickMemberMutate,
+      changeHostMutate,
     },
   } = useAction(moim, close);
   const renderBackdrop = useCallback((props: any) => <BottomSheetBackdrop {...props} />, []);
@@ -70,13 +72,13 @@ const Actions = ({ isActionOpen, moim, close }: Props) => {
         />
       )}
       <AlertModal
-        text={`${name}님을 모임에서 내보내시겠어요?`}
-        highlight={`${name}님`}
+        text={`${member.name}님을 모임에서 내보내시겠어요?`}
+        highlight={`${member.name}님`}
         subText="내보내시면 모임원께 알림이 가며, 관련 내용은 즉시 삭제됩니다."
         isOpen={isKickModalOpen}
         close={closeKickModal}
         cancelText="아니요"
-        accept={closeKickModal}
+        accept={() => kickMemberMutate(member.accountId)}
         acceptText="네, 내보낼게요"
       />
       <AlertModal
@@ -90,13 +92,13 @@ const Actions = ({ isActionOpen, moim, close }: Props) => {
         acceptText="네, 내보낼게요"
       />
       <AlertModal
-        text={`모임장을 ${name}님으로 변경하시겠어요?`}
-        highlight={`${name}`}
-        subText={`모임에 대한 모든 권한을 ${name}님께 전달합니다.`}
+        text={`모임장을 ${member.name}님으로 변경하시겠어요?`}
+        highlight={`${member.name}`}
+        subText={`모임에 대한 모든 권한을 ${member.name}님께 전달합니다.`}
         isOpen={isChangeMasterModalOpen}
         close={closeChangeMasterModal}
         cancelText="아니요"
-        accept={closeChangeMasterModal}
+        accept={() => changeHostMutate(member.accountId)}
         acceptText="네, 변경할게요"
       />
 
@@ -198,7 +200,9 @@ const Actions = ({ isActionOpen, moim, close }: Props) => {
                 <Text>{member.name}</Text>
               </View>
               <TouchableOpacity
-                onPress={() => openChangeMasterModal(member.name)}
+                onPress={() =>
+                  openChangeMasterModal({ accountId: member.accountId, name: member.name })
+                }
                 style={[
                   styles.changeButton,
                   {
@@ -259,7 +263,7 @@ const Actions = ({ isActionOpen, moim, close }: Props) => {
                     paddingVertical: 4,
                     backgroundColor: pressed ? COLOR.sub3 : 'white',
                   })}
-                  onPress={() => openKickModal(member.name)}
+                  onPress={() => openKickModal({ accountId: member.accountId, name: member.name })}
                 >
                   {({ pressed }) => (
                     <Text

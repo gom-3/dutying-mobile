@@ -28,8 +28,6 @@ const useMoimPage = () => {
 
   const { data: moimList } = useQuery(['getMoimList', accountId], () => getMoimList());
 
-  console.log(moimList);
-
   const pressMoimCard = (moimId: number, moimCode: string) => {
     setMoimState('moimId', moimId);
     setMoimState('moimCode', moimCode);
