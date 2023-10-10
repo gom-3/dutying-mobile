@@ -72,14 +72,14 @@ const Actions = ({ isActionOpen, moim, close }: Props) => {
         />
       )}
       <AlertModal
-        text={`${member.name}님을 모임에서 내보내시겠어요?`}
+        text={`${member.name}님을 모임에서 추방하시겠어요?`}
         highlight={`${member.name}님`}
-        subText="내보내시면 모임원께 알림이 가며, 관련 내용은 즉시 삭제됩니다."
+        subText="추방하시면 모임원께 알림이 가며, 관련 내용은 즉시 삭제됩니다."
         isOpen={isKickModalOpen}
         close={closeKickModal}
         cancelText="아니요"
         accept={() => kickMemberMutate(member.accountId)}
-        acceptText="네, 내보낼게요"
+        acceptText="네, 추방할게요"
       />
       <AlertModal
         text="모임을 삭제하시겠어요?"
@@ -89,7 +89,7 @@ const Actions = ({ isActionOpen, moim, close }: Props) => {
         close={() => setIsDeleteModalOpen(false)}
         cancelText="아니요"
         accept={() => deleteMoimMutate()}
-        acceptText="네, 내보낼게요"
+        acceptText="네, 삭제할게요"
       />
       <AlertModal
         text={`모임장을 ${member.name}님으로 변경하시겠어요?`}
@@ -115,7 +115,7 @@ const Actions = ({ isActionOpen, moim, close }: Props) => {
             )}
             {isHost && (
               <TouchableOpacity style={styles.item} onPress={() => openBottomSheet('kick')}>
-                <Text style={styles.itemText}>모임 내보내기</Text>
+                <Text style={styles.itemText}>모임원 추방</Text>
               </TouchableOpacity>
             )}
             {isHost && (
@@ -237,7 +237,7 @@ const Actions = ({ isActionOpen, moim, close }: Props) => {
         index={1}
       >
         <View style={styles.bottomSheetHeader}>
-          <Text style={styles.bottomSheetHeaderText}>모임 내보내기</Text>
+          <Text style={styles.bottomSheetHeaderText}>모임원 추방</Text>
         </View>
         <ScrollView>
           {moim.memberInfoList.map((member) => (
@@ -273,7 +273,7 @@ const Actions = ({ isActionOpen, moim, close }: Props) => {
                         fontFamily: 'Apple500',
                       }}
                     >
-                      내보내기
+                      추방
                     </Text>
                   )}
                 </Pressable>
