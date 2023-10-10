@@ -70,7 +70,7 @@ export const AlertModalInvite = ({ moimCode, isOpen, close }: InviteProps) => {
               alignItems: 'center',
               padding: 15,
             }}
-            onPress={() => Share.share({ message: moimCode })}
+            onPress={() => Share.share({ message: moimCode, title: '모임 초대 코드' })}
           >
             <Text style={{ color: 'white', fontSize: 16, fontFamily: 'Apple500' }}>공유하기</Text>
           </Pressable>

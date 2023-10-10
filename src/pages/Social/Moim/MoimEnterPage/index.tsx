@@ -2,14 +2,7 @@ import PageHeader from '@components/PageHeader';
 import PageViewContainer from '@components/PageView';
 import { COLOR } from 'index.style';
 import { useEffect, useRef, useState } from 'react';
-import {
-  NativeSyntheticEvent,
-  Text,
-  TextInput,
-  TextInputKeyPressEventData,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import { Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import RightArrowIcon from '@assets/svgs/right-arrow-white.svg';
 import { useMutation } from '@tanstack/react-query';
@@ -19,45 +12,25 @@ import { hexToRgba } from '@libs/utils/color';
 import { useAccountStore } from 'store/account';
 
 const MoimEnterPage = () => {
-  const [values, setValues] = useState<string[]>(['', '', '', '', '', '']);
+  const [enteredInput, setEnteredInput] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [account] = useAccountStore((state) => [state.account]);
   const [moim, setMoim] = useState<SearchMoimFromCodeResponseDTO>();
   const [isValid, setIsValid] = useState(true);
-  const refs = Array.from({ length: 6 }).map(() => useRef<TextInput>(null));
-
+  const mainRef = useRef<TextInput>(null);
   const closeModal = () => {
     setIsModalOpen(false);
   };
 
-  const handleChange = (text: string, index: number) => {
-    setValues((prev) => {
-      const newValues = [...prev];
-      newValues[index] = text;
-      return newValues;
-    });
-    setMoim(undefined);
-    setIsValid(true);
-    if (text) {
-      if (index < 5 && refs[index + 1].current) refs[index + 1].current?.focus();
-    }
-  };
-
-  const handleKeyPress = (index: number, e: NativeSyntheticEvent<TextInputKeyPressEventData>) => {
-    if (e.nativeEvent.key === 'Backspace') {
-      if (index > 0 && refs[index - 1].current) refs[index - 1].current?.focus();
-    }
-  };
-
   useEffect(() => {
-    if (refs[0].current) refs[0].current.focus();
+    if (mainRef.current) mainRef.current.focus();
   }, []);
 
-  const { mutate: searchMoimMutate } = useMutation(() => searchMoimCode(values.join('')), {
+  const { mutate: searchMoimMutate } = useMutation(() => searchMoimCode(enteredInput), {
     onSuccess: (data) => {
       setMoim(data);
       setIsModalOpen(true);
-      refs.forEach((ref) => ref.current?.blur());
+      mainRef.current?.blur();
     },
     onError: () => {
       setIsValid(false);
@@ -65,10 +38,17 @@ const MoimEnterPage = () => {
   });
 
   const pressEnterButton = () => {
-    if (values.join('').length !== 6) {
+    if (enteredInput.length !== 6) {
       setIsValid(false);
     } else {
       searchMoimMutate();
+    }
+  };
+
+  const changeMainTextInput = (text: string) => {
+    if (text.length <= 6) {
+      setEnteredInput(text);
+      setIsValid(true);
     }
   };
 
@@ -91,14 +71,26 @@ const MoimEnterPage = () => {
           <Text style={{ fontSize: 24, fontFamily: 'Line', color: '#150b3c' }}>입력해주세요</Text>
         </View>
         <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
-          {values.map((value, i) => (
+          <TextInput
+            ref={mainRef}
+            style={{
+              position: 'absolute',
+              opacity: 0,
+              zIndex: 20,
+              width: '100%',
+              height: '100%',
+              fontSize: 1,
+              textAlign: 'center',
+            }}
+            value={enteredInput}
+            onChangeText={changeMainTextInput}
+          />
+          {[1, 2, 3, 4, 5, 6].map((_, i) => (
             <TextInput
               key={i}
-              ref={refs[i]}
-              value={value}
+              value={enteredInput[i]}
               maxLength={1}
-              keyboardType="numbers-and-punctuation"
-              onChangeText={(text) => handleChange(text, i)}
+              onFocus={() => mainRef.current?.focus()}
               style={{
                 width: 35,
                 height: 50,
@@ -110,10 +102,13 @@ const MoimEnterPage = () => {
                 borderRadius: 5,
                 borderWidth: 1,
                 margin: 5,
-                borderColor: isValid ? COLOR.main4 : hexToRgba('#ff4a80', 0.7),
+                borderColor: isValid
+                  ? enteredInput.length === i || (enteredInput.length === 6 && i === 5)
+                    ? COLOR.sub3
+                    : COLOR.main4
+                  : hexToRgba('#ff4a80', 0.7),
                 backgroundColor: COLOR.bg,
               }}
-              onKeyPress={(e) => handleKeyPress(i, e)}
             />
           ))}
         </View>

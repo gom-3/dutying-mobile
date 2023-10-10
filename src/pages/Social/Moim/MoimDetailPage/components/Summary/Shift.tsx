@@ -38,14 +38,14 @@ const MoimShift = ({ isToday, shift }: Props) => {
         <View
           style={{
             position: 'absolute',
-            width: 60,
-            top: -18,
+            width: 100,
+            top: -32,
             left: '50%',
-            transform: [{ translateX: -28 }],
+            transform: [{ translateX: -50 }],
             alignItems: 'center',
             backgroundColor: 'white',
             borderRadius: 5,
-            padding: 3,
+            padding: 5,
             shadowColor: '#9c9c9c',
             shadowOffset: { width: 1, height: 1 },
             shadowOpacity: 1,
@@ -55,9 +55,9 @@ const MoimShift = ({ isToday, shift }: Props) => {
         >
           <Text
             style={{
-              color: COLOR.sub25,
+              color: COLOR.sub2,
               fontFamily: 'Apple',
-              fontSize: 9,
+              fontSize: 15,
             }}
           >
             {shift.startTime.slice(0, 5)}~{shift.endTime.slice(0, 5)}
