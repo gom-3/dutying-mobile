@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import ArrowIcon from '@assets/svgs/under-arrow-black.svg';
 import useCategory from './index.hook';
 import { hexToRgba } from '@libs/utils/color';
@@ -35,6 +35,7 @@ const Category = () => {
         backdropComponent={renderBackdrop}
         style={{ padding: 14 }}
         handleComponent={null}
+        enableContentPanningGesture={false}
         index={1}
         snapPoints={[100, 300]}
         onChange={(index) => {
@@ -43,7 +44,7 @@ const Category = () => {
         ref={ref}
       >
         <BottomSheetHeader title="유형" onPressExit={() => ref.current?.close()} />
-        <View>
+        <ScrollView>
           {deviceCalendar.map((calendar) => (
             <TouchableOpacity
               style={styles.item}
@@ -73,7 +74,8 @@ const Category = () => {
               </Text>
             </TouchableOpacity>
           ))}
-        </View>
+          <View style={{height:50}}/>
+        </ScrollView>
       </BottomSheetModal>
     </View>
   );

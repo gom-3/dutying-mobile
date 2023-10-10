@@ -11,11 +11,12 @@ import {
 import { useAccountStore } from 'store/account';
 import { useNavigation } from '@react-navigation/native';
 import { firebaseLogEvent } from '@libs/utils/event';
-
 interface TypeList {
   text: string;
   key: Shift['classification'];
 }
+
+const defaultClassification = ['DAY', 'EVENING', 'NIGHT', 'OFF'];
 
 const workTypeList: TypeList[] = [
   { text: '데이', key: 'DAY' },
@@ -43,13 +44,16 @@ const useShiftTypeEdit = () => {
 
   const onSuccessMutate = () => {
     queryClient.invalidateQueries(['getShiftTypes', userId]);
+    queryClient.refetchQueries(['getShiftTypes', userId]);
     navigation.goBack();
   };
 
   const { mutate: addShiftTypeMutate } = useMutation(
     (shift: ShiftTypeRequestDTO) => addShiftType(userId, shift),
     {
-      onSuccess: onSuccessMutate,
+      onSuccess: (data) => {
+        onSuccessMutate();
+      },
     },
   );
   const { mutate: editShiftTypeMutate } = useMutation(
@@ -129,7 +133,12 @@ const useShiftTypeEdit = () => {
             .toString()
             .padStart(2, '0')}`
         : null;
-      const reqDTO: ShiftTypeRequestDTO = { ...shift, startTime, endTime };
+      const reqDTO: ShiftTypeRequestDTO = {
+        ...shift,
+        startTime,
+        endTime,
+        isDefault: defaultClassification.includes(shift.classification),
+      };
       if (!isEdit) {
         firebaseLogEvent('add_shfit_type');
         addShiftTypeMutate(reqDTO);

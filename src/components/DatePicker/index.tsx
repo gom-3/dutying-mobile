@@ -54,6 +54,7 @@ const DatePicker = ({ date, mode, text, style, onChange }: Props) => {
           style={{ padding: 14 }}
           ref={ref}
           index={1}
+          enableContentPanningGesture={false}
           snapPoints={[100, 300]}
           handleComponent={null}
           backdropComponent={renderBackdrop}

@@ -1,3 +1,5 @@
+import { MoimCollectionResponseDTO } from '@libs/api/moim';
+
 export const isSameDate = (date1: Date, date2: Date) => {
   return date1.getDate() === date2.getDate() && date1.getMonth() === date2.getMonth();
 };
@@ -16,4 +18,19 @@ export const yearMonthToDateString = (year: number, month: number) => {
     .toString()
     .padStart(2, '0')}-${endDate.getDate().toString().padStart(2, '0')}`;
   return [startDateString, endDateString];
+};
+
+export const getCurrentWeekIndex = (date: Date, weeks: Date[][]) => {
+  let index = -1;
+
+  a: for (let i = 0; i < weeks.length; i++) {
+    for (let j = 0; j < weeks[i].length; j++) {
+      if (isSameDate(weeks[i][j], date)) {
+        index = i;
+        break a;
+      }
+    }
+  }
+
+  return index;
 };

@@ -14,7 +14,7 @@ const Repeat = ({ openModal }: Props) => {
   } = useRepeat(openModal);
 
   return (
-    <View>
+    <View style={{ marginBottom: 15 }}>
       <View style={styles.item}>
         <View style={styles.itemTitleWrapper}>
           <RepeatIcon />

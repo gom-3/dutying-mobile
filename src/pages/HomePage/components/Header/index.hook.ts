@@ -23,8 +23,12 @@ const useCalendarHeader = () => {
   useEffect(() => {
     if (calendar) {
       const map = new Map<number, number>();
+      let isCurrentMonth = false;
       calendar.forEach((date) => {
-        if (date.shift) {
+        if (date.date.getDate() === 1) {
+          isCurrentMonth = !isCurrentMonth;
+        }
+        if (date.shift && isCurrentMonth) {
           const value = map.get(date.shift) || 0;
           map.set(date.shift, value + 1);
         }

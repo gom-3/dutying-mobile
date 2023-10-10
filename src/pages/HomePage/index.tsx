@@ -7,22 +7,25 @@ import NavigationBar from '@components/NavigationBar';
 import PageViewContainer from '@components/PageView';
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import useDeviceCalendar from '@hooks/useDeviceCalendar';
 
 const HomePage = () => {
   const [isCardOpen, isSideMenuOpen] = useCaledarDateStore((state) => [
     state.isCardOpen,
     state.isSideMenuOpen,
   ]);
+  useDeviceCalendar();
+
   return (
     <PageViewContainer>
       <BottomSheetModalProvider>
-        <SafeAreaView>
+        <SafeAreaView style={{ flex: 1 }}>
           <Header />
           <Calendar />
+          <NavigationBar page="home" />
         </SafeAreaView>
-        <NavigationBar page="home" />
         {isSideMenuOpen && <SideMenu />}
-        {isCardOpen && <ScheduleCard />}
+        <ScheduleCard isCardOpen={isCardOpen} />
       </BottomSheetModalProvider>
     </PageViewContainer>
   );

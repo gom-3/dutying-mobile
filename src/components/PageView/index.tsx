@@ -4,7 +4,7 @@ import { ReactNode, useEffect } from 'react';
 import { View, StyleSheet, StyleProp, ViewStyle } from 'react-native';
 import { useAccountStore } from 'store/account';
 import Constants from 'expo-constants';
-import { tempAndroidAccount } from '@mocks/account';
+import { demoLoginAccount } from '@mocks/account';
 
 interface Props {
   children: ReactNode;
@@ -21,7 +21,7 @@ const PageViewContainer = ({ children, withoutLogin, style }: Props) => {
     if (Constants.appOwnership !== 'expo') {
       if (account.accountId === 0 && !withoutLogin) setTimeout(() => navigateToLoginAndResetHistory(), 100);
     } else {
-      setState('account', tempAndroidAccount);
+      setState('account', demoLoginAccount);
     }
   }, [account.accountId]);
 

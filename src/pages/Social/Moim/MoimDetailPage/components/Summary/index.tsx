@@ -13,42 +13,68 @@ import {
 import MoimShift from './Shift';
 import Carousel from 'react-native-snap-carousel';
 import useSummary from './index.hook';
-import { MoimCollectionResponseDTO } from '@libs/api/moim';
 
-const datas = [8, 13, 23];
+const Classification = ['day', 'evening', 'night', 'off'];
+const countEnum = ['가장', '두 번째', '세 번째', '네 번째'];
 
 interface Props {
-  collection: MoimCollectionResponseDTO;
+  collection: Collection;
 }
 
 const Summary = ({ collection }: Props) => {
   const {
-    states: { index, date, shiftTypes, page, selectedShiftType, weeks, threeDates },
-    actions: { pressShiftTypeHandler, setPage, pressDate },
+    states: {
+      selectedClassification,
+      index,
+      date,
+      shiftTypes,
+      page,
+      selectedShiftTypeName,
+      weeks,
+      threeDates,
+    },
+    actions: { pressShiftTypeHandler, setPage, pressDate, setState },
   } = useSummary();
 
-  const renderItem = ({ item }: { item: number }) => {
+  let summary: Summary[];
+  switch (selectedClassification) {
+    case 'day':
+      summary = collection.summaryView.day;
+      break;
+    case 'evening':
+      summary = collection.summaryView.evening;
+      break;
+    case 'night':
+      summary = collection.summaryView.night;
+      break;
+    default:
+      summary = collection.summaryView.off;
+  }
+
+  const datas = summary;
+  const summaryDate = summary.length > 0 ? new Date(summary[page].date) : date;
+
+  const renderItem = ({ item, index }: { item: Summary; index: number }) => {
     return (
-      <View style={styles.card} key={`card${item}`}>
+      <View style={styles.card} key={`card${index}`}>
         <View style={styles.cardContent}>
-          <Text style={styles.cardHeaderText}>가장 많이 겹치는 오프</Text>
-          <Text style={styles.cardNumberText}>4/4</Text>
+          <Text style={styles.cardHeaderText}>
+            {countEnum[index]} 많이 겹치는 {selectedShiftTypeName?.name}
+          </Text>
+          <Text style={styles.cardNumberText}>
+            {item.count}/{collection.memberViews.length}
+          </Text>
         </View>
         <View style={styles.cardContent}>
-          <Text style={styles.cardDateText}>7월 {item}일 수</Text>
+          <Text style={styles.cardDateText}>
+            {+item.date.slice(5, 7)}월 {+item.date.slice(8)}일 {days[new Date(item.date).getDay()]}
+          </Text>
           <View style={styles.cardNames}>
-            <View style={styles.cardName}>
-              <Text style={styles.cardNameText}>조성연</Text>
-            </View>
-            <View style={styles.cardName}>
-              <Text style={styles.cardNameText}>조성연</Text>
-            </View>
-            <View style={styles.cardName}>
-              <Text style={styles.cardNameText}>조성연</Text>
-            </View>
-            <View style={styles.cardName}>
-              <Text style={styles.cardNameText}>조성연</Text>
-            </View>
+            {item.names.map((name, i) => (
+              <View style={styles.cardName} key={`${index} ${i} ${name}`}>
+                <Text style={styles.cardNameText}>{name}</Text>
+              </View>
+            ))}
           </View>
         </View>
       </View>
@@ -58,42 +84,53 @@ const Summary = ({ collection }: Props) => {
   return (
     <ScrollView showsVerticalScrollIndicator={false}>
       <View style={styles.header}>
-        <View style={{ flex: 0.5 }}>
+        <View style={{ flex: 0.7 }}>
           <MonthSelector />
         </View>
         <ScrollView horizontal style={styles.shiftTypes} showsHorizontalScrollIndicator={false}>
-          {Array.from(shiftTypes.values()).map((type) => (
-            <TouchableOpacity
-              key={`shiftType${type.accountShiftTypeId}`}
-              activeOpacity={0.7}
-              style={[
-                styles.shiftType,
-                {
-                  backgroundColor:
-                    selectedShiftType === type.accountShiftTypeId ? COLOR.main4 : 'white',
-                  borderColor:
-                    selectedShiftType === type.accountShiftTypeId ? COLOR.main1 : COLOR.main2,
-                },
-              ]}
-              onPress={() => pressShiftTypeHandler(type.accountShiftTypeId)}
-            >
-              <Text
+          {Array.from(shiftTypes.values())
+            .filter((shiftType) => Classification.includes(shiftType.classification.toLowerCase()))
+            .map((type) => (
+              <TouchableOpacity
+                key={`shiftType${type.accountShiftTypeId}`}
+                activeOpacity={0.7}
                 style={[
-                  styles.shiftTypeText,
+                  styles.shiftType,
                   {
-                    color:
-                      selectedShiftType === type.accountShiftTypeId ? COLOR.main1 : COLOR.main2,
+                    backgroundColor:
+                      selectedClassification === type.classification.toLowerCase()
+                        ? COLOR.main4
+                        : 'white',
+                    borderColor:
+                      selectedClassification === type.classification.toLowerCase()
+                        ? COLOR.main1
+                        : COLOR.main2,
                   },
                 ]}
+                onPress={() => pressShiftTypeHandler(type.classification.toLowerCase())}
               >
-                {type.name}
-              </Text>
-            </TouchableOpacity>
-          ))}
+                <Text
+                  style={[
+                    styles.shiftTypeText,
+                    {
+                      color:
+                        selectedClassification === type.classification.toLowerCase()
+                          ? COLOR.main1
+                          : COLOR.main2,
+                    },
+                  ]}
+                >
+                  {type.name}
+                </Text>
+              </TouchableOpacity>
+            ))}
         </ScrollView>
       </View>
       <Carousel
-        onSnapToItem={(index) => setPage(index)}
+        onSnapToItem={(index) => {
+          setPage(index);
+          setState('date', new Date(summary[index].date));
+        }}
         firstItem={page}
         data={datas}
         renderItem={renderItem}
@@ -123,6 +160,7 @@ const Summary = ({ collection }: Props) => {
           <View key={`week${i}`} style={styles.week}>
             {week.map((day, j) => {
               const isToday = isSameDate(date, day);
+              const isSummaryDate = isSameDate(summaryDate, day);
               return (
                 <TouchableOpacity
                   onPress={() => pressDate(day, i * 7 + j)}
@@ -133,7 +171,11 @@ const Summary = ({ collection }: Props) => {
                     style={[
                       styles.date,
                       {
-                        backgroundColor: isToday ? COLOR.sub3 : COLOR.bg,
+                        backgroundColor: isSummaryDate
+                          ? COLOR.main1
+                          : isToday
+                          ? COLOR.sub3
+                          : COLOR.bg,
                       },
                     ]}
                   >
@@ -143,7 +185,7 @@ const Summary = ({ collection }: Props) => {
                         {
                           color:
                             day.getMonth() === date.getMonth()
-                              ? isToday
+                              ? isToday || isSummaryDate
                                 ? 'white'
                                 : COLOR.sub2
                               : COLOR.sub4,
@@ -197,7 +239,7 @@ const Summary = ({ collection }: Props) => {
           </View>
         ))}
       </View>
-      <View style={{ height: 200, backgroundColor: 'white' }} />
+      <View style={{ height: 150, backgroundColor: 'white' }} />
     </ScrollView>
   );
 };
@@ -255,6 +297,8 @@ const styles = StyleSheet.create({
   },
   cardNames: {
     flexDirection: 'row',
+    flex: 1,
+    flexWrap: 'wrap',
   },
   cardName: {
     paddingVertical: 2,
@@ -262,6 +306,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     backgroundColor: COLOR.main4,
     marginLeft: 3,
+    marginBottom: 2,
   },
   cardNameText: {
     fontFamily: 'Apple',
@@ -282,6 +327,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Apple600',
     fontSize: 20,
     color: COLOR.sub1,
+    flex: 1,
   },
   shiftBox: {
     flexDirection: 'row',
@@ -341,6 +387,7 @@ const styles = StyleSheet.create({
     shadowColor: 'rgba(210, 199, 231, 0.50)',
     shadowOpacity: 1,
     shadowRadius: 22,
+    paddingBottom: 50,
   },
   membersShiftDate: {
     marginTop: 16,

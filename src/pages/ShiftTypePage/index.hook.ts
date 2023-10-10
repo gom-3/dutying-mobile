@@ -3,6 +3,7 @@ import { useMemo } from 'react';
 import { useShiftTypeStore } from 'store/shift';
 import { useEditShiftTypeStore } from './store';
 import { firebaseLogEvent } from '@libs/utils/event';
+import useShiftType from '@hooks/useShiftType';
 
 const workClassifications = ['DAY', 'EVENING', 'NIGHT', 'OTHER_WORK'];
 const offClassification = ['OFF', 'LEAVE'];
@@ -11,6 +12,7 @@ const useShiftTypePage = () => {
   const [initShift, setState] = useEditShiftTypeStore((state) => [state.initShift, state.setState]);
   const [shiftTypes] = useShiftTypeStore((state) => [state.shiftTypes]);
   const { onPress: navigateToEdit } = useLinkProps({ to: { screen: 'ShiftTypeEdit' } });
+  useShiftType();
   const workShiftTypes = useMemo(
     () =>
       Array.from(shiftTypes.size > 0 ? shiftTypes.values() : []).filter((shiftType) =>

@@ -16,6 +16,15 @@ import MoimDetailPage from './Social/Moim/MoimDetailPage';
 import Term from './LoginPage/Term';
 import { Stack, StackParams, navigationRef } from '@libs/utils/navigate';
 import * as Linking from 'expo-linking';
+import MoimEnterPage from './Social/Moim/MoimEnterPage';
+import WardPage from './Ward';
+// import Airbridge from 'airbridge-react-native-sdk';
+
+// Airbridge.deeplink.setDeeplinkListener((deeplink) => {
+//   // code that will run when app is opened with deep-link or deferred-deep-link
+//   // deeplink = YOUR_SCHEME://...
+//   console.log(deeplink);
+// });
 
 const prefix = Linking.createURL('/');
 
@@ -25,9 +34,11 @@ const Router = () => {
     config: {
       screens: {
         Login: 'login',
+        Moim: 'moim',
       },
     },
   };
+
   useShiftType();
 
   return (
@@ -42,6 +53,7 @@ const Router = () => {
           component={MoimPage}
           options={{ animation: 'none', gestureEnabled: false }}
         />
+        <Stack.Screen name="MoimEnter" component={MoimEnterPage} />
         <Stack.Screen name="MoimDetail" component={MoimDetailPage} />
         <Stack.Screen name="RegistDuty" component={RegistDuty} />
         <Stack.Screen name="RegistSchedule" component={RegistSchedulePage} />
@@ -55,6 +67,11 @@ const Router = () => {
           options={{ gestureEnabled: false }}
         />
         <Stack.Screen name="DeviceCalendar" component={DeviceCalendarPage} />
+        <Stack.Screen
+          name="Ward"
+          component={WardPage}
+          options={{ animation: 'none', gestureEnabled: false }}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );

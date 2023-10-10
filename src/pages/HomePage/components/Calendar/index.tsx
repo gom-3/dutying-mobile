@@ -51,12 +51,12 @@ const Calendar = ({ withoutSchedule }: Props) => {
         </View>
         {weeks.map((week, i) => (
           <View key={i} style={styles.week}>
-            {week.map((day) => (
+            {week.map((day, j) => (
               <TouchableOpacity
                 activeOpacity={0.5}
                 key={day.date.getTime()}
                 style={[styles.day, { height: weeks.length === 6 ? 93 : 109 }]}
-                onPress={() => dateClickHandler(day.date)}
+                onPress={() => dateClickHandler(day.date, i * 7 + j)}
               >
                 <View style={[styles.day, { height: weeks.length === 6 ? 93 : 109 }]}>
                   <Shift
@@ -71,10 +71,22 @@ const Calendar = ({ withoutSchedule }: Props) => {
                       if (weeks.length === 6 && schedule.level > 4) return;
                       if (weeks.length < 6 && schedule.level > 5) return;
                       if (weeks.length === 6 && schedule.level === 4) {
-                        return <ElseSchedule key={schedule.id} level={4} lefts={day.schedules.length - 3} />;
+                        return (
+                          <ElseSchedule
+                            key={schedule.id}
+                            level={4}
+                            lefts={day.schedules.length - 3}
+                          />
+                        );
                       }
                       if (weeks.length < 6 && schedule.level === 5) {
-                        return <ElseSchedule key={schedule.id} level={5} lefts={day.schedules.length - 4} />;
+                        return (
+                          <ElseSchedule
+                            key={schedule.id}
+                            level={5}
+                            lefts={day.schedules.length - 4}
+                          />
+                        );
                       }
                       return (
                         <View

@@ -166,14 +166,12 @@ const useRegistDuty = (dateFrom?: string) => {
 
     tempCalendar.forEach((date) => {
       const dateObj = date.date;
-      if (date.shift) {
-        accountShiftList.push({
-          shiftDate: `${dateObj.getFullYear()}-${(dateObj.getMonth() + 1)
-            .toString()
-            .padStart(2, '0')}-${dateObj.getDate().toString().padStart(2, '0')}`,
-          accountShiftTypeId: date.shift,
-        });
-      }
+      accountShiftList.push({
+        shiftDate: `${dateObj.getFullYear()}-${(dateObj.getMonth() + 1)
+          .toString()
+          .padStart(2, '0')}-${dateObj.getDate().toString().padStart(2, '0')}`,
+        accountShiftTypeId: date.shift,
+      });
     });
     const requestDTO: AccountShiftListRequestDTO = { accountShifts: accountShiftList };
     editAccountShiftListMutate(requestDTO);

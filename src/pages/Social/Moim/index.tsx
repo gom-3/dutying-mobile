@@ -21,14 +21,15 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import PlusIcon from '@assets/svgs/plus-circle.svg';
 import BottomSheetHeader from '@components/BottomSheetHeader';
 import CheckIcon from '@assets/svgs/check.svg';
-import { useCallback, useRef } from 'react';
+import EnterIcon from '@assets/svgs/enter.svg';
+import { useCallback } from 'react';
 import useMoimPage from './index.hook';
 
 const MoimPage = () => {
   const renderBackdrop = useCallback((props: any) => <BottomSheetBackdrop {...props} />, []);
   const {
-    states: { moimList, enteredInput, createRef, textInputRef },
-    actions: { setEnteredInput, pressMoimCard, pressCheck },
+    states: { moimList, createRef, textInputRef },
+    actions: { pressMoimCard, pressCheck, navigateMoimEnter },
   } = useMoimPage();
 
   return (
@@ -36,17 +37,17 @@ const MoimPage = () => {
       <BottomSheetModalProvider>
         <SafeAreaView>
           <View style={styles.header}>
-            <Pressable>
+            {/* <Pressable>
               <Text style={[styles.headerText, { color: COLOR.sub25, fontFamily: 'Apple500' }]}>
                 친구
               </Text>
-            </Pressable>
+            </Pressable> */}
             <Pressable>
               <Text
                 style={[
                   styles.headerText,
                   {
-                    marginLeft: 18,
+                    // marginLeft: 18,
                     color: COLOR.main1,
                     fontFamily: 'Apple600',
                     textDecorationLine: 'underline',
@@ -56,6 +57,13 @@ const MoimPage = () => {
                 모임
               </Text>
             </Pressable>
+            <TouchableOpacity
+              onPress={() => navigateMoimEnter()}
+              style={{ width: 35, height: 40, alignItems: 'center', justifyContent: 'center' }}
+            >
+              <EnterIcon />
+              <Text style={{ fontSize: 12, fontFamily: 'Apple500', color: COLOR.main2 }}>입장</Text>
+            </TouchableOpacity>
           </View>
           <View style={styles.textWrapper}>
             <View>
@@ -70,7 +78,7 @@ const MoimPage = () => {
               <View key={moim.moimId}>
                 <TouchableOpacity
                   style={styles.shadowWrapper}
-                  onPress={() => pressMoimCard(moim.moimId)}
+                  onPress={() => pressMoimCard(moim.moimId, moim.moimCode)}
                 >
                   <View>
                     <Text style={styles.titleText}>{moim.moimName}</Text>
@@ -80,7 +88,10 @@ const MoimPage = () => {
                     {moim.memberInfoList.map((member, i) => (
                       <Image
                         key={i}
-                        style={[styles.profile, { right: 0 + (moim.memberCount - i) * 18 }]}
+                        style={[
+                          styles.profile,
+                          { right: 0 + (Math.min(3, moim.memberCount) - i) * 18 },
+                        ]}
                         source={{ uri: `data:image/png;base64,${member.profileImgBase64}` }}
                       />
                     ))}
@@ -105,6 +116,7 @@ const MoimPage = () => {
           backdropComponent={renderBackdrop}
           index={1}
           ref={createRef}
+          enableContentPanningGesture={false}
           handleComponent={null}
           snapPoints={[100, 300]}
           keyboardBehavior="interactive"
@@ -125,6 +137,7 @@ const MoimPage = () => {
             <View style={{ padding: 10 }}>
               <BottomSheetTextInput
                 style={styles.input}
+                placeholder="모임 이름"
                 onChangeText={(text) => {
                   textInputRef.current = text;
                 }}
@@ -154,6 +167,7 @@ const styles = StyleSheet.create({
     marginTop: 24,
     paddingHorizontal: 24,
     flexDirection: 'row',
+    justifyContent: 'space-between',
   },
   headerText: {
     fontSize: 20,
@@ -162,7 +176,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     paddingHorizontal: 24,
-    marginTop: 40,
+    marginTop: 18,
   },
   countText: {
     fontFamily: 'Apple',

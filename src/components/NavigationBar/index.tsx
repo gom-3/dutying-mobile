@@ -59,6 +59,7 @@ const NavigationBar = ({ page }: Props) => {
           </View>
         </Pressable>
         <Pressable
+          onPress={navigateToWard}
           style={[styles.itemView, { backgroundColor: page === 'ward' ? COLOR.main4 : COLOR.bg }]}
         >
           <View style={{ alignItems: 'center', justifyContent: 'center' }}>
@@ -84,7 +85,7 @@ const NavigationBar = ({ page }: Props) => {
 const styles = StyleSheet.create({
   navigationContainer: {
     position: 'absolute',
-    bottom: 0,
+    bottom: 10,
     borderTopColor: COLOR.sub45,
     borderTopWidth: 1,
   },

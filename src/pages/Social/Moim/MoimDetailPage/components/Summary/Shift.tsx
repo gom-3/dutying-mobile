@@ -2,19 +2,21 @@ import { hexToRgba } from '@libs/utils/color';
 import { COLOR } from 'index.style';
 import { useState } from 'react';
 import { View, Text, StyleSheet, Pressable } from 'react-native';
-import { useShiftTypeStore } from 'store/shift';
 
 interface Props {
   isToday?: boolean;
-  shift:Pick<Shift, 'color'|'name'|'shortName'|'startTime'|'endTime'> | null;
+  shift:
+    | (Pick<Shift, 'color' | 'name' | 'shortName'> & {
+        startTime: string | null;
+        endTime: string | null;
+      })
+    | null;
 }
 
 const MoimShift = ({ isToday, shift }: Props) => {
-  const [shiftTypes] = useShiftTypeStore((state) => [state.shiftTypes]);
   const [isPressed, setIsPressed] = useState(false);
 
-  console.log(shift);
-  if(!shift) return <View style={styles.shiftBox}/>;
+  if (!shift) return <View style={styles.shiftBox} />;
   // return;
 
   return (
@@ -32,18 +34,18 @@ const MoimShift = ({ isToday, shift }: Props) => {
           {shift.name}
         </Text>
       </View>
-      {isPressed && (
+      {isPressed && shift.startTime && shift.endTime && (
         <View
           style={{
             position: 'absolute',
-            width: 50,
-            bottom: -16,
+            width: 60,
+            top: -18,
             left: '50%',
-            transform: [{ translateX: -23 }],
+            transform: [{ translateX: -28 }],
             alignItems: 'center',
             backgroundColor: 'white',
             borderRadius: 5,
-            padding: 2,
+            padding: 3,
             shadowColor: '#9c9c9c',
             shadowOffset: { width: 1, height: 1 },
             shadowOpacity: 1,
@@ -54,13 +56,11 @@ const MoimShift = ({ isToday, shift }: Props) => {
           <Text
             style={{
               color: COLOR.sub25,
-              fontFamily: 'Poppins',
-              fontSize: 8,
+              fontFamily: 'Apple',
+              fontSize: 9,
             }}
           >
-            {/* {shift?.startTime?.getHours()}:
-            {shift?.startTime?.getMinutes().toString().padStart(2, '0')} ~{' '}
-            {shift?.endTime?.getHours()}:{shift?.endTime?.getMinutes().toString().padStart(2, '0')} */}
+            {shift.startTime.slice(0, 5)}~{shift.endTime.slice(0, 5)}
           </Text>
         </View>
       )}
@@ -74,16 +74,17 @@ const styles = StyleSheet.create({
     width: 54,
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 3,
+    paddingVertical: 5,
     borderRadius: 7,
     marginLeft: 4,
   },
   shoftName: {
     fontSize: 14,
-    fontFamily: 'Poppins500',
+    fontFamily: 'Apple500',
     color: 'white',
   },
   name: {
+    marginLeft: 5,
     fontFamily: 'Apple500',
     fontSize: 10,
     color: 'white',
@@ -99,7 +100,6 @@ const styles = StyleSheet.create({
     borderLeftColor: 'transparent',
     borderRightColor: 'transparent',
     borderBottomColor: 'white',
-    // transform: [{ rotate: '180deg' }],
   },
 });
 

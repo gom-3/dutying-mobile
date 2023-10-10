@@ -11,11 +11,10 @@ import {
   PanGestureHandlerEventPayload,
   State,
 } from 'react-native-gesture-handler';
-import analytics from '@react-native-firebase/analytics';
 import { firebaseLogEvent } from '@libs/utils/event';
 
 const useCalendar = (isRender?: boolean) => {
-  const [account, userId] = useAccountStore((state) => [state.account, state.account.accountId]);
+  const [userId] = useAccountStore((state) => [state.account.accountId]);
   const [date, calendar, setState] = useCaledarDateStore((state) => [
     state.date,
     state.calendar,
@@ -38,9 +37,10 @@ const useCalendar = (isRender?: boolean) => {
     },
   );
 
-  const dateClickHandler = (date: Date) => {
+  const dateClickHandler = (date: Date, index: number) => {
     firebaseLogEvent('select_date_cell');
     setState('date', date);
+    setState('cardDefaultIndex', index);
     setState('isCardOpen', true);
   };
 

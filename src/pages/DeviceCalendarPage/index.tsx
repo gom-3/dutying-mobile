@@ -2,7 +2,7 @@ import PageViewContainer from '@components/PageView';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import useDeviceCalendarPage from './index.hook';
 import PageHeader from '@components/PageHeader';
-import { View, Text, Pressable, StyleSheet, ScrollView } from 'react-native';
+import { View, Text, Pressable, StyleSheet, ScrollView, Keyboard } from 'react-native';
 import PencilIcon from '@assets/svgs/pencil.svg';
 import CheckButtonChecked from '@assets/svgs/check-button-checked.svg';
 import CheckButton from '@assets/svgs/check-button.svg';
@@ -80,6 +80,7 @@ const DeviceCalendarPage = () => {
             style={{ padding: 14 }}
             ref={ref}
             index={1}
+            enableContentPanningGesture={false}
             snapPoints={[100, 400]}
             handleComponent={null}
             backdropComponent={renderBackdrop}

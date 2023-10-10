@@ -24,7 +24,7 @@ const Header = ({ isImage }: Props) => {
             <TouchableOpacity onPress={navigateToNotification}>
               <View style={styles.bellView}>
                 <BellIcon />
-                <View style={styles.alertDotView} />
+                {/* <View style={styles.alertDotView} /> */}
               </View>
             </TouchableOpacity>
           )}
