@@ -18,7 +18,7 @@ import KeyboardAvoidWrapper from '@components/KeyboardAvoidWrapper';
 
 const ShiftTypeEditPage = () => {
   const {
-    states: { shift, usingTime, isEdit, workTypeList, offTypeList },
+    states: { nameRef, shift, usingTime, isEdit, workTypeList, offTypeList },
     actions: {
       onChangeSwith,
       changeStartTime,

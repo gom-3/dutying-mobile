@@ -40,6 +40,7 @@
     "expo-constants": "~14.4.2",
     "expo-file-system": "~15.4.3",
     "expo-font": "^11.4.0",
+    "expo-image-manipulator": "~11.3.0",
     "expo-image-picker": "~14.3.2",
     "expo-linking": "~5.0.2",
     "expo-navigation-bar": "~2.3.0",
@@ -52,7 +53,6 @@
     "react-native-gesture-handler": "~2.12.0",
     "react-native-keyboard-aware-scroll-view": "^0.9.5",
     "react-native-modal": "^13.0.1",
-    "react-native-modals": "^0.22.3",
     "react-native-outside-press": "^1.1.0",
     "react-native-pager-view": "6.2.0",
     "react-native-reanimated": "~3.3.0",
@@ -66,8 +66,7 @@
     "react-native-webview": "13.2.2",
     "reanimated-color-picker": "^2.3.4",
     "styled-components": "^6.0.5",
-    "zustand": "^4.3.9",
-    "expo-image-manipulator": "~11.3.0"
+    "zustand": "^4.3.9"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
