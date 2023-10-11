@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { images } from '@assets/images/profiles';
 import { useSignupStore } from '@pages/SignupPage/store';
 import useImagePicker from '@hooks/useImagePicker';
@@ -9,15 +9,15 @@ import { useAccountStore } from 'store/account';
 import * as FileSystem from 'expo-file-system';
 import { Asset } from 'expo-asset';
 import { firebaseLogEvent } from '@libs/utils/event';
-import { manipulateAsync } from 'expo-image-manipulator';
 import { Alert } from 'react-native';
 
 const useProfile = () => {
-  const [id, name, image, photo, setState] = useSignupStore((state) => [
+  const [id, name, image, photo, isLoading, setState] = useSignupStore((state) => [
     state.id,
     state.name,
     state.image,
     state.photo,
+    state.isLoading,
     state.setState,
   ]);
   const [setAccountState] = useAccountStore((state) => [state.setState]);
@@ -45,15 +45,19 @@ const useProfile = () => {
       onSuccess: (data) => {
         setAccountState('account', data);
         changeAccountStatusMutate();
+        setState('isLoading', false);
+      },
+      onError: () => {
+        setState('isLoading', false);
       },
     },
   );
 
   const pressSignupButton = async () => {
+    setState('isLoading', true);
     firebaseLogEvent('signup');
     const profile = photo ? photo : image;
     const base64 = await imageToBase64(profile);
-    console.log(base64);
     if (base64) {
       signupMutate({ accountId: id, name: name, profileImgBase64: base64 });
     }
@@ -89,7 +93,7 @@ const useProfile = () => {
   };
 
   return {
-    states: { image, photo, randomPressed, photoPressed },
+    states: { image, photo, randomPressed, photoPressed, isLoading },
     actions: {
       setRandomImage,
       setPhotoImage,

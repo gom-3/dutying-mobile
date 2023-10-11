@@ -1,10 +1,11 @@
 import { View, Text, StyleSheet, Platform, Pressable, Image } from 'react-native';
 import NextArrowIcon from '@assets/svgs/next-arrow.svg';
 import NextButton from '@components/NextButton';
-import { COLOR } from 'index.style';
+import { COLOR, screenHeight, screenWidth } from 'index.style';
 import useProfile from './index.hook';
 import RandomIcon from '@assets/svgs/random.svg';
 import CameraIcon from '@assets/svgs/camera.svg';
+import LottieView from 'lottie-react-native';
 
 const Profile = () => {
   const {

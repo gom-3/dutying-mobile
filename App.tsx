@@ -9,7 +9,6 @@ import { AppStateStatus, Platform } from 'react-native';
 import { QueryClient, QueryClientProvider, focusManager, useQuery } from '@tanstack/react-query';
 import { useAppState } from './src/hooks/useAppState';
 import * as SplashScreen from 'expo-splash-screen';
-import { ModalPortal } from 'react-native-modals';
 import axiosInstance from './src/libs/api/client';
 import { useAccountStore } from './src/store/account';
 
@@ -73,7 +72,6 @@ export default function App() {
         <GestureHandlerRootView style={{ flex: 1 }}>
           <StatusBar style="auto" />
           <Router />
-          <ModalPortal />
         </GestureHandlerRootView>
       </EventProvider>
     </QueryClientProvider>
