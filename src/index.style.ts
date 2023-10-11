@@ -1,3 +1,4 @@
+import { hexToRgba } from '@libs/utils/color';
 import { Dimensions } from 'react-native';
 
 export const COLOR = {
@@ -13,6 +14,8 @@ export const COLOR = {
   sub45: '#E7E7EF',
   sub5: '#f2f2f7',
   bg: '#FDFCFE',
+  invalidBorder: hexToRgba('#ff4a80', 0.7),
+  invalidText: '#ff4a80',
 };
 
 export const screenWidth = Dimensions.get('screen').width;

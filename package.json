@@ -67,7 +67,8 @@
     "reanimated-color-picker": "^2.3.4",
     "styled-components": "^6.0.5",
     "zustand": "^4.3.9",
-    "lottie-react-native": "5.1.6"
+    "lottie-react-native": "5.1.6",
+    "expo-notifications": "~0.20.1"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

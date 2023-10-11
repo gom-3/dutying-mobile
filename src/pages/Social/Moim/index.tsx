@@ -29,7 +29,7 @@ import { hexToRgba } from '@libs/utils/color';
 const MoimPage = () => {
   const renderBackdrop = useCallback((props: any) => <BottomSheetBackdrop {...props} />, []);
   const {
-    states: { moimList, createRef, textInputRef, isValid },
+    states: { moimList, createRef, isValid, moimNameRef },
     actions: { pressMoimCard, pressCheck, navigateMoimEnter, setIsValid },
   } = useMoimPage();
 
@@ -131,6 +131,7 @@ const MoimPage = () => {
             />
             <View style={{ padding: 10 }}>
               <BottomSheetTextInput
+                autoFocus
                 style={[
                   styles.input,
                   { borderColor: isValid ? COLOR.main4 : hexToRgba('#ff4a80', 0.7) },
@@ -138,7 +139,7 @@ const MoimPage = () => {
                 placeholder="모임 이름"
                 maxLength={12}
                 onChangeText={(text) => {
-                  textInputRef.current = text;
+                  moimNameRef.current = text;
                   setIsValid(true);
                 }}
               />

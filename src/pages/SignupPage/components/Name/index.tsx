@@ -28,6 +28,7 @@ const Name = () => {
       </View>
       <View style={styles.textInputView}>
         <TextInput
+          autoFocus
           value={name}
           maxLength={10}
           placeholder="김듀팅"

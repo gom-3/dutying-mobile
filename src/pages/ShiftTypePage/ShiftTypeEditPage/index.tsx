@@ -18,7 +18,7 @@ import KeyboardAvoidWrapper from '@components/KeyboardAvoidWrapper';
 
 const ShiftTypeEditPage = () => {
   const {
-    states: { nameRef, shift, usingTime, isEdit, workTypeList, offTypeList },
+    states: { shift, usingTime, isEdit, workTypeList, offTypeList },
     actions: {
       onChangeSwith,
       changeStartTime,
@@ -59,6 +59,7 @@ const ShiftTypeEditPage = () => {
               </View>
               <View style={styles.input}>
                 <TextInputBox
+                  autoFocus={!isEdit}
                   placeholder="데이"
                   value={shift.name}
                   maxLength={8}

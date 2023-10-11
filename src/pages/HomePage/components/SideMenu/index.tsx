@@ -4,7 +4,6 @@ import Animated, { SlideInRight, SlideOutRight } from 'react-native-reanimated';
 import { COLOR, screenHeight, screenWidth } from 'index.style';
 import ExitIcon from '@assets/svgs/exit.svg';
 import useSideMenu from './index.hook';
-import AlertModal from '@components/AlertModal';
 
 const SideMenu = () => {
   const {
@@ -20,7 +19,6 @@ const SideMenu = () => {
           entering={SlideInRight.duration(350)}
           exiting={SlideOutRight.duration(350)}
         >
-          {/* <AlertModal text="" highlight="" cancelText='' /> */}
           <TouchableOpacity onPress={closeSideMenu}>
             <ExitIcon style={styles.exitIcon} />
           </TouchableOpacity>

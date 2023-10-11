@@ -2,7 +2,7 @@ import PageViewContainer from '@components/PageView';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import useDeviceCalendarPage from './index.hook';
 import PageHeader from '@components/PageHeader';
-import { View, Text, Pressable, StyleSheet, ScrollView, Keyboard } from 'react-native';
+import { View, Text, Pressable, StyleSheet, ScrollView } from 'react-native';
 import PencilIcon from '@assets/svgs/pencil.svg';
 import CheckButtonChecked from '@assets/svgs/check-button-checked.svg';
 import CheckButton from '@assets/svgs/check-button.svg';
@@ -21,15 +21,24 @@ import ColorPicker from '@components/ColorPicker';
 
 const DeviceCalendarPage = () => {
   const {
-    states: { isEdit, name, color, ref, normalCalendars, dutyingCalendars, calendarLink },
+    states: {
+      isValid,
+      isEdit,
+      textRef,
+      color,
+      ref,
+      normalCalendars,
+      dutyingCalendars,
+      calendarLink,
+    },
     actions: {
       pressLinkHandler,
-      changeTextHandler,
       openModalCreateMode,
       openModalEditMode,
       setColor,
       createCalendar,
       deleteCalendar,
+      setIsValid,
     },
   } = useDeviceCalendarPage();
 
@@ -109,17 +118,36 @@ const DeviceCalendarPage = () => {
             <View style={{ padding: 10 }}>
               <BottomSheetTextInput
                 maxLength={10}
-                onChangeText={changeTextHandler}
-                style={styles.input}
-                value={name}
+                onChangeText={(text) => {
+                  textRef.current = text;
+                  setIsValid((prev) => ({ ...prev, name: true }));
+                }}
+                style={[
+                  styles.input,
+                  { borderColor: isValid.name ? COLOR.main4 : COLOR.invalidBorder },
+                ]}
                 placeholder="유형 이름"
               />
-              <Text style={styles.inputGuideText}>캘린더에 표시되는 일정을 분류해보세요.</Text>
+              {isValid.name ? (
+                <Text style={styles.inputGuideText}>캘린더에 표시되는 일정을 분류해보세요.</Text>
+              ) : (
+                <Text style={[styles.inputGuideText, { color: COLOR.invalidText }]}>
+                  올바른 이름이 아닙니다. 다시 한번 확인해주세요.
+                </Text>
+              )}
               <Text style={styles.modalColorText}>색상</Text>
               <ColorPicker
                 color={color.length > 0 ? color : 'white'}
-                onChange={(color) => setColor(color)}
+                onChange={(color) => {
+                  setColor(color);
+                  setIsValid((prev) => ({ ...prev, color: true }));
+                }}
               />
+              {!isValid.color && (
+                <Text style={[styles.inputGuideText, { color: COLOR.invalidText }]}>
+                  색상을 선택해주세요.
+                </Text>
+              )}
             </View>
           </BottomSheetModal>
         </SafeAreaView>
@@ -132,7 +160,6 @@ const styles = StyleSheet.create({
   input: {
     borderRadius: 5,
     borderWidth: 0.5,
-    borderColor: COLOR.main4,
     width: '100%',
     fontSize: 20,
     fontFamily: 'Apple',

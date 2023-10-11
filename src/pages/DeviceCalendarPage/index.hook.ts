@@ -26,12 +26,15 @@ const useDeviceCalendarPage = () => {
   );
 
   const [setScheduleState] = useCaledarDateStore((state) => [state.setState]);
-
+  const [isValid, setIsValid] = useState({ name: true, color: true });
   const [name, setName] = useState('');
   const [color, setColor] = useState('');
   const [isEdit, setIsEdit] = useState(false);
   const [id, setId] = useState('');
 
+  console.log(isValid);
+
+  const textRef = useRef<string>('');
   const ref = useRef<BottomSheetModal>(null);
 
   const normalCalendars = calendars.filter((calendar) => !calendar.title?.startsWith('듀팅'));
@@ -40,10 +43,6 @@ const useDeviceCalendarPage = () => {
     firebaseLogEvent('link_calendar');
     setLink(id, !calendarLink[id]);
     setScheduleState('isScheduleUpdated', true);
-  };
-
-  const changeTextHandler = (text: string) => {
-    setName(text);
   };
 
   const openModalCreateMode = () => {
@@ -64,7 +63,7 @@ const useDeviceCalendarPage = () => {
   };
 
   const createCalendar = async () => {
-    if (name.length > 0 && color.length > 0) {
+    if (textRef.current.length > 0 && color.length > 0) {
       if (!isEdit) {
         await createCalendarAsync({
           accessLevel: CalendarAccessLevel.OWNER,
@@ -86,6 +85,13 @@ const useDeviceCalendarPage = () => {
       }
       setState('isChanged', true);
       ref.current?.close();
+    } else {
+      if (textRef.current.length === 0) {
+        setIsValid((prev) => ({ ...prev, name: false }));
+      }
+      if (color.length === 0) {
+        setIsValid((prev) => ({ ...prev, color: false }));
+      }
     }
   };
 
@@ -97,15 +103,24 @@ const useDeviceCalendarPage = () => {
   };
 
   return {
-    states: { isEdit, name, color, ref, normalCalendars, dutyingCalendars, calendarLink },
+    states: {
+      isValid,
+      textRef,
+      isEdit,
+      color,
+      ref,
+      normalCalendars,
+      dutyingCalendars,
+      calendarLink,
+    },
     actions: {
       setColor,
-      changeTextHandler,
       pressLinkHandler,
       openModalCreateMode,
       openModalEditMode,
       createCalendar,
       deleteCalendar,
+      setIsValid,
     },
   };
 };
