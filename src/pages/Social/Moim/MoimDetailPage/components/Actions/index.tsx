@@ -190,7 +190,7 @@ const Actions = ({ isActionOpen, moim, close }: Props) => {
           <Text style={styles.bottomSheetHeaderText}>모임장 변경</Text>
         </View>
         <ScrollView>
-          {moim.memberInfoList.map((member, i) => (
+          {moim.memberInfoList.map((member) => (
             <View key={`change host ${member.accountId}`} style={styles.member}>
               <View style={styles.memberProfile}>
                 <Image
@@ -200,9 +200,10 @@ const Actions = ({ isActionOpen, moim, close }: Props) => {
                 <Text>{member.name}</Text>
               </View>
               <TouchableOpacity
-                onPress={() =>
-                  openChangeMasterModal({ accountId: member.accountId, name: member.name })
-                }
+                onPress={() => {
+                  if (moim.hostInfo.accountId !== member.accountId)
+                    openChangeMasterModal({ accountId: member.accountId, name: member.name });
+                }}
                 style={[
                   styles.changeButton,
                   {

@@ -20,7 +20,7 @@ const KeyboardAvoidWrapper = ({ children, style }: Props) => {
   if (Platform.OS === 'android')
     return (
       <KeyboardAvoidingView behavior="height">
-        <ScrollView style={[styles.container, style]} ref={ref}>
+        <ScrollView style={[styles.container, style]} ref={ref} keyboardShouldPersistTaps="handled">
           {children}
         </ScrollView>
       </KeyboardAvoidingView>
@@ -28,6 +28,7 @@ const KeyboardAvoidWrapper = ({ children, style }: Props) => {
   else
     return (
       <KeyboardAwareScrollView
+        keyboardShouldPersistTaps='handled'
         extraScrollHeight={50}
         resetScrollToCoords={{ x: 0, y: 0 }}
         style={[styles.container, style]}
