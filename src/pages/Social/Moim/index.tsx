@@ -24,12 +24,13 @@ import CheckIcon from '@assets/svgs/check.svg';
 import EnterIcon from '@assets/svgs/enter.svg';
 import { useCallback } from 'react';
 import useMoimPage from './index.hook';
+import { hexToRgba } from '@libs/utils/color';
 
 const MoimPage = () => {
   const renderBackdrop = useCallback((props: any) => <BottomSheetBackdrop {...props} />, []);
   const {
-    states: { moimList, createRef, textInputRef },
-    actions: { pressMoimCard, pressCheck, navigateMoimEnter },
+    states: { moimList, createRef, textInputRef, isValid },
+    actions: { pressMoimCard, pressCheck, navigateMoimEnter, setIsValid },
   } = useMoimPage();
 
   return (
@@ -37,17 +38,11 @@ const MoimPage = () => {
       <BottomSheetModalProvider>
         <SafeAreaView>
           <View style={styles.header}>
-            {/* <Pressable>
-              <Text style={[styles.headerText, { color: COLOR.sub25, fontFamily: 'Apple500' }]}>
-                친구
-              </Text>
-            </Pressable> */}
             <Pressable>
               <Text
                 style={[
                   styles.headerText,
                   {
-                    // marginLeft: 18,
                     color: COLOR.main1,
                     fontFamily: 'Apple600',
                     textDecorationLine: 'underline',
@@ -136,13 +131,30 @@ const MoimPage = () => {
             />
             <View style={{ padding: 10 }}>
               <BottomSheetTextInput
-                style={styles.input}
+                style={[
+                  styles.input,
+                  { borderColor: isValid ? COLOR.main4 : hexToRgba('#ff4a80', 0.7) },
+                ]}
                 placeholder="모임 이름"
+                maxLength={12}
                 onChangeText={(text) => {
                   textInputRef.current = text;
+                  setIsValid(true);
                 }}
               />
             </View>
+            {!isValid && (
+              <Text
+                style={{
+                  paddingHorizontal: 20,
+                  color: '#ff4a80',
+                  fontSize: 14,
+                  fontFamily: 'Apple',
+                }}
+              >
+                올바른 입력이 아닙니다. 다시 한번 확인해주세요.
+              </Text>
+            )}
           </View>
         </BottomSheetModal>
         <NavigationBar page="social" />
@@ -235,6 +247,7 @@ const styles = StyleSheet.create({
     width: 28,
     height: 28,
     position: 'absolute',
+    borderRadius: 50,
     bottom: -15,
   },
   profileCount: {

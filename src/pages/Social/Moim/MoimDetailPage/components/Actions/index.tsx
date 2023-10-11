@@ -343,7 +343,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
-  memberProfileImage: { width: 24, height: 24, marginRight: 8 },
+  memberProfileImage: { width: 24, height: 24, marginRight: 8, borderRadius: 50 },
   changeButton: {
     paddingHorizontal: 8,
     paddingVertical: 2,

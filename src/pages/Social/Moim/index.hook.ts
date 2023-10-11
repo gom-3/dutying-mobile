@@ -2,7 +2,7 @@ import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import { createMoim, getMoimList } from '@libs/api/moim';
 import { useLinkProps } from '@react-navigation/native';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { useAccountStore } from 'store/account';
 import { useMoimStore } from './store';
 
@@ -12,18 +12,22 @@ const useMoimPage = () => {
   const { onPress: navigateMoimEnter } = useLinkProps({ to: { screen: 'MoimEnter' } });
   const textInputRef = useRef<string>('');
   const queryClient = useQueryClient();
+  const [isValid, setIsValid] = useState(true);
   const createRef = useRef<BottomSheetModal>(null);
   const [setMoimState] = useMoimStore((state) => [state.setState]);
 
   const { mutate: createMoimMutate } = useMutation(() => createMoim(textInputRef.current), {
     onSuccess: () => {
       queryClient.invalidateQueries(['getMoimList', accountId]);
+      createRef.current?.close();
+    },
+    onError: () => {
+      setIsValid(false);
     },
   });
 
   const pressCheck = () => {
     createMoimMutate();
-    createRef.current?.close();
   };
 
   const { data: moimList } = useQuery(['getMoimList', accountId], () => getMoimList());
@@ -35,8 +39,8 @@ const useMoimPage = () => {
   };
 
   return {
-    states: { createRef, moimList, textInputRef },
-    actions: { pressMoimCard, pressCheck, setMoimState, navigateMoimEnter },
+    states: { isValid, createRef, moimList, textInputRef },
+    actions: { setIsValid, pressMoimCard, pressCheck, navigateMoimEnter },
   };
 };
 

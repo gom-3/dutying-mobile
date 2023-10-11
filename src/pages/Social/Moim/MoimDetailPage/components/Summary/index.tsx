@@ -420,7 +420,7 @@ const styles = StyleSheet.create({
     borderBottomColor: COLOR.sub45,
     borderBottomWidth: 0.5,
   },
-  memberProfile: { width: 24, height: 24, marginRight: 8 },
+  memberProfile: { width: 24, height: 24, marginRight: 8, borderRadius: 50 },
   memberName: { color: COLOR.sub2, fontFamily: 'Apple500', fontSize: 16 },
 });
 

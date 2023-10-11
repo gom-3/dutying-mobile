@@ -56,3 +56,7 @@ export const demoLogin = async () => {
   return (await axios.get<DemoLoginResponseDTO>(`${API_URL}/demo/login?email=test@demotest.dutyin`))
     .data;
 };
+
+export const deleteAccount = async (accountId: number) => {
+  await axiosInstance.delete(`/accounts/${accountId}`);
+};

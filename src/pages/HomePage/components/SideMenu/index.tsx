@@ -28,7 +28,7 @@ const SideMenu = () => {
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
               <Image
                 source={{ uri: `data:image/png;base64,${account.profileImgBase64}` }}
-                style={{ width: 28, height: 28 }}
+                style={{ width: 28, height: 28, borderRadius:50 }}
               />
               <Text style={styles.profileText}>{account.name}</Text>
             </View>

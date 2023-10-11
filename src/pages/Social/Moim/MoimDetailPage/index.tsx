@@ -36,7 +36,7 @@ const MoimDetailPage = () => {
   const [date] = useCaledarDateStore((state) => [state.date]);
   const memberRef = useRef<BottomSheetModal>(null);
   const [moimId] = useMoimStore((state) => [state.moimId]);
-  const [account] = useAccountStore(state=>[state.account]);
+  const [account] = useAccountStore((state) => [state.account]);
   const { data: moim } = useQuery(['getMemberList', moimId], () => getMoimMembers(moimId), {
     enabled: moimId !== 0,
   });
@@ -224,6 +224,7 @@ const styles = StyleSheet.create({
     width: 28,
     height: 28,
     position: 'absolute',
+    borderRadius: 50,
     bottom: -15,
   },
   tab: {
@@ -276,7 +277,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
-  memberProfileImage: { width: 24, height: 24, marginRight: 8 },
+  memberProfileImage: { width: 24, height: 24, marginRight: 8, borderRadius: 50 },
 });
 
 export default MoimDetailPage;
