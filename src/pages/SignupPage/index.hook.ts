@@ -2,7 +2,11 @@ import { useNavigation } from '@react-navigation/native';
 import { useSignupStore } from './store';
 
 const useSignupPage = () => {
-  const [step, setState] = useSignupStore((state) => [state.step, state.setState]);
+  const [step, isLoading, setState] = useSignupStore((state) => [
+    state.step,
+    state.isLoading,
+    state.setState,
+  ]);
   const navigation = useNavigation();
 
   const onPressBack = () => {
@@ -10,7 +14,7 @@ const useSignupPage = () => {
     else navigation.goBack();
   };
 
-  return { states: { step }, actions: { onPressBack } };
+  return { states: { step, isLoading }, actions: { onPressBack } };
 };
 
 export default useSignupPage;

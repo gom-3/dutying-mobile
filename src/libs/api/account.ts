@@ -15,11 +15,12 @@ export type OAuthResponseDTO = Pick<Account, 'accountId' | 'email' | 'name' | 's
   AccessToken;
 export type SignupRequestDTO = Pick<Account, 'accountId' | 'name' | 'profileImgBase64'>;
 
-export const oAuthLogin = async (idToken: string, provider: string) => {
+export const oAuthLogin = async (idToken: string, provider: string, deviceToken: string | null) => {
   const data = (
     await axios.post<OAuthResponseDTO>(`${API_URL}/oauth/id-token`, {
       idToken,
       provider,
+      deviceToken,
     })
   ).data;
   useAccountStore.getState().setState('accessToken', data.accessToken);
@@ -55,4 +56,8 @@ export type DemoLoginResponseDTO = { accessToken: string };
 export const demoLogin = async () => {
   return (await axios.get<DemoLoginResponseDTO>(`${API_URL}/demo/login?email=test@demotest.dutyin`))
     .data;
+};
+
+export const deleteAccount = async (accountId: number) => {
+  await axiosInstance.delete(`/accounts/${accountId}`);
 };

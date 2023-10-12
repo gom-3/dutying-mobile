@@ -11,6 +11,9 @@ import { navigateToLoginAndResetHistory } from '@libs/utils/navigate';
 import { Alert, Platform } from 'react-native';
 import { firebaseLogEvent } from '@libs/utils/event';
 import * as NavigationBar from 'expo-navigation-bar';
+import { useMutation } from '@tanstack/react-query';
+import { deleteAccount } from '@libs/api/account';
+
 
 interface SideMenuItem {
   icon: React.FC<SvgProps>;
@@ -25,6 +28,14 @@ const useSideMenu = () => {
   const { onPress: onPressEditShiftType } = useLinkProps({ to: { screen: 'ShiftType' } });
   const { onPress: onPressShare } = useLinkProps({ to: { screen: 'Share' } });
   const { onPress: onPressDeviceCalendar } = useLinkProps({ to: { screen: 'DeviceCalendar' } });
+
+  const { mutate: deleteAccountMutate } = useMutation(() => deleteAccount(account.accountId), {
+    onSuccess: () => {
+      navigateToLoginAndResetHistory();
+      setState('isSideMenuOpen', false);
+      logoutAccount();
+    },
+  });
 
   useEffect(() => {
     if (Platform.OS === 'android') {
@@ -58,9 +69,7 @@ const useSideMenu = () => {
       {
         text: '네',
         onPress: () => {
-          navigateToLoginAndResetHistory();
-          setState('isSideMenuOpen', false);
-          logoutAccount();
+          deleteAccountMutate();
         },
       },
       { text: '아니오', onPress: () => {} },

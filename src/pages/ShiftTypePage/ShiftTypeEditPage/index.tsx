@@ -18,8 +18,9 @@ import KeyboardAvoidWrapper from '@components/KeyboardAvoidWrapper';
 
 const ShiftTypeEditPage = () => {
   const {
-    states: { shift, usingTime, isEdit, workTypeList, offTypeList },
+    states: { shift, usingTime, isEdit, workTypeList, offTypeList, isValid },
     actions: {
+      setIsValid,
       onChangeSwith,
       changeStartTime,
       changeEndTime,
@@ -59,20 +60,47 @@ const ShiftTypeEditPage = () => {
               </View>
               <View style={styles.input}>
                 <TextInputBox
+                  autoFocus={!isEdit}
                   placeholder="데이"
                   value={shift.name}
                   maxLength={8}
-                  onChangeText={(e) => onChangeTextInput('name', e)}
-                  style={styles.nameInput}
+                  onChangeText={(e) => {
+                    onChangeTextInput('name', e);
+                    setIsValid((prev) => ({ ...prev, name: true }));
+                  }}
+                  style={[
+                    styles.nameInput,
+                    { borderColor: isValid.name ? COLOR.main4 : COLOR.invalidBorder },
+                  ]}
                 />
                 <TextInputBox
                   placeholder="D"
                   value={shift.shortName}
                   maxLength={2}
-                  onChangeText={(e) => onChangeTextInput('shortName', e)}
-                  style={styles.shortNameInput}
+                  onChangeText={(e) => {
+                    onChangeTextInput('shortName', e);
+                    setIsValid((prev) => ({ ...prev, shortName: true }));
+                  }}
+                  style={[
+                    styles.shortNameInput,
+                    { borderColor: isValid.shortName ? COLOR.main4 : COLOR.invalidBorder },
+                  ]}
                 />
               </View>
+              {(!isValid.name || !isValid.shortName) && (
+                <Text
+                  style={{
+                    position: 'absolute',
+                    fontSize: 12,
+                    bottom: 20,
+                    left: 30,
+                    fontFamily: 'Apple',
+                    color: COLOR.invalidText,
+                  }}
+                >
+                  근무 이름을 확인해주세요.
+                </Text>
+              )}
             </View>
             <View style={styles.itemContainer}>
               <View style={styles.itemHeader}>

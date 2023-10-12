@@ -9,13 +9,15 @@ import { useAccountStore } from 'store/account';
 import * as FileSystem from 'expo-file-system';
 import { Asset } from 'expo-asset';
 import { firebaseLogEvent } from '@libs/utils/event';
+import { Alert } from 'react-native';
 
 const useProfile = () => {
-  const [id, name, image, photo, setState] = useSignupStore((state) => [
+  const [id, name, image, photo, isLoading, setState] = useSignupStore((state) => [
     state.id,
     state.name,
     state.image,
     state.photo,
+    state.isLoading,
     state.setState,
   ]);
   const [setAccountState] = useAccountStore((state) => [state.setState]);
@@ -43,11 +45,16 @@ const useProfile = () => {
       onSuccess: (data) => {
         setAccountState('account', data);
         changeAccountStatusMutate();
+        setState('isLoading', false);
+      },
+      onError: () => {
+        setState('isLoading', false);
       },
     },
   );
 
   const pressSignupButton = async () => {
+    setState('isLoading', true);
     firebaseLogEvent('signup');
     const profile = photo ? photo : image;
     const base64 = await imageToBase64(profile);
@@ -59,7 +66,6 @@ const useProfile = () => {
   const imageToBase64 = async (imageUri: string) => {
     const asset = Asset.fromModule(imageUri);
     await asset.downloadAsync();
-
     if (!asset.localUri) return;
     const base64String = await FileSystem.readAsStringAsync(asset.localUri, {
       encoding: FileSystem.EncodingType.Base64,
@@ -76,14 +82,18 @@ const useProfile = () => {
 
   const setPhotoImage = async () => {
     firebaseLogEvent('change_photo');
-    const photo = await pickImage();
-    if (photo) {
-      setState('photo', photo);
+    try {
+      const photo = await pickImage();
+      if (photo) {
+        setState('photo', photo);
+      }
+    } catch {
+      Alert.alert('에러', '선택한 이미지의 용량이 너무 큽니다.');
     }
   };
 
   return {
-    states: { image, photo, randomPressed, photoPressed },
+    states: { image, photo, randomPressed, photoPressed, isLoading },
     actions: {
       setRandomImage,
       setPhotoImage,

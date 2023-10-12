@@ -39,6 +39,7 @@ const useShiftTypeEdit = () => {
     state.setState,
   ]);
   const [usingTime, setUsingTime] = useState(shift.startTime ? true : false);
+  const [isValid, setIsValid] = useState({ name: true, shortName: true });
   const navigation = useNavigation();
   const queryClient = useQueryClient();
 
@@ -146,11 +147,18 @@ const useShiftTypeEdit = () => {
         firebaseLogEvent('edit_shift_type');
         editShiftTypeMutate({ shiftId: accountShiftTypeId, shift: reqDTO });
       }
+    } else {
+      if (shift.name.length === 0) {
+        setIsValid((prev) => ({ ...prev, name: false }));
+      }
+      if (shift.shortName.length === 0) {
+        setIsValid((prev) => ({ ...prev, shortName: false }));
+      }
     }
   };
 
   return {
-    states: { shift, isEdit, usingTime, workTypeList, offTypeList },
+    states: { shift, isEdit, usingTime, workTypeList, offTypeList, isValid },
     actions: {
       onChangeSwith,
       changeStartTime,
@@ -160,6 +168,7 @@ const useShiftTypeEdit = () => {
       onPressShiftType,
       onPressSaveButton,
       onPressDeleteButton,
+      setIsValid,
     },
   };
 };

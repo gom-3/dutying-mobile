@@ -29,7 +29,7 @@ const LoginPage = () => {
   const { onPress: navigateHome } = useLinkProps({ to: { screen: 'Home' } });
   const { onPress: navigateSignup } = useLinkProps({ to: { screen: 'Signup' } });
   const { onPress: navigateTerm } = useLinkProps({ to: { screen: 'Term' } });
-  const [setState] = useAccountStore((state) => [state.setState]);
+  const [deviceToken, setState] = useAccountStore((state) => [state.deviceToken, state.setState]);
   const [setSignupState] = useSignupStore((state) => [state.setState]);
   const [accountId, setAccountId] = useState(0);
   const [click, setClick] = useState(0);
@@ -61,7 +61,8 @@ const LoginPage = () => {
   });
 
   const { mutate: oAuthLoginMutate } = useMutation(
-    ({ idToken, provider }: { idToken: string; provider: string }) => oAuthLogin(idToken, provider),
+    ({ idToken, provider }: { idToken: string; provider: string }) =>
+      oAuthLogin(idToken, provider, deviceToken),
     {
       onSuccess: (data) => {
         if (data.status === 'INITIAL' || data.name === null) {

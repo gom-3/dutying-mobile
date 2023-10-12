@@ -9,6 +9,7 @@ interface State {
   image: any;
   photo: string | null;
   step: number;
+  isLoading: boolean;
 }
 
 interface Store extends State {
@@ -23,6 +24,7 @@ export const useSignupStore = createWithEqualityFn<Store>()(
     step: 1,
     photo: null,
     isPhoto: false,
+    isLoading: false,
     image: images[Math.floor(Math.random() * 30)],
     setState: (state, value) => set((prev) => ({ ...prev, [state]: value })),
   })),
