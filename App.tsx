@@ -5,12 +5,60 @@ import Router from './src/pages/Router';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { EventProvider } from 'react-native-outside-press';
 import * as NavigationBar from 'expo-navigation-bar';
-import { AppStateStatus, Platform } from 'react-native';
-import { QueryClient, QueryClientProvider, focusManager, useQuery } from '@tanstack/react-query';
+import { Alert, AppStateStatus, Platform } from 'react-native';
+import { QueryClient, QueryClientProvider, focusManager } from '@tanstack/react-query';
 import { useAppState } from './src/hooks/useAppState';
 import * as SplashScreen from 'expo-splash-screen';
 import axiosInstance from './src/libs/api/client';
 import { useAccountStore } from './src/store/account';
+import * as Device from 'expo-device';
+import * as Notifications from 'expo-notifications';
+
+const schedulePushNotification = async () => {
+  await Notifications.scheduleNotificationAsync({
+    content: {
+      title: 'Test Title',
+      body: 'test body',
+      data: { data: 'goes here' },
+    },
+    trigger: { seconds: 10 },
+  });
+};
+
+const registerForPushNotificationAsync = async () => {
+  if (Device.isDevice) {
+    Notifications.setNotificationHandler({
+      handleNotification: async () => ({
+        shouldPlaySound: false,
+        shouldSetBadge: false,
+        shouldShowAlert: true,
+      }),
+    });
+    let token: string;
+    if (Platform.OS === 'android') {
+      await Notifications.setNotificationChannelAsync('default', {
+        name: 'default',
+        importance: Notifications.AndroidImportance.MAX,
+        vibrationPattern: [0, 250, 250, 250],
+        lightColor: '#ff231f7c',
+      });
+    }
+    // 가지고 있는 권한 가져오기
+    const { status: existingStatus } = await Notifications.getPermissionsAsync();
+    let finalStatus = existingStatus;
+    // 권한 없으면 요청해서 가져오기
+    if (existingStatus !== 'granted') {
+      const { status } = await Notifications.requestPermissionsAsync();
+      finalStatus = status;
+    }
+    if (finalStatus !== 'granted') {
+      Alert.alert('알림 권한을 가져오는데 실패했습니다.');
+    }
+    token = (await Notifications.getDevicePushTokenAsync()).data;
+    useAccountStore.getState().setState('deviceToken', token);
+    Alert.alert(token);
+  }
+};
 
 SplashScreen.preventAutoHideAsync();
 
@@ -38,6 +86,8 @@ export default function App() {
       NavigationBar.setBackgroundColorAsync('white');
       NavigationBar.setButtonStyleAsync('dark');
     }
+    registerForPushNotificationAsync();
+    schedulePushNotification();
   }, []);
 
   useAppState(onAppStateChange);

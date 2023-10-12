@@ -68,7 +68,8 @@
     "styled-components": "^6.0.5",
     "zustand": "^4.3.9",
     "lottie-react-native": "5.1.6",
-    "expo-notifications": "~0.20.1"
+    "expo-notifications": "~0.20.1",
+    "expo-device": "~5.4.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
