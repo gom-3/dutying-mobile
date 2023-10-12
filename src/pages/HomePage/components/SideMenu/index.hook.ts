@@ -14,6 +14,7 @@ import * as NavigationBar from 'expo-navigation-bar';
 import { useMutation } from '@tanstack/react-query';
 import { deleteAccount } from '@libs/api/account';
 
+
 interface SideMenuItem {
   icon: React.FC<SvgProps>;
   title: string;
