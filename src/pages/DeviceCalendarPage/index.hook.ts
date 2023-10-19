@@ -9,10 +9,11 @@ import {
   updateCalendarAsync,
   deleteCalendarAsync,
 } from 'expo-calendar';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useCaledarDateStore } from 'store/calendar';
 import { useDeviceCalendarStore } from 'store/device';
 import { firebaseLogEvent } from '@libs/utils/event';
+import { useRoute } from '@react-navigation/native';
 
 const useDeviceCalendarPage = () => {
   const [calendars, dutyingCalendars, calendarLink, setLink, setState] = useDeviceCalendarStore(
@@ -24,21 +25,18 @@ const useDeviceCalendarPage = () => {
       state.setState,
     ],
   );
+  const { params } = useRoute<any>();
 
   const [setScheduleState] = useCaledarDateStore((state) => [state.setState]);
   const [isValid, setIsValid] = useState({ name: true, color: true });
-  const [name, setName] = useState('');
   const [color, setColor] = useState('');
   const [isEdit, setIsEdit] = useState(false);
   const [id, setId] = useState('');
-
-  console.log(isValid);
-
   const textRef = useRef<string>('');
   const ref = useRef<BottomSheetModal>(null);
 
   const normalCalendars = calendars.filter((calendar) => !calendar.title?.startsWith('듀팅'));
-
+  console.log(textRef.current);
   const pressLinkHandler = (id: string) => {
     firebaseLogEvent('link_calendar');
     setLink(id, !calendarLink[id]);
@@ -48,15 +46,14 @@ const useDeviceCalendarPage = () => {
   const openModalCreateMode = () => {
     firebaseLogEvent('add_calendar');
     ref.current?.present();
-    setName('');
     setColor('');
     setIsEdit(false);
+    textRef.current = '';
   };
 
   const openModalEditMode = (calendar: Calendar) => {
     firebaseLogEvent('edit_calendar');
     ref.current?.present();
-    setName(calendar.title.slice(3));
     setColor(calendar.color);
     setId(calendar.id);
     setIsEdit(true);
@@ -68,10 +65,10 @@ const useDeviceCalendarPage = () => {
         await createCalendarAsync({
           accessLevel: CalendarAccessLevel.OWNER,
           ownerAccount: 'Dutying',
-          name: name,
-          id: name,
+          name: textRef.current,
+          id: textRef.current,
           allowsModifications: true,
-          title: `듀팅-${name}`,
+          title: `듀팅-${textRef.current}`,
           color: color,
           allowedAvailabilities: [Availability.BUSY, Availability.FREE],
           source: { name: 'dutying', type: CalendarType.LOCAL, id: 'Dutying' },
@@ -79,7 +76,7 @@ const useDeviceCalendarPage = () => {
         });
       } else {
         await updateCalendarAsync(id, {
-          title: `듀팅-${name}`,
+          title: `듀팅-${textRef.current}`,
           color: color,
         });
       }
@@ -101,6 +98,10 @@ const useDeviceCalendarPage = () => {
     setState('isChanged', true);
     ref.current?.close();
   };
+
+  useEffect(() => {
+    if (ref.current && params && params.isRedirected) ref.current.present();
+  }, [params, ref]);
 
   return {
     states: {

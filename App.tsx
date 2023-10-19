@@ -13,6 +13,7 @@ import axiosInstance from './src/libs/api/client';
 import { useAccountStore } from './src/store/account';
 import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
+import Messaging from '@react-native-firebase/messaging';
 
 const schedulePushNotification = async () => {
   await Notifications.scheduleNotificationAsync({
@@ -54,7 +55,9 @@ const registerForPushNotificationAsync = async () => {
     if (finalStatus !== 'granted') {
       Alert.alert('알림 권한을 가져오는데 실패했습니다.');
     }
-    token = (await Notifications.getDevicePushTokenAsync()).data;
+
+    token = await Messaging().getToken();
+
     useAccountStore.getState().setState('deviceToken', token);
     Alert.alert(token);
   }

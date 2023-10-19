@@ -6,7 +6,7 @@ import {
   BottomSheetModalProvider,
   BottomSheetTextInput,
 } from '@gorhom/bottom-sheet';
-import { COLOR } from 'index.style';
+import { COLOR, screenHeight, screenWidth } from 'index.style';
 import {
   Pressable,
   View,
@@ -25,11 +25,12 @@ import EnterIcon from '@assets/svgs/enter.svg';
 import { useCallback } from 'react';
 import useMoimPage from './index.hook';
 import { hexToRgba } from '@libs/utils/color';
+import LottieView from 'lottie-react-native';
 
 const MoimPage = () => {
   const renderBackdrop = useCallback((props: any) => <BottomSheetBackdrop {...props} />, []);
   const {
-    states: { moimList, createRef, isValid, moimNameRef },
+    states: { moimList, createRef, isValid, moimNameRef, isLoading, isRefetching, createLoading },
     actions: { pressMoimCard, pressCheck, navigateMoimEnter, setIsValid },
   } = useMoimPage();
 
@@ -160,6 +161,28 @@ const MoimPage = () => {
         </BottomSheetModal>
         <NavigationBar page="social" />
       </BottomSheetModalProvider>
+      {(isLoading||createLoading) && (
+        <View
+          style={{
+            position: 'absolute',
+            width: screenWidth,
+            height: screenHeight,
+            justifyContent: 'center',
+            alignItems: 'center',
+            backgroundColor: hexToRgba('#000000', 0.3),
+            left: 0,
+            top: 0,
+            zIndex: 100,
+          }}
+        >
+          <LottieView
+            style={{ width: 200, height: 200 }}
+            source={require('@assets/animations/signup-animation.json')}
+            autoPlay
+            loop
+          />
+        </View>
+      )}
     </PageViewContainer>
   );
 };

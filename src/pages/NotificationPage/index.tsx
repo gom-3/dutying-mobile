@@ -1,13 +1,47 @@
 import PageHeader from '@components/PageHeader';
 import PageViewContainer from '@components/PageView';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import useNotificationPage from './index.hook';
+import { Text, View } from 'react-native';
+import { COLOR } from 'index.style';
 
 const Notification = () => {
+  const {
+    states: { notificationDates },
+    actions: {},
+  } = useNotificationPage();
   return (
     <PageViewContainer>
       <SafeAreaView>
         <PageHeader title="알림" />
       </SafeAreaView>
+      {Array.from(notificationDates.keys()).map((date) => (
+        <View>
+          <Text style={{ fontSize: 14, fontFamily: 'Apple', color: COLOR.sub3, marginLeft: 24 }}>
+            {date}
+          </Text>
+          {notificationDates.get(date)?.map((notification) => (
+            <View
+              style={{
+                marginHorizontal: 24,
+                marginVertical: 10,
+                flexDirection: 'row',
+                alignItems: 'center',
+                width: '80%',
+              }}
+            >
+              <View
+                style={{ width: 40, height: 40, borderRadius: 100, backgroundColor: COLOR.main4 }}
+              ></View>
+              <Text
+                style={{ marginLeft: 14, fontSize: 16, fontFamily: 'Apple500', color: COLOR.sub1 }}
+              >
+                {notification.content}
+              </Text>
+            </View>
+          ))}
+        </View>
+      ))}
     </PageViewContainer>
   );
 };

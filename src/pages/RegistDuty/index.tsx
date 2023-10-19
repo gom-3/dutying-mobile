@@ -1,7 +1,7 @@
 import Shift from '@components/Shift';
 import useRegistDuty from './index.hook';
-import { COLOR, screenWidth } from 'index.style';
-import { View, Text, Pressable, StyleSheet } from 'react-native';
+import { COLOR } from 'index.style';
+import { View, Text, Pressable, StyleSheet, TouchableOpacity } from 'react-native';
 import PageViewContainer from '@components/PageView';
 import PageHeader from '@components/PageHeader';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -10,6 +10,7 @@ import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { days, isSameDate } from '@libs/utils/date';
 import CheckIcon from '@assets/svgs/check.svg';
 import TrashIcon from '@assets/svgs/trash-color.svg';
+import EditIcon from '@assets/svgs/edit-shift-type-gray.svg';
 import { useRoute } from '@react-navigation/native';
 
 const RegistDuty = () => {
@@ -18,7 +19,14 @@ const RegistDuty = () => {
   const dateFrom = params ? params.dateFrom : undefined;
   const {
     state: { date, weeks, selectedDate, shiftTypes, shiftTypesCount },
-    actions: { insertShift, deleteShift, selectDate, saveRegistDutyChange },
+    actions: {
+      insertShift,
+      deleteShift,
+      selectDate,
+      saveRegistDutyChange,
+      navigateToShiftType,
+      longPressShift,
+    },
   } = useRegistDuty(dateFrom);
 
   return (
@@ -93,16 +101,30 @@ const RegistDuty = () => {
           <View style={styles.registView}>
             <View style={styles.registHeaderView}>
               <Text style={styles.registHeaderText}>근무 유형 선택</Text>
-              <Pressable onPress={deleteShift}>
-                <View style={styles.deleteShiftView}>
-                  <Text style={styles.deleteShiftText}>삭제</Text>
-                  <TrashIcon />
-                </View>
-              </Pressable>
+              <View style={{ flexDirection: 'row' }}>
+                <TouchableOpacity
+                  onPress={navigateToShiftType}
+                  style={{ marginRight: 8, padding: 4 }}
+                >
+                  <EditIcon />
+                </TouchableOpacity>
+                <TouchableOpacity onPress={deleteShift} style={{ padding: 4 }}>
+                  <View style={styles.deleteShiftView}>
+                    <Text style={styles.deleteShiftText}>삭제</Text>
+                    <TrashIcon />
+                  </View>
+                </TouchableOpacity>
+              </View>
             </View>
             <View style={styles.registShiftItemsView}>
               {Array.from(shiftTypes.values()).map((shift) => (
-                <Pressable key={shift.name} onPress={() => insertShift(shift.accountShiftTypeId)}>
+                <TouchableOpacity
+                  activeOpacity={0.7}
+                  key={shift.name}
+                  onPress={() => insertShift(shift.accountShiftTypeId)}
+                  delayLongPress={700}
+                  onLongPress={() => longPressShift(shift)}
+                >
                   <View style={styles.shiftItemView}>
                     <Text style={styles.shiftCountText}>
                       {shiftTypesCount.get(shift.accountShiftTypeId) || 0}
@@ -112,7 +134,7 @@ const RegistDuty = () => {
                       <Text style={styles.shiftFullNameText}>{shift.name}</Text>
                     </View>
                   </View>
-                </Pressable>
+                </TouchableOpacity>
               ))}
             </View>
           </View>
@@ -146,10 +168,10 @@ const styles = StyleSheet.create({
   registView: {
     height: '100%',
     paddingHorizontal: 24,
-    paddingVertical: 14,
+    paddingVertical: 10,
     backgroundColor: '#fdfcfe',
   },
-  registHeaderView: { flexDirection: 'row', justifyContent: 'space-between' },
+  registHeaderView: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
   registHeaderText: { fontSize: 14, fontFamily: 'Apple', color: COLOR.sub2 },
   deleteShiftView: {
     paddingHorizontal: 10,
@@ -165,8 +187,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     marginTop: 26,
     flexWrap: 'wrap',
-    flex:1,
-    justifyContent:'space-evenly'
+    flex: 1,
+    justifyContent: 'space-evenly',
   },
   shiftItemView: { alignItems: 'center', justifyContent: 'center' },
   shiftCountText: { fontFamily: 'Poppins', color: COLOR.sub25, fontSize: 12 },
@@ -179,7 +201,7 @@ const styles = StyleSheet.create({
     paddingVertical: 3,
     borderRadius: 10,
   },
-  shiftShortNameText: { color: 'white', fontFamily: 'Poppins500', fontSize: 20, height: 30 },
+  shiftShortNameText: { color: 'white', fontFamily: 'Apple600', fontSize: 20, height: 29 },
   shiftFullNameText: { marginLeft: 5, color: 'white', fontFamily: 'Apple', fontSize: 14 },
 });
 
