@@ -4,6 +4,7 @@ import { createWithEqualityFn } from 'zustand/traditional';
 
 interface State {
   moimId: number;
+  moimCode: string;
   weeks: Date[][];
 }
 
@@ -16,6 +17,7 @@ interface Store extends State {
 export const useMoimStore = createWithEqualityFn<Store>()(
   devtools((set, _) => ({
     moimId: 0,
+    moimCode: '000000',
     weeks: [],
     setState: (state, value) => set((prev) => ({ ...prev, [state]: value })),
     initCalendar: (year, month) =>

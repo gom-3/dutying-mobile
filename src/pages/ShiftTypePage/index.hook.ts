@@ -9,7 +9,10 @@ const workClassifications = ['DAY', 'EVENING', 'NIGHT', 'OTHER_WORK'];
 const offClassification = ['OFF', 'LEAVE'];
 
 const useShiftTypePage = () => {
-  const [initShift, setState] = useEditShiftTypeStore((state) => [state.initShift, state.setState]);
+  const [initShift, editShift] = useEditShiftTypeStore((state) => [
+    state.initShift,
+    state.editShift,
+  ]);
   const [shiftTypes] = useShiftTypeStore((state) => [state.shiftTypes]);
   const { onPress: navigateToEdit } = useLinkProps({ to: { screen: 'ShiftTypeEdit' } });
   useShiftType();
@@ -37,9 +40,7 @@ const useShiftTypePage = () => {
   const onPressEditIcon = (shift: Shift) => {
     firebaseLogEvent('move_edit_shift_type');
     const { accountShiftTypeId, ...shiftWithoutAccountShiftTypeId } = shift;
-    setState('currentShift', shiftWithoutAccountShiftTypeId);
-    setState('accountShiftTypeId', shift.accountShiftTypeId);
-    setState('isEdit', true);
+    editShift(shiftWithoutAccountShiftTypeId, shift.accountShiftTypeId);
     navigateToEdit();
   };
 

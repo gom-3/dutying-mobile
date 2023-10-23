@@ -35,6 +35,7 @@ interface Store extends State {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   setState: (key: keyof State, value: any) => void;
   initShift: () => void;
+  editShift: (shift: ShiftWithoutID, id: number) => void;
 }
 
 export const useEditShiftTypeStore = createWithEqualityFn<Store>()(
@@ -45,6 +46,8 @@ export const useEditShiftTypeStore = createWithEqualityFn<Store>()(
       isEdit: false,
       setState: (state, value) => set((prev) => ({ ...prev, [state]: value })),
       initShift: () => set((prev) => ({ ...prev, currentShift: initialShift(), isEdit: false })),
+      editShift: (shift, id) =>
+        set(() => ({ currentShift: shift, accountShiftTypeId: id, isEdit:true })),
     }),
     { name: 'useEditShiftTypeStore' },
   ),

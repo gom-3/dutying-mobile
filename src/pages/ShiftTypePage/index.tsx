@@ -109,7 +109,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     height: 28,
     marginRight: 4,
-    fontFamily: 'Poppins500',
+    fontFamily: 'Apple600',
     color: 'white',
   },
   name: {

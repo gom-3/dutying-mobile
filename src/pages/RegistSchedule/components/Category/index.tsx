@@ -6,11 +6,12 @@ import { COLOR } from 'index.style';
 import { BottomSheetBackdrop, BottomSheetModal } from '@gorhom/bottom-sheet';
 import { useCallback } from 'react';
 import BottomSheetHeader from '@components/BottomSheetHeader';
+import PlusIcon from '@assets/svgs/plus.svg';
 
 const Category = () => {
   const {
     states: { deviceCalendar, selectedCalendar, ref },
-    actions: { openModal, pressCategoryHandler },
+    actions: { openModal, pressCategoryHandler, navigateEditDeviceCalendar },
   } = useCategory();
 
   const renderBackdrop = useCallback((props: any) => <BottomSheetBackdrop {...props} />, []);
@@ -43,7 +44,15 @@ const Category = () => {
         }}
         ref={ref}
       >
-        <BottomSheetHeader title="유형" onPressExit={() => ref.current?.close()} />
+        <BottomSheetHeader
+          rightItems={
+            <TouchableOpacity onPress={navigateEditDeviceCalendar}>
+              <PlusIcon />
+            </TouchableOpacity>
+          }
+          title="유형"
+          onPressExit={() => ref.current?.close()}
+        />
         <ScrollView>
           {deviceCalendar.map((calendar) => (
             <TouchableOpacity
@@ -74,7 +83,7 @@ const Category = () => {
               </Text>
             </TouchableOpacity>
           ))}
-          <View style={{height:50}}/>
+          <View style={{ height: 50 }} />
         </ScrollView>
       </BottomSheetModal>
     </View>

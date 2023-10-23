@@ -3,7 +3,7 @@ import { useShiftTypeStore } from 'store/shift';
 import { useEffect, useMemo, useState } from 'react';
 import { useCaledarDateStore } from 'store/calendar';
 import { isSameDate } from '@libs/utils/date';
-import { useNavigation } from '@react-navigation/native';
+import { useLinkProps, useNavigation } from '@react-navigation/native';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   AccountShiftListRequestDTO,
@@ -13,6 +13,7 @@ import {
 } from '@libs/api/shift';
 import { useAccountStore } from 'store/account';
 import { firebaseLogEvent } from '@libs/utils/event';
+import { useEditShiftTypeStore } from '@pages/ShiftTypePage/store';
 
 const useRegistDuty = (dateFrom?: string) => {
   const [date, calendar, setState] = useCaledarDateStore((state) => [
@@ -23,7 +24,9 @@ const useRegistDuty = (dateFrom?: string) => {
   const [userId] = useAccountStore((state) => [state.account.accountId]);
   const [shiftTypes] = useShiftTypeStore((state) => [state.shiftTypes]);
   const [tempCalendar, setTempCalendar] = useState<DateType[]>(calendar);
-
+  const [editShift] = useEditShiftTypeStore((state) => [state.editShift]);
+  const { onPress: navigateToEidtShiftType } = useLinkProps({ to: { screen: 'ShiftTypeEdit' } });
+  const { onPress: navigateToShiftType } = useLinkProps({ to: { screen: 'ShiftType' } });
   const [index, setIndex] = useState(
     calendar.findIndex((t) =>
       isSameDate(
@@ -62,6 +65,12 @@ const useRegistDuty = (dateFrom?: string) => {
   const { data: shiftListResponse } = useQuery(getAccountShiftListKey, () =>
     getAccountShiftList(userId, date.getFullYear(), date.getMonth()),
   );
+
+  const longPressShift = (shift: Shift) => {
+    const { accountShiftTypeId, ...shiftWithoutId } = shift;
+    editShift(shiftWithoutId, accountShiftTypeId);
+    navigateToEidtShiftType();
+  };
 
   const registCalendar = useMemo(() => {
     const year = date.getFullYear();
@@ -194,6 +203,8 @@ const useRegistDuty = (dateFrom?: string) => {
       deleteShift,
       selectDate,
       saveRegistDutyChange,
+      navigateToShiftType,
+      longPressShift,
     },
   };
 };

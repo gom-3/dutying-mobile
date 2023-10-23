@@ -17,21 +17,30 @@ const useMoimPage = () => {
   const createRef = useRef<BottomSheetModal>(null);
   const [setMoimState] = useMoimStore((state) => [state.setState]);
 
-  const { mutate: createMoimMutate } = useMutation(() => createMoim(moimNameRef.current), {
-    onSuccess: () => {
-      queryClient.invalidateQueries(['getMoimList', accountId]);
-      createRef.current?.close();
+  const { mutate: createMoimMutate, isLoading: createLoading } = useMutation(
+    () => createMoim(moimNameRef.current),
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries(['getMoimList', accountId]);
+        queryClient.refetchQueries(['getMoimList', accountId]);
+        createRef.current?.close();
+      },
+      onError: () => {
+        setIsValid(false);
+      },
+
     },
-    onError: () => {
-      setIsValid(false);
-    },
-  });
+  );
 
   const pressCheck = () => {
     createMoimMutate();
   };
 
-  const { data: moimList } = useQuery(['getMoimList', accountId], () => getMoimList());
+  const {
+    data: moimList,
+    isLoading,
+    isRefetching,
+  } = useQuery(['getMoimList', accountId], () => getMoimList());
 
   const pressMoimCard = (moimId: number, moimCode: string) => {
     setMoimState('moimId', moimId);
@@ -40,7 +49,8 @@ const useMoimPage = () => {
   };
 
   return {
-    states: { isValid, createRef, moimList, moimNameRef },
+    states: { createLoading, isValid, createRef, moimList, moimNameRef, isLoading, isRefetching },
+
     actions: { setIsValid, pressMoimCard, pressCheck, navigateMoimEnter },
   };
 };

@@ -17,7 +17,7 @@ export type SignupRequestDTO = Pick<Account, 'accountId' | 'name' | 'profileImgB
 
 export const oAuthLogin = async (idToken: string, provider: string, deviceToken: string | null) => {
   const data = (
-    await axios.post<OAuthResponseDTO>(`${API_URL}/oauth/id-token`, {
+    await axios.post<OAuthResponseDTO>(`${API_URL}/oauth/token`, {
       idToken,
       provider,
       deviceToken,

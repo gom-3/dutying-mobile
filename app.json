@@ -2,7 +2,7 @@
   "expo": {
     "name": "듀팅",
     "slug": "dutying-mobile",
-    "version": "1.1.21",
+    "version": "1.1.23",
     "orientation": "portrait",
     "icon": "./src/assets/icon.png",
     "userInterfaceStyle": "light",
@@ -60,7 +60,7 @@
       "**/*"
     ],
     "ios": {
-      "buildNumber": "1.0.3",
+      "buildNumber": "1.0.5",
       "googleServicesFile": "./GoogleService-Info.plist",
       "usesAppleSignIn": true,
       "supportsTablet": false,
