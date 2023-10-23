@@ -15,17 +15,6 @@ import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
 import Messaging from '@react-native-firebase/messaging';
 
-const schedulePushNotification = async () => {
-  await Notifications.scheduleNotificationAsync({
-    content: {
-      title: 'Test Title',
-      body: 'test body',
-      data: { data: 'goes here' },
-    },
-    trigger: { seconds: 10 },
-  });
-};
-
 const registerForPushNotificationAsync = async () => {
   if (Device.isDevice) {
     Notifications.setNotificationHandler({
@@ -59,7 +48,6 @@ const registerForPushNotificationAsync = async () => {
     token = await Messaging().getToken();
 
     useAccountStore.getState().setState('deviceToken', token);
-    Alert.alert(token);
   }
 };
 
@@ -90,7 +78,6 @@ export default function App() {
       NavigationBar.setButtonStyleAsync('dark');
     }
     registerForPushNotificationAsync();
-    schedulePushNotification();
   }, []);
 
   useAppState(onAppStateChange);
