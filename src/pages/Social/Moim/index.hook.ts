@@ -28,6 +28,7 @@ const useMoimPage = () => {
       onError: () => {
         setIsValid(false);
       },
+
     },
   );
 
@@ -49,6 +50,7 @@ const useMoimPage = () => {
 
   return {
     states: { createLoading, isValid, createRef, moimList, moimNameRef, isLoading, isRefetching },
+
     actions: { setIsValid, pressMoimCard, pressCheck, navigateMoimEnter },
   };
 };

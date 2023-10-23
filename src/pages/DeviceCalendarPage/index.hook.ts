@@ -32,6 +32,7 @@ const useDeviceCalendarPage = () => {
   const [color, setColor] = useState('');
   const [isEdit, setIsEdit] = useState(false);
   const [id, setId] = useState('');
+
   const textRef = useRef<string>('');
   const ref = useRef<BottomSheetModal>(null);
 

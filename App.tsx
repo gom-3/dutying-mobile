@@ -44,10 +44,9 @@ const registerForPushNotificationAsync = async () => {
     if (finalStatus !== 'granted') {
       Alert.alert('알림 권한을 가져오는데 실패했습니다.');
     }
-
     token = await Messaging().getToken();
-
     useAccountStore.getState().setState('deviceToken', token);
+
   }
 };
 
@@ -78,6 +77,7 @@ export default function App() {
       NavigationBar.setButtonStyleAsync('dark');
     }
     registerForPushNotificationAsync();
+
   }, []);
 
   useAppState(onAppStateChange);

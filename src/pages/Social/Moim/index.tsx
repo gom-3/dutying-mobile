@@ -27,6 +27,7 @@ import useMoimPage from './index.hook';
 import { hexToRgba } from '@libs/utils/color';
 import LottieView from 'lottie-react-native';
 
+
 const MoimPage = () => {
   const renderBackdrop = useCallback((props: any) => <BottomSheetBackdrop {...props} />, []);
   const {
