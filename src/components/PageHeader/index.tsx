@@ -5,15 +5,16 @@ import PrevIcon from '@assets/svgs/back-arrow.svg';
 
 interface Props {
   title: string;
+  backgroundColor?: string;
   rightItems?: JSX.Element;
   titleMargin?: number;
 }
 
-const PageHeader = ({ title, rightItems, titleMargin }: Props) => {
+const PageHeader = ({ title, rightItems, backgroundColor, titleMargin }: Props) => {
   const navigation = useNavigation();
 
   return (
-    <View style={styles.header}>
+    <View style={[styles.header, { backgroundColor: backgroundColor ? backgroundColor : 'white' }]}>
       <TouchableOpacity onPress={() => navigation.goBack()}>
         <PrevIcon />
       </TouchableOpacity>
@@ -29,8 +30,8 @@ export default PageHeader;
 
 const styles = StyleSheet.create({
   header: {
-    marginHorizontal: 24,
-    marginVertical: 14,
+    paddingHorizontal: 24,
+    paddingVertical: 14,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',

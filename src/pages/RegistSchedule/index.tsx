@@ -33,11 +33,12 @@ const RegistSchedulePage = () => {
   } = useRegistSchedule();
 
   return (
-    <PageViewContainer>
+    <PageViewContainer style={{ backgroundColor: COLOR.bg }}>
       <BottomSheetModalProvider>
         <SafeAreaView>
           <KeyboardAvoidWrapper>
             <PageHeader
+              backgroundColor={COLOR.bg}
               title={isEdit ? '일정 수정' : '일정 등록'}
               titleMargin={isEdit ? 38 : 0}
               rightItems={
@@ -53,23 +54,24 @@ const RegistSchedulePage = () => {
                 </View>
               }
             />
-
-            <TextInput
-              autoFocus={Platform.OS === 'android'}
-              value={title}
-              onChangeText={titleChangeHandler}
-              style={styles.title}
-              placeholder="제목"
-              placeholderTextColor={COLOR.sub3}
-            />
+            <View style={{ backgroundColor: COLOR.bg, paddingVertical: 10 }}>
+              <TextInput
+                autoFocus={Platform.OS === 'android'}
+                value={title}
+                onChangeText={titleChangeHandler}
+                style={styles.title}
+                placeholder="제목"
+                placeholderTextColor={COLOR.sub3}
+              />
+            </View>
             <Category />
             <Time />
             <Alarm openModal={() => openModal('alarm')} />
             <Repeat openModal={() => openModal('reculsive')} />
             <Text
               style={{
-                color: COLOR.sub3,
-                fontFamily: 'Apple',
+                color: COLOR.sub2,
+                fontFamily: 'Apple500',
                 fontSize: 16,
                 paddingHorizontal: 24,
                 paddingVertical: 10,
@@ -146,9 +148,9 @@ const styles = StyleSheet.create({
   title: {
     paddingVertical: 7,
     paddingHorizontal: 14,
-    backgroundColor: COLOR.bg,
+    backgroundColor: 'white',
     borderWidth: 0.5,
-    borderColor: COLOR.sub5,
+    borderColor: COLOR.main4,
     borderRadius: 5,
     fontSize: 20,
     fontFamily: 'Apple',

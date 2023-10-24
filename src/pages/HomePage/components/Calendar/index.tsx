@@ -142,7 +142,7 @@ const styles = StyleSheet.create({
   calendarHeader: {
     flexDirection: 'row',
     backgroundColor: 'white',
-    borderBottomWidth: 1,
+    borderBottomWidth: 0.2,
     borderBottomColor: '#d6d6de',
   },
   calendarHeaderDay: {
@@ -152,14 +152,19 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   sunday: {
-    color: 'red',
-    fontFamily: 'Apple',
+    color: '#FF99AA',
+    fontSize:12,
+    fontFamily: 'Apple400',
   },
   saturday: {
-    color: 'blue',
+    fontFamily: 'Apple400',
+    fontSize:12,
+    color: '#8B9BFF',
   },
   weekday: {
-    color: 'black',
+    fontFamily: 'Apple400',
+    fontSize:12,
+    color: COLOR.sub25,
   },
   week: {
     flexDirection: 'row',

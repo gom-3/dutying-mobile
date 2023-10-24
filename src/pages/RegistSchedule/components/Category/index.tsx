@@ -17,7 +17,14 @@ const Category = () => {
   const renderBackdrop = useCallback((props: any) => <BottomSheetBackdrop {...props} />, []);
 
   return (
-    <View style={{ flexDirection: 'row' }}>
+    <View
+      style={{
+        flexDirection: 'row',
+        borderBottomColor: COLOR.sub4,
+        borderBottomWidth: 0.3,
+        paddingVertical: 20,
+      }}
+    >
       <TouchableOpacity activeOpacity={0.5} onPress={openModal}>
         <View
           style={[
@@ -100,7 +107,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginLeft: 24,
-    marginTop: 20,
   },
   categoryText: {
     fontFamily: 'Apple',

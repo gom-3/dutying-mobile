@@ -57,6 +57,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
     paddingTop: 15,
     backgroundColor: 'white',
+    marginBottom:22
     // zIndex: 3,
   },
   firstLevelView: {
@@ -96,7 +97,7 @@ const styles = StyleSheet.create({
   },
   secondLevelView: {
     flexDirection: 'row',
-    marginTop: 10,
+    marginTop: 16,
   },
   shiftView: {
     flexDirection: 'row',
