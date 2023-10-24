@@ -62,10 +62,7 @@ const DatePicker = ({ date, mode, text, style, onChange }: Props) => {
             if (index !== 1) ref.current?.close();
           }}
         >
-          <BottomSheetHeader
-            style={{marginBottom:0}}
-            onPressExit={() => ref.current?.close()}
-          />
+          <BottomSheetHeader style={{ marginBottom: 0 }} onPressExit={() => ref.current?.close()} />
           <DateTimePicker
             minuteInterval={5}
             mode={mode}
@@ -80,7 +77,7 @@ const DatePicker = ({ date, mode, text, style, onChange }: Props) => {
 };
 
 const styles = StyleSheet.create({
-  usingItemTitle: { fontFamily: 'Apple', fontSize: 10, color: COLOR.sub3 },
+  usingItemTitle: { fontFamily: 'Apple', fontSize: 10, color: COLOR.sub3, marginBottom: 4 },
   usingItemWrapper: { flexDirection: 'row' },
   usingItemText: {
     backgroundColor: COLOR.bg,
@@ -90,6 +87,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     color: COLOR.sub1,
     paddingVertical: 4,
+    fontFamily:'Apple'
   },
 });
 
