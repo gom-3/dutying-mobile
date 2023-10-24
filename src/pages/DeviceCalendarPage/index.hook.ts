@@ -30,6 +30,7 @@ const useDeviceCalendarPage = () => {
   const [setScheduleState] = useCaledarDateStore((state) => [state.setState]);
   const [isValid, setIsValid] = useState({ name: true, color: true });
   const [color, setColor] = useState('');
+  const [name, setName] = useState('');
   const [isEdit, setIsEdit] = useState(false);
   const [id, setId] = useState('');
 
@@ -56,6 +57,7 @@ const useDeviceCalendarPage = () => {
     firebaseLogEvent('edit_calendar');
     ref.current?.present();
     setColor(calendar.color);
+    setName(calendar.title.slice(3));
     setId(calendar.id);
     setIsEdit(true);
   };
@@ -110,6 +112,7 @@ const useDeviceCalendarPage = () => {
       textRef,
       isEdit,
       color,
+      name,
       ref,
       normalCalendars,
       dutyingCalendars,

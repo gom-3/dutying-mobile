@@ -18,7 +18,7 @@ const Time = () => {
   } = useTimeHook();
 
   return (
-    <>
+    <View style={{ borderBottomColor: COLOR.sub4, borderBottomWidth: 0.3, paddingTop:14, paddingBottom: 40 }}>
       <OutsidePressHandler disabled={false} onOutsidePress={() => setIsOpen(false)}>
         <View style={styles.item}>
           <View style={styles.itemTitleWrapper}>
@@ -67,7 +67,7 @@ const Time = () => {
           )}
         </View>
       </OutsidePressHandler>
-    </>
+    </View>
   );
 };
 
@@ -77,11 +77,10 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     marginHorizontal: 24,
-    marginVertical: Platform.OS === 'ios' ? 10 : 0,
   },
   itemTitleWrapper: { flexDirection: 'row', alignItems: 'center' },
-  itemTitle: { marginLeft: 8, fontFamily: 'Apple', fontSize: 16, color: COLOR.sub2 },
-  usingView: { marginHorizontal: 24, marginVertical: 0 },
+  itemTitle: { marginLeft: 8, fontFamily: 'Apple500', fontSize: 16, color: COLOR.sub2 },
+  usingView: { marginHorizontal: 24, marginTop: 16 },
   usingItemTitle: { fontFamily: 'Apple', fontSize: 10, color: COLOR.sub3 },
   usingItemWrapper: { flexDirection: 'row' },
   usingItemText: {

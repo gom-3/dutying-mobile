@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import DotsIcon from '@assets/svgs/dots.svg';
-import { COLOR } from 'index.style';
+import { COLOR, screenWidth } from 'index.style';
 import { useCallback, useRef, useState } from 'react';
 import Summary from './components/Summary';
 import {
@@ -65,7 +65,7 @@ const MoimDetailPage = () => {
     );
 
   return (
-    <PageViewContainer style={{ backgroundColor: COLOR.bg }}>
+    <PageViewContainer>
       <BottomSheetModalProvider>
         <SafeAreaView>
           <AlertModalInvite
@@ -94,7 +94,15 @@ const MoimDetailPage = () => {
                     key={i}
                     style={[
                       styles.profileImage,
-                      { right: 0 + (Math.min(3, moim.memberCount) - i) * 18 },
+                      {
+                        right:
+                          (Math.min(
+                            3,
+                            moim.memberCount > 4 ? moim.memberCount : moim.memberCount - 1,
+                          ) -
+                            i) *
+                          18,
+                      },
                     ]}
                     source={{ uri: `data:image/png;base64,${member.profileImgBase64}` }}
                   />
@@ -203,6 +211,10 @@ const MoimDetailPage = () => {
 const styles = StyleSheet.create({
   moimWrapper: {
     paddingHorizontal: 24,
+    width: screenWidth,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
   moimName: {
     color: '#150b3c',
@@ -229,7 +241,7 @@ const styles = StyleSheet.create({
   },
   tab: {
     flexDirection: 'row',
-    marginTop: 22,
+    marginTop: 30,
   },
   tabItem: {
     flex: 1,

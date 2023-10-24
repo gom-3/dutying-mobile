@@ -31,9 +31,9 @@ export const oAuthLogin = async (idToken: string, provider: string, deviceToken:
   return data;
 };
 
-export const editAccount = async (accountId: number, name: string, profileImgBase64: string) => {
+export const initAccount = async (accountId: number, name: string, profileImgBase64: string) => {
   return (
-    await axiosInstance.put<Account>(`/accounts/${accountId}`, {
+    await axiosInstance.patch<Account>(`/accounts/${accountId}/init`, {
       name,
       profileImgBase64,
     })
@@ -42,13 +42,6 @@ export const editAccount = async (accountId: number, name: string, profileImgBas
 
 export const getAccount = async (accountId: number) => {
   return (await axiosInstance.get<Account>(`/accounts/${accountId}`)).data;
-};
-
-export const changeAccountStatus = async (
-  accountId: number,
-  status: 'NURSE_INFO_PENDING' | 'INITIAL',
-) => {
-  return (await axiosInstance.patch(`/accounts/${accountId}/status?status=${status}`)).data;
 };
 
 export type DemoLoginResponseDTO = { accessToken: string };

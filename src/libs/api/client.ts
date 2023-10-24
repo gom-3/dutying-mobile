@@ -3,6 +3,7 @@ import { navigate } from '@libs/utils/navigate';
 import { useAccountStore } from 'store/account';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import CookieManager from '@react-native-cookies/cookies';
+import { Alert } from 'react-native';
 // import Constants from 'expo-constants';
 // let CookieManager: any;
 
@@ -69,6 +70,9 @@ axiosInstance.interceptors.response.use(
           code: '404',
           message: '404',
         };
+      }
+      if (error.response.status === 500) {
+        Alert.alert('서버 오류가 발생했습니다.');
       }
     }
     return Promise.reject(error);

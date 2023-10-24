@@ -26,6 +26,7 @@ const DeviceCalendarPage = () => {
       isEdit,
       textRef,
       color,
+      name,
       ref,
       normalCalendars,
       dutyingCalendars,
@@ -126,7 +127,8 @@ const DeviceCalendarPage = () => {
                   styles.input,
                   { borderColor: isValid.name ? COLOR.main4 : COLOR.invalidBorder },
                 ]}
-                placeholder="유형 이름"
+                placeholder='유형 이름'
+                defaultValue={isEdit ? name : ''}
               />
               {isValid.name ? (
                 <Text style={styles.inputGuideText}>캘린더에 표시되는 일정을 분류해보세요.</Text>

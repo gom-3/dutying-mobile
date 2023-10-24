@@ -14,7 +14,14 @@ const Alarm = ({ openModal }: Props) => {
   } = useAlarm(openModal);
 
   return (
-    <>
+    <View
+      style={{
+        justifyContent: 'center',
+        borderBottomColor: COLOR.sub4,
+        borderBottomWidth: 0.3,
+        paddingVertical: Platform.OS === 'ios' ? 9 : 14,
+      }}
+    >
       <View style={styles.item}>
         <View style={styles.itemTitleWrapper}>
           <AlarmClockIcon />
@@ -36,7 +43,7 @@ const Alarm = ({ openModal }: Props) => {
           </Pressable>
         </View>
       )}
-    </>
+    </View>
   );
 };
 
@@ -46,11 +53,14 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     marginHorizontal: 24,
-    marginVertical: Platform.OS === 'ios' ? 10 : 0,
   },
   itemTitleWrapper: { flexDirection: 'row' },
-  itemTitle: { marginLeft: 8, fontFamily: 'Apple', fontSize: 16, color: COLOR.sub2 },
-  usingView: { marginHorizontal: 24, marginVertical: 0 },
+  itemTitle: { marginLeft: 8, fontFamily: 'Apple500', fontSize: 16, color: COLOR.sub2 },
+  usingView: {
+    marginHorizontal: 24,
+    marginTop: Platform.OS === 'ios' ? 18 : 24,
+    marginBottom: Platform.OS === 'ios' ? 33 : 28,
+  },
   usingItemWrapper: { flexDirection: 'row' },
   usingItemText: {
     backgroundColor: COLOR.bg,

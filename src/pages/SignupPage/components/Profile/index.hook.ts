@@ -3,13 +3,14 @@ import { images } from '@assets/images/profiles';
 import { useSignupStore } from '@pages/SignupPage/store';
 import useImagePicker from '@hooks/useImagePicker';
 import { useMutation } from '@tanstack/react-query';
-import { SignupRequestDTO, changeAccountStatus, editAccount } from '@libs/api/account';
+import { SignupRequestDTO, initAccount } from '@libs/api/account';
 import { useLinkProps } from '@react-navigation/native';
 import { useAccountStore } from 'store/account';
 import * as FileSystem from 'expo-file-system';
 import { Asset } from 'expo-asset';
 import { firebaseLogEvent } from '@libs/utils/event';
 import { Alert } from 'react-native';
+import { queryClient } from '../../../../../App';
 
 const useProfile = () => {
   const [id, name, image, photo, isLoading, setState] = useSignupStore((state) => [
@@ -29,23 +30,25 @@ const useProfile = () => {
 
   const { onPress: navigateToHome } = useLinkProps({ to: { screen: 'Onboarding' } });
 
-  const { mutate: changeAccountStatusMutate } = useMutation(
-    () => changeAccountStatus(id, 'NURSE_INFO_PENDING'),
-    {
-      onSuccess: () => {
-        navigateToHome();
-      },
-    },
-  );
+  // const { mutate: changeAccountStatusMutate } = useMutation(
+  //   () => changeAccountStatus(id, 'NURSE_INFO_PENDING'),
+  //   {
+  //     onSuccess: (data) => {
+  //       navigateToHome();
+  //       console.log(data);
+  //       queryClient.invalidateQueries(['getShiftTypes', id]);
+  //     },
+  //   },
+  // );
 
   const { mutate: signupMutate } = useMutation(
     ({ accountId, name, profileImgBase64 }: SignupRequestDTO) =>
-      editAccount(accountId, name, profileImgBase64),
+    initAccount(accountId, name, profileImgBase64),
     {
       onSuccess: (data) => {
         setAccountState('account', data);
-        changeAccountStatusMutate();
         setState('isLoading', false);
+        navigateToHome();
       },
       onError: () => {
         setState('isLoading', false);

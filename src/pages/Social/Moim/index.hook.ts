@@ -2,7 +2,7 @@ import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import { createMoim, getMoimList } from '@libs/api/moim';
 import { useLinkProps } from '@react-navigation/native';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { useAccountStore } from 'store/account';
 import { useMoimStore } from './store';
 import { TextInput } from 'react-native';
