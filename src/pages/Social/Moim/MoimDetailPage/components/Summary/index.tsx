@@ -82,7 +82,7 @@ const Summary = ({ collection }: Props) => {
   };
 
   return (
-    <ScrollView showsVerticalScrollIndicator={false}>
+    <ScrollView style={{ backgroundColor: COLOR.bg }} showsVerticalScrollIndicator={false}>
       <View style={styles.header}>
         <View style={{ flex: 0.7 }}>
           <MonthSelector />
@@ -298,6 +298,7 @@ const styles = StyleSheet.create({
   cardNames: {
     flexDirection: 'row',
     flex: 1,
+    justifyContent:'flex-end',
     flexWrap: 'wrap',
   },
   cardName: {
@@ -395,20 +396,21 @@ const styles = StyleSheet.create({
     fontFamily: 'Apple500',
     fontSize: 20,
     color: COLOR.sub1,
+    marginBottom:14
   },
   memberShiftDateList: { flexDirection: 'row', justifyContent: 'flex-end', marginHorizontal: 24 },
   memberShiftDateFoucs: {
     width: 58,
     fontFamily: 'Apple600',
     color: COLOR.sub2,
-    fontSize: 10,
+    fontSize: 12,
     textAlign: 'center',
   },
   memberShiftDateBlur: {
     width: 58,
     fontFamily: 'Apple500',
     color: COLOR.sub3,
-    fontSize: 10,
+    fontSize: 12,
     textAlign: 'center',
   },
   member: {

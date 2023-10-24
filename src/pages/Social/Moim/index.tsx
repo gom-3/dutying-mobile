@@ -27,7 +27,6 @@ import useMoimPage from './index.hook';
 import { hexToRgba } from '@libs/utils/color';
 import LottieView from 'lottie-react-native';
 
-
 const MoimPage = () => {
   const renderBackdrop = useCallback((props: any) => <BottomSheetBackdrop {...props} />, []);
   const {
@@ -87,7 +86,15 @@ const MoimPage = () => {
                         key={i}
                         style={[
                           styles.profile,
-                          { right: 0 + (Math.min(3, moim.memberCount) - i) * 18 },
+                          {
+                            right:
+                              (Math.min(
+                                3,
+                                moim.memberCount > 4 ? moim.memberCount : moim.memberCount - 1,
+                              ) -
+                                i) *
+                              18,
+                          },
                         ]}
                         source={{ uri: `data:image/png;base64,${member.profileImgBase64}` }}
                       />
@@ -162,7 +169,7 @@ const MoimPage = () => {
         </BottomSheetModal>
         <NavigationBar page="social" />
       </BottomSheetModalProvider>
-      {(isLoading||createLoading) && (
+      {(isLoading || createLoading) && (
         <View
           style={{
             position: 'absolute',
