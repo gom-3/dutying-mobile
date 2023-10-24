@@ -27,7 +27,10 @@ const useCategory = () => {
   };
 
   const pressCategoryHandler = (calendar: Calendar) => {
-    setState('calendarId', calendar.id);
+    if(calendarId !== calendar.id){
+      setState('prevCalendarId', calendarId);
+      setState('calendarId', calendar.id);
+    }
     ref.current?.close();
   };
 

@@ -13,9 +13,7 @@ const useShiftType = () => {
       enabled: userId > 0,
     },
   );
-
   const [setState] = useShiftTypeStore((state) => [state.setState]);
-
   useEffect(() => {
     const shiftTypes = new Map<number, Shift>();
     shiftTypesResponse?.shiftTypes?.filter((type) =>
@@ -25,7 +23,7 @@ const useShiftType = () => {
         endTime: type.endTime ? new Date(`2023-12-31T${type.endTime}:00`) : null,
       }),
     );
-    if (shiftTypes.size > 0) setState('shiftTypes', shiftTypes);
+    setState('shiftTypes', shiftTypes);
   }, [shiftTypesResponse]);
 };
 

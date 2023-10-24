@@ -62,7 +62,7 @@ const RegistSchedulePage = () => {
               placeholder="제목"
               placeholderTextColor={COLOR.sub3}
             />
-            {!isEdit && <Category />}
+            <Category />
             <Time />
             <Alarm openModal={() => openModal('alarm')} />
             <Repeat openModal={() => openModal('reculsive')} />

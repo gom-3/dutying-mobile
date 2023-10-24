@@ -14,6 +14,13 @@ import { useAccountStore } from './src/store/account';
 import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
 import Messaging from '@react-native-firebase/messaging';
+import * as Sentry from "@sentry/react-native";
+
+Sentry.init({
+  dsn: "https://93ddd999daaaa867ad39989278a40c0b@o4505477969084416.ingest.sentry.io/4506099006898176",
+  tracesSampleRate: 1.0,
+})
+
 
 const registerForPushNotificationAsync = async () => {
   if (Device.isDevice) {
@@ -58,7 +65,7 @@ const onAppStateChange = (status: AppStateStatus) => {
   }
 };
 
-const queryClient = new QueryClient({
+export const queryClient = new QueryClient({
   defaultOptions: { queries: { retry: 2 } },
 });
 

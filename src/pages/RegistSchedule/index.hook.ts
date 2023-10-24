@@ -16,6 +16,7 @@ const useRegistSchedule = () => {
   const [
     id,
     calendarId,
+    prevCalendarId,
     isAllday,
     title,
     alarms,
@@ -27,6 +28,7 @@ const useRegistSchedule = () => {
   ] = useScheduleStore((state) => [
     state.id,
     state.calendarId,
+    state.prevCalendarId,
     state.isAllday,
     state.title,
     state.alarms,
@@ -62,7 +64,12 @@ const useRegistSchedule = () => {
     navigation.goBack();
   };
   const updateEvent = async () => {
-    await updateEventAsync(id, event, { futureEvents: true });
+    if (calendarId !== prevCalendarId) {
+      await deleteEventAsync(id, { futureEvents: true });
+      await createEventAsync(calendarId, event);
+    } else {
+      await updateEventAsync(id, event, { futureEvents: true });
+    }
     setState('isScheduleUpdated', true);
     navigation.goBack();
   };
