@@ -6,7 +6,7 @@ import { firebaseLogEvent } from '@libs/utils/event';
 import useShiftType from '@hooks/useShiftType';
 
 const workClassifications = ['DAY', 'EVENING', 'NIGHT', 'OTHER_WORK'];
-const offClassification = ['OFF', 'LEAVE'];
+const offClassification = ['OFF', 'LEAVE', 'OTHER_LEAVE'];
 
 const useShiftTypePage = () => {
   const [initShift, editShift] = useEditShiftTypeStore((state) => [

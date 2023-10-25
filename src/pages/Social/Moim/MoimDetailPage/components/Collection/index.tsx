@@ -123,6 +123,22 @@ const Collection = ({ collection }: Props) => {
           </TouchableOpacity>
         </View>
       )}
+      <View style={{ flexDirection: 'row', paddingHorizontal: 10 }}>
+        {[''].concat(days).map((day) => (
+          <Text
+            key={day}
+            style={{
+              flex: 1,
+              textAlign: 'center',
+              fontFamily: 'Apple',
+              fontSize: 12,
+              color: day === '일' ? '#ff99aa' : day === '토' ? '#8b9bff' : COLOR.sub25,
+            }}
+          >
+            {day}
+          </Text>
+        ))}
+      </View>
       <View style={{ flexDirection: 'row', flex: 1, paddingHorizontal: 10, paddingBottom: 8 }}>
         <View style={{ flex: 1 }} />
         {days.map((day) => (
@@ -187,16 +203,17 @@ const styles = StyleSheet.create({
   },
   weekDateText: { fontFamily: 'Poppins', fontSize: 12 },
   memberView: { flexDirection: 'row', flex: 1, padding: 10, alignItems: 'center' },
-  memberName: { flex: 1 },
+  memberName: {
+    flex: 1,
+    borderRadius: 3,
+    paddingVertical: 2,
+    backgroundColor: COLOR.main4,
+  },
   memberNameText: {
     fontSize: 12,
     fontFamily: 'Apple500',
     color: COLOR.sub1,
     textAlign: 'center',
-    paddingHorizontal: 6,
-    paddingVertical: 2,
-    backgroundColor: COLOR.main4,
-    borderRadius: 3,
   },
 });
 

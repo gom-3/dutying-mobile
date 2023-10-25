@@ -12,8 +12,8 @@ import {
   CalendarType,
   EntityTypes,
   CalendarAccessLevel,
-  deleteCalendarAsync,
 } from 'expo-calendar';
+import { Alert, Linking } from 'react-native';
 
 export type Schedule = Event & {
   level: number;
@@ -136,6 +136,21 @@ const useDeviceCalendar = () => {
       }
       setDeivceCalendar('dutyingCalendars', deviceDutyingCalendars);
       setDeivceCalendar('calendars', calendars);
+      console.log(calendars);
+      console.log(deviceDutyingCalendars);
+    } else {
+      Alert.alert(
+        '권한 거부됨',
+        '캘린더 접근 권한이 거부되었습니다. 설정에서 권한을 허용해 주세요.',
+        [
+          { text: '취소', style: 'cancel' },
+          // 설정으로 이동하는 버튼
+          {
+            text: '설정으로 이동',
+            onPress: () => Linking.openURL('app-settings:'),
+          },
+        ],
+      );
     }
   };
 

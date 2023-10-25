@@ -11,7 +11,7 @@ import {
   Image,
 } from 'react-native';
 import MoimShift from './Shift';
-import Carousel from 'react-native-snap-carousel';
+import Carousel from 'react-native-reanimated-carousel';
 import useSummary from './index.hook';
 
 const Classification = ['day', 'evening', 'night', 'off'];
@@ -28,31 +28,16 @@ const Summary = ({ collection }: Props) => {
       index,
       date,
       shiftTypes,
+      summaryDate,
       page,
       selectedShiftTypeName,
       weeks,
+      summary,
+      datas,
       threeDates,
     },
-    actions: { pressShiftTypeHandler, setPage, pressDate, setState },
-  } = useSummary();
-
-  let summary: Summary[];
-  switch (selectedClassification) {
-    case 'day':
-      summary = collection.summaryView.day;
-      break;
-    case 'evening':
-      summary = collection.summaryView.evening;
-      break;
-    case 'night':
-      summary = collection.summaryView.night;
-      break;
-    default:
-      summary = collection.summaryView.off;
-  }
-
-  const datas = summary;
-  const summaryDate = summary.length > 0 ? new Date(summary[page].date) : date;
+    actions: { pressShiftTypeHandler, setPage, pressDate, setState, setIndex, getIndexFromDate },
+  } = useSummary({ collection });
 
   const renderItem = ({ item, index }: { item: Summary; index: number }) => {
     return (
@@ -126,19 +111,26 @@ const Summary = ({ collection }: Props) => {
             ))}
         </ScrollView>
       </View>
-      <Carousel
-        onSnapToItem={(index) => {
-          setPage(index);
-          setState('date', new Date(summary[index].date));
-        }}
-        firstItem={page}
-        data={datas}
-        renderItem={renderItem}
-        sliderWidth={screenWidth}
-        itemWidth={screenWidth * 0.8}
-        enableMomentum={true}
-        decelerationRate={0.3}
-      />
+      {datas.length > 0 && (
+        <Carousel
+          onSnapToItem={(index) => {
+            setPage(index);
+            setState('date', new Date(summary[index].date));
+            getIndexFromDate(new Date(summary[index].date));
+          }}
+          data={datas}
+          width={screenWidth}
+          height={110}
+          mode="parallax"
+          modeConfig={{
+            parallaxScrollingScale: 0.85,
+            parallaxScrollingOffset: 80,
+          }}
+          loop={false}
+          renderItem={renderItem}
+          windowSize={3}
+        />
+      )}
       <View>
         <View style={styles.days}>
           {days.map((day) => (
@@ -274,15 +266,15 @@ const styles = StyleSheet.create({
     marginLeft: 8,
   },
   card: {
-    paddingHorizontal: 14,
-    paddingVertical: 10,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
     backgroundColor: 'white',
     borderColor: COLOR.main4,
     borderWidth: 0.5,
     borderRadius: 10,
     marginTop: 16,
     marginBottom: 32,
-    width: screenWidth - 80,
+    width: screenWidth,
     shadowColor: Platform.OS === 'android' ? '#b497ee' : '#ede9f5',
     shadowOffset: { width: 2, height: 2 },
     shadowOpacity: 1,
@@ -290,7 +282,7 @@ const styles = StyleSheet.create({
     elevation: 10,
   },
   cardContent: {
-    paddingTop: 4,
+    paddingTop: 5,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -298,7 +290,7 @@ const styles = StyleSheet.create({
   cardNames: {
     flexDirection: 'row',
     flex: 1,
-    justifyContent:'flex-end',
+    justifyContent: 'flex-end',
     flexWrap: 'wrap',
   },
   cardName: {
@@ -311,22 +303,22 @@ const styles = StyleSheet.create({
   },
   cardNameText: {
     fontFamily: 'Apple',
-    fontSize: 8,
+    fontSize: 11,
     color: COLOR.sub2,
   },
   cardHeaderText: {
     color: COLOR.sub2,
     fontFamily: 'Apple',
-    fontSize: 10,
+    fontSize: 11,
   },
   cardNumberText: {
     color: COLOR.sub25,
     fontFamily: 'Poppins',
-    fontSize: 10,
+    fontSize: 11,
   },
   cardDateText: {
     fontFamily: 'Apple600',
-    fontSize: 20,
+    fontSize: 22,
     color: COLOR.sub1,
     flex: 1,
   },
@@ -396,13 +388,13 @@ const styles = StyleSheet.create({
     fontFamily: 'Apple500',
     fontSize: 20,
     color: COLOR.sub1,
-    marginBottom:14
+    marginBottom: 14,
   },
   memberShiftDateList: { flexDirection: 'row', justifyContent: 'flex-end', marginHorizontal: 24 },
   memberShiftDateFoucs: {
     width: 58,
     fontFamily: 'Apple600',
-    color: COLOR.sub2,
+    color: COLOR.main1,
     fontSize: 12,
     textAlign: 'center',
   },

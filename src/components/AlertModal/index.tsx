@@ -95,13 +95,11 @@ export const AlertModalEnter = ({ isOpen, close, moim, accountId }: EnterProps) 
       queryClient.invalidateQueries(['getMoimList', accountId]);
       queryClient.refetchQueries(['getMoimList', accountId]);
       navigate.goBack();
-    },
-    onError: () => {
-      Alert.alert('가입 실패','이미 가입된 모임입니다.')
-    },
+    }
   });
 
   const pressEnterButton = () => {
+    close();
     enterMoimMutate();
   };
 

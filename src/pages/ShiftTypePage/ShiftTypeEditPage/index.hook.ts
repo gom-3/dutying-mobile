@@ -43,6 +43,7 @@ const useShiftTypeEdit = () => {
   const navigation = useNavigation();
   const queryClient = useQueryClient();
 
+
   const onSuccessMutate = () => {
     queryClient.invalidateQueries(['getShiftTypes', userId]);
     queryClient.refetchQueries(['getShiftTypes', userId]);

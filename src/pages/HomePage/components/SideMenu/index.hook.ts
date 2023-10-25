@@ -14,7 +14,6 @@ import * as NavigationBar from 'expo-navigation-bar';
 import { useMutation } from '@tanstack/react-query';
 import { deleteAccount } from '@libs/api/account';
 
-
 interface SideMenuItem {
   icon: React.FC<SvgProps>;
   title: string;
@@ -28,7 +27,7 @@ const useSideMenu = () => {
   const { onPress: onPressEditShiftType } = useLinkProps({ to: { screen: 'ShiftType' } });
   const { onPress: onPressShare } = useLinkProps({ to: { screen: 'Share' } });
   const { onPress: onPressDeviceCalendar } = useLinkProps({ to: { screen: 'DeviceCalendar' } });
-
+  const { onPress: navigateToMyPage } = useLinkProps({ to: { screen: 'MyPage' } });
   const { mutate: deleteAccountMutate } = useMutation(() => deleteAccount(account.accountId), {
     onSuccess: () => {
       navigateToLoginAndResetHistory();
@@ -113,7 +112,10 @@ const useSideMenu = () => {
     ],
     [],
   );
-  return { state: { account, menuItemList }, actions: { closeSideMenu, logout, signout } };
+  return {
+    state: { account, menuItemList },
+    actions: { closeSideMenu, logout, signout, navigateToMyPage },
+  };
 };
 
 export default useSideMenu;

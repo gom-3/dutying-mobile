@@ -38,7 +38,6 @@ const useDeviceCalendarPage = () => {
   const ref = useRef<BottomSheetModal>(null);
 
   const normalCalendars = calendars.filter((calendar) => !calendar.title?.startsWith('듀팅'));
-  console.log(textRef.current);
   const pressLinkHandler = (id: string) => {
     firebaseLogEvent('link_calendar');
     setLink(id, !calendarLink[id]);

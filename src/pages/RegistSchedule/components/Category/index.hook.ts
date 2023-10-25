@@ -2,6 +2,7 @@ import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import { useLinkProps } from '@react-navigation/native';
 import { Calendar } from 'expo-calendar';
 import { useEffect, useMemo, useRef } from 'react';
+import { Keyboard } from 'react-native';
 import { useDeviceCalendarStore } from 'store/device';
 import { useScheduleStore } from 'store/schedule';
 
@@ -23,14 +24,12 @@ const useCategory = () => {
   );
 
   const openModal = () => {
+    Keyboard.dismiss();
     ref.current?.present();
   };
 
   const pressCategoryHandler = (calendar: Calendar) => {
-    if(calendarId !== calendar.id){
-      setState('prevCalendarId', calendarId);
-      setState('calendarId', calendar.id);
-    }
+    setState('calendarId', calendar.id);
     ref.current?.close();
   };
 

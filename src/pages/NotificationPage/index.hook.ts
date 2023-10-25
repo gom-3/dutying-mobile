@@ -8,8 +8,7 @@ const useNotificationPage = () => {
   if (notifications) {
     notifications.forEach((notification) => {
       const date = new Date(notification.createdAt);
-      const dateString = `${date.getFullYear()}.${date
-        .getMonth()
+      const dateString = `${date.getFullYear()}.${(date.getMonth() + 1)
         .toString()
         .padStart(2, '0')}.${date.getDate().toString().padStart(2, '0')}`;
       if (notificationDates.has(dateString)) {
@@ -19,7 +18,7 @@ const useNotificationPage = () => {
       }
     });
   }
-
+  console.log(notifications);
   console.log(notificationDates);
 
   return { states: { notificationDates }, actions: {} };

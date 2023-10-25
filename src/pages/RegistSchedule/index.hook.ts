@@ -2,7 +2,7 @@ import { useRef, useState } from 'react';
 import { createEventAsync, updateEventAsync, Event, deleteEventAsync } from 'expo-calendar';
 import { useCaledarDateStore } from 'store/calendar';
 import { useNavigation } from '@react-navigation/native';
-import { ScrollView } from 'react-native';
+import { Keyboard, ScrollView } from 'react-native';
 import { useScheduleStore } from 'store/schedule';
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
 
@@ -81,6 +81,7 @@ const useRegistSchedule = () => {
 
   const openModal = (name: 'alarm' | 'reculsive') => {
     modalRef.current?.present();
+    Keyboard.dismiss();
     setIsModalOpen(true);
     setScheduleState('modalName', name);
   };

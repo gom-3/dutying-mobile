@@ -4,6 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import useNotificationPage from './index.hook';
 import { Text, View } from 'react-native';
 import { COLOR } from 'index.style';
+import SocialIcon from '@assets/svgs/social-selected.svg';
 
 const Notification = () => {
   const {
@@ -16,7 +17,7 @@ const Notification = () => {
         <PageHeader title="알림" />
       </SafeAreaView>
       {Array.from(notificationDates.keys()).map((date) => (
-        <View>
+        <View key={date}>
           <Text style={{ fontSize: 14, fontFamily: 'Apple', color: COLOR.sub3, marginLeft: 24 }}>
             {date}
           </Text>
@@ -31,10 +32,19 @@ const Notification = () => {
               }}
             >
               <View
-                style={{ width: 40, height: 40, borderRadius: 100, backgroundColor: COLOR.main4 }}
-              ></View>
+                style={{
+                  width: 40,
+                  height: 40,
+                  borderRadius: 100,
+                  backgroundColor: COLOR.main4,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}
+              >
+                <SocialIcon scaleX={0.9} scaleY={0.9}/>
+              </View>
               <Text
-                style={{ marginLeft: 14, fontSize: 16, fontFamily: 'Apple500', color: COLOR.sub1 }}
+                style={{ marginLeft: 14, fontSize: 12, fontFamily: 'Apple500', color: COLOR.sub1 }}
               >
                 {notification.content}
               </Text>

@@ -12,6 +12,17 @@ import { firebaseLogEvent } from '@libs/utils/event';
 import { Alert } from 'react-native';
 import { queryClient } from '../../../../../App';
 
+export const imageToBase64 = async (imageUri: string) => {
+  const asset = Asset.fromModule(imageUri);
+  await asset.downloadAsync();
+  if (!asset.localUri) return;
+  const base64String = await FileSystem.readAsStringAsync(asset.localUri, {
+    encoding: FileSystem.EncodingType.Base64,
+  });
+
+  return base64String;
+};
+
 const useProfile = () => {
   const [id, name, image, photo, isLoading, setState] = useSignupStore((state) => [
     state.id,
@@ -64,17 +75,6 @@ const useProfile = () => {
     if (base64) {
       signupMutate({ accountId: id, name: name, profileImgBase64: base64 });
     }
-  };
-
-  const imageToBase64 = async (imageUri: string) => {
-    const asset = Asset.fromModule(imageUri);
-    await asset.downloadAsync();
-    if (!asset.localUri) return;
-    const base64String = await FileSystem.readAsStringAsync(asset.localUri, {
-      encoding: FileSystem.EncodingType.Base64,
-    });
-
-    return base64String;
   };
 
   const setRandomImage = () => {
