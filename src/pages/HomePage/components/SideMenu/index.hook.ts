@@ -28,13 +28,6 @@ const useSideMenu = () => {
   const { onPress: onPressShare } = useLinkProps({ to: { screen: 'Share' } });
   const { onPress: onPressDeviceCalendar } = useLinkProps({ to: { screen: 'DeviceCalendar' } });
   const { onPress: navigateToMyPage } = useLinkProps({ to: { screen: 'MyPage' } });
-  const { mutate: deleteAccountMutate } = useMutation(() => deleteAccount(account.accountId), {
-    onSuccess: () => {
-      navigateToLoginAndResetHistory();
-      setState('isSideMenuOpen', false);
-      logoutAccount();
-    },
-  });
 
   useEffect(() => {
     if (Platform.OS === 'android') {
@@ -47,32 +40,6 @@ const useSideMenu = () => {
 
   const closeSideMenu = () => {
     setState('isSideMenuOpen', false);
-  };
-
-  const logout = () => {
-    Alert.alert('로그아웃 하시겠습니까?', '', [
-      {
-        text: '네',
-        onPress: () => {
-          navigateToLoginAndResetHistory();
-          setState('isSideMenuOpen', false);
-          logoutAccount();
-        },
-      },
-      { text: '아니오', onPress: () => {} },
-    ]);
-  };
-
-  const signout = () => {
-    Alert.alert('정말 탈퇴하시겠습니까?', '', [
-      {
-        text: '네',
-        onPress: () => {
-          deleteAccountMutate();
-        },
-      },
-      { text: '아니오', onPress: () => {} },
-    ]);
   };
 
   const menuItemList: SideMenuItem[] = useMemo(
@@ -114,7 +81,7 @@ const useSideMenu = () => {
   );
   return {
     state: { account, menuItemList },
-    actions: { closeSideMenu, logout, signout, navigateToMyPage },
+    actions: { closeSideMenu, navigateToMyPage },
   };
 };
 

@@ -49,6 +49,9 @@ const useDeviceCalendar = () => {
     const idList = deviceCalendar
       .filter((calendar) => calendarLinks[calendar.id])
       .map((calendar) => calendar.id);
+
+    if (idList.length === 0) return;
+    
     const events = await getEventsAsync(idList, first, last);
     const newCalendar = [...calendar];
 

@@ -154,15 +154,15 @@ const styles = StyleSheet.create({
   sunday: {
     color: '#FF99AA',
     fontSize:12,
-    fontFamily: 'Apple400',
+    fontFamily: 'Apple',
   },
   saturday: {
-    fontFamily: 'Apple400',
+    fontFamily: 'Apple',
     fontSize:12,
     color: '#8B9BFF',
   },
   weekday: {
-    fontFamily: 'Apple400',
+    fontFamily: 'Apple',
     fontSize:12,
     color: COLOR.sub25,
   },

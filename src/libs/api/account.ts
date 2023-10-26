@@ -4,13 +4,6 @@ import { useAccountStore } from 'store/account';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 // import CookieManager from '@react-native-cookies/cookies';
 
-// import Constants from 'expo-constants';
-// let CookieManager: any;
-
-// if (Constants.appOwnership !== 'expo') {
-//   CookieManager = require('@react-native-cookies/cookies').default;
-// }
-
 export type OAuthResponseDTO = Pick<Account, 'accountId' | 'email' | 'name' | 'status'> &
   AccessToken;
 export type SignupRequestDTO = Pick<Account, 'accountId' | 'name' | 'profileImgBase64'>;
@@ -50,7 +43,7 @@ export const initAccount = async (accountId: number, name: string, profileImgBas
 };
 
 export const getAccount = async (accountId: number) => {
-  return (await axiosInstance.get<Account>(`/accounts/${accountId}`)).data;
+  return (await axiosInstance.get<Account>(`/accounts/me`)).data;
 };
 
 export type DemoLoginResponseDTO = { accessToken: string };

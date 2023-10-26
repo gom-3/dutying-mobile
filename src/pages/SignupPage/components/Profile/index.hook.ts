@@ -87,6 +87,7 @@ const useProfile = () => {
     firebaseLogEvent('change_photo');
     try {
       const photo = await pickImage();
+      console.log(photo);
       if (photo) {
         setState('photo', photo);
       }

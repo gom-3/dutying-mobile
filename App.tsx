@@ -51,6 +51,11 @@ const registerForPushNotificationAsync = async () => {
     if (finalStatus !== 'granted') {
       Alert.alert('알림 권한을 가져오는데 실패했습니다.');
     }
+
+    if (Messaging().isDeviceRegisteredForRemoteMessages) {
+      await Messaging().registerDeviceForRemoteMessages();
+    }
+    
     token = await Messaging().getToken();
     useAccountStore.getState().setState('deviceToken', token);
 

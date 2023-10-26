@@ -36,9 +36,9 @@ const LoginPage = () => {
 
   const { mutate: demoLoginMutate } = useMutation(() => demoLogin(), {
     onSuccess: (data) => {
-      setState('account', demoLoginAccount);
+      setAccountId(2);
       axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${data.accessToken}`;
-      navigateHome();
+      console.log(data.accessToken);
     },
   });
 
@@ -51,6 +51,7 @@ const LoginPage = () => {
           }
         });
       } else {
+        // navigateSignup();
         demoLoginMutate();
       }
     }
@@ -69,7 +70,7 @@ const LoginPage = () => {
           setSignupState('id', data.accountId);
           navigateSignup();
         } else {
-          setAccountId(data.accountId);
+          setAccountId(1);
         }
       },
     },
@@ -78,6 +79,7 @@ const LoginPage = () => {
   useEffect(() => {
     if (accountData) {
       setState('account', accountData);
+      console.log(accountData);
       navigateHome();
     }
   }, [accountData]);
