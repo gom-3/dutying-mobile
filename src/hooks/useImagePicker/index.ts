@@ -12,8 +12,7 @@ const useImagePicker = () => {
       aspect: [1, 1],
       quality: 0.1,
     });
-    if (result.assets && result.assets[0].base64) {
-      setImage(result.assets[0].base64);
+    if (result.assets && result.assets[0]) {
       return result.assets[0].base64;
     }
   };

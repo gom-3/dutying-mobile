@@ -84,7 +84,7 @@ const useSummary = ({ collection }: Props) => {
       weeks,
       threeDates,
     },
-    actions: { pressShiftTypeHandler, setPage, pressDate, setState, setIndex,getIndexFromDate },
+    actions: { pressShiftTypeHandler, setPage, pressDate, setState, setIndex, getIndexFromDate },
   };
 };
 

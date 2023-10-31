@@ -28,7 +28,6 @@ const useCalendar = (isRender?: boolean) => {
     date.getFullYear(),
     date.getMonth(),
   ];
-
   const { data: shiftListResponse } = useQuery(
     getAccountShiftListKey,
     () => getAccountShiftList(userId, date.getFullYear(), date.getMonth()),

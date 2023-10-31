@@ -19,7 +19,6 @@ import * as Linking from 'expo-linking';
 import MoimEnterPage from './Social/Moim/MoimEnterPage';
 import WardPage from './Ward';
 import MyPage from './MyPage';
-// import Airbridge from 'airbridge-react-native-sdk';
 
 // Airbridge.deeplink.setDeeplinkListener((deeplink) => {
 //   // code that will run when app is opened with deep-link or deferred-deep-link
