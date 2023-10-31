@@ -8,6 +8,7 @@ import { useLinkProps } from '@react-navigation/native';
 import { useAccountStore } from 'store/account';
 import { firebaseLogEvent } from '@libs/utils/event';
 import { Alert } from 'react-native';
+import { queryClient } from '../../../../../App';
 
 const useProfile = () => {
   const [id, name, image, photo, isLoading, setState] = useSignupStore((state) => [

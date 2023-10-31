@@ -36,7 +36,7 @@ const RegistSchedulePage = () => {
     <PageViewContainer style={{ backgroundColor: COLOR.bg }}>
       <BottomSheetModalProvider>
         <SafeAreaView>
-          <KeyboardAvoidWrapper>
+          <KeyboardAvoidWrapper bounces={false}>
             <PageHeader
               backgroundColor={COLOR.bg}
               title={isEdit ? '일정 수정' : '일정 등록'}
