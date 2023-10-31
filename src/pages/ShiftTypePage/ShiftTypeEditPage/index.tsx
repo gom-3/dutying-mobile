@@ -18,7 +18,16 @@ import KeyboardAvoidWrapper from '@components/KeyboardAvoidWrapper';
 
 const ShiftTypeEditPage = () => {
   const {
-    states: { shift, usingTime, isEdit, workTypeList, offTypeList, isValid },
+    states: {
+      shift,
+      usingTime,
+      isEdit,
+      workTypeList,
+      offTypeList,
+      isWorkTypeShift,
+      isValid,
+      isDefaultShiftType,
+    },
     actions: {
       setIsValid,
       onChangeSwith,
@@ -39,10 +48,10 @@ const ShiftTypeEditPage = () => {
           <KeyboardAvoidWrapper>
             <PageHeader
               title={isEdit ? '근무 유형 수정' : '근무 유형 등록'}
-              titleMargin={isEdit ? 38 : 0}
+              titleMargin={isEdit && !isDefaultShiftType ? 38 : 0}
               rightItems={
                 <View style={styles.headerIcons}>
-                  {isEdit && (
+                  {isEdit && !isDefaultShiftType && (
                     <Pressable style={styles.trashIcon} onPress={onPressDeleteButton}>
                       <TrashIcon />
                     </Pressable>
@@ -107,7 +116,7 @@ const ShiftTypeEditPage = () => {
                 <TypeIcon />
                 <Text style={styles.itemHeaderText}>유형</Text>
               </View>
-              {shift.classification !== 'OTHER_WORK' && shift.classification !== 'OTHER_LEAVE' && (
+              {isDefaultShiftType && (
                 <View
                   style={{
                     width: 60,
@@ -122,12 +131,15 @@ const ShiftTypeEditPage = () => {
                   }}
                 >
                   <Text style={{ fontFamily: 'Apple500', fontSize: 16, color: COLOR.main1 }}>
-                    {workTypeList.find((type) => type.key === shift.classification)?.text}
+                    {
+                      workTypeList
+                        .concat(offTypeList)
+                        .find((type) => type.key === shift.classification)?.text
+                    }
                   </Text>
                 </View>
               )}
-              {(shift.classification === 'OTHER_WORK' ||
-                shift.classification === 'OTHER_LEAVE') && (
+              {!isDefaultShiftType && (
                 <View style={{ flexDirection: 'row', marginTop: 20 }}>
                   <Pressable
                     onPress={() => onPressShiftType('OTHER_WORK')}
@@ -177,33 +189,35 @@ const ShiftTypeEditPage = () => {
                 </View>
               )}
             </View>
-            <View style={styles.itemContainer}>
-              <View style={styles.itemTimeHeader}>
-                <View style={{ flexDirection: 'row' }}>
-                  <TimeIcon />
-                  <Text style={styles.itemHeaderText}>근무 시간</Text>
-                </View>
-                <Switch
-                  trackColor={{ true: COLOR.main1 }}
-                  thumbColor="white"
-                  value={usingTime}
-                  onValueChange={onChangeSwith}
-                />
-              </View>
-              <View style={{ flexDirection: 'row' }}>
-                {shift.startTime && (
-                  <DatePicker
-                    style={{ marginRight: 11 }}
-                    mode="time"
-                    date={shift.startTime}
-                    onChange={changeStartTime}
+            {isWorkTypeShift && (
+              <View style={styles.itemContainer}>
+                <View style={styles.itemTimeHeader}>
+                  <View style={{ flexDirection: 'row' }}>
+                    <TimeIcon />
+                    <Text style={styles.itemHeaderText}>근무 시간</Text>
+                  </View>
+                  <Switch
+                    trackColor={{ true: COLOR.main1 }}
+                    thumbColor="white"
+                    value={usingTime}
+                    onValueChange={onChangeSwith}
                   />
-                )}
-                {shift.endTime && (
-                  <DatePicker mode="time" date={shift.endTime} onChange={changeEndTime} />
-                )}
+                </View>
+                <View style={{ flexDirection: 'row' }}>
+                  {shift.startTime && (
+                    <DatePicker
+                      style={{ marginRight: 11 }}
+                      mode="time"
+                      date={shift.startTime}
+                      onChange={changeStartTime}
+                    />
+                  )}
+                  {shift.endTime && (
+                    <DatePicker mode="time" date={shift.endTime} onChange={changeEndTime} />
+                  )}
+                </View>
               </View>
-            </View>
+            )}
             <View style={styles.itemContainer}>
               <View style={styles.itemHeader}>
                 <ColorIcon />

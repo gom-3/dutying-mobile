@@ -10,7 +10,6 @@ import { useEffect, useRef, useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { deleteAccount, editProfile } from '@libs/api/account';
 import { images } from '@assets/images/profiles';
-import { imageToBase64 } from '@pages/SignupPage/components/Profile/index.hook';
 import RandomIcon from '@assets/svgs/random.svg';
 import CameraIcon from '@assets/svgs/camera.svg';
 import OutsidePressHandler from 'react-native-outside-press';
@@ -32,7 +31,6 @@ const MyPage = () => {
   const [name, setName] = useState(account.name);
   const [profile, setProfile] = useState(account.profileImgBase64);
   const textRef = useRef<TextInput>(null);
-
   const {
     actions: { pickImage },
   } = useImagePicker();
@@ -64,18 +62,17 @@ const MyPage = () => {
   });
 
   const setRandomImage = async () => {
-    const image = (await imageToBase64(images[Math.floor(Math.random() * 30)])) || profile;
-    setProfile(image);
-    editProfileMutate(image);
+    const randomimage = images[Math.floor(Math.random() * 30)] || profile;
+    setProfile(randomimage);
+    editProfileMutate(randomimage);
   };
 
   const setPhotoImage = async () => {
     try {
       const photo = await pickImage();
       if (photo) {
-        const image = (await imageToBase64(photo)) || profile;
-        setProfile(image);
-        editProfileMutate(image);
+        setProfile(photo);
+        editProfileMutate(photo);
       }
     } catch {
       Alert.alert('사진 업로드에 실패했습니다.');

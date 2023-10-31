@@ -2,7 +2,7 @@ import { useRef, useState } from 'react';
 import { createEventAsync, updateEventAsync, Event, deleteEventAsync } from 'expo-calendar';
 import { useCaledarDateStore } from 'store/calendar';
 import { useNavigation } from '@react-navigation/native';
-import { Keyboard, ScrollView } from 'react-native';
+import { Keyboard, Platform, ScrollView } from 'react-native';
 import { useScheduleStore } from 'store/schedule';
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
 
@@ -45,8 +45,12 @@ const useRegistSchedule = () => {
     alarms,
     recurrenceRule,
     title,
-    startDate,
-    endDate,
+    startDate: isAllday && Platform.OS === 'android'
+      ? new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate() + 1)
+      : startDate,
+    endDate: isAllday && Platform.OS === 'android'
+      ? new Date(endDate.getFullYear(), endDate.getMonth(), endDate.getDate() + 2)
+      : endDate,
     notes,
   };
 

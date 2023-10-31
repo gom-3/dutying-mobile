@@ -17,6 +17,7 @@ interface TypeList {
 }
 
 const defaultClassification = ['DAY', 'EVENING', 'NIGHT', 'OFF'];
+const workClassification = ['DAY', 'EVENING', 'NIGHT', 'OTHER_WORK'];
 
 const workTypeList: TypeList[] = [
   { text: '데이', key: 'DAY' },
@@ -42,8 +43,8 @@ const useShiftTypeEdit = () => {
   const [isValid, setIsValid] = useState({ name: true, shortName: true });
   const navigation = useNavigation();
   const queryClient = useQueryClient();
-
-
+  const isWorkTypeShift = workClassification.includes(shift.classification);
+  const isDefaultShiftType = shift.classification !== 'OTHER_WORK' && shift.classification !== 'OTHER_LEAVE';
   const onSuccessMutate = () => {
     queryClient.invalidateQueries(['getShiftTypes', userId]);
     queryClient.refetchQueries(['getShiftTypes', userId]);
@@ -157,9 +158,8 @@ const useShiftTypeEdit = () => {
       }
     }
   };
-
   return {
-    states: { shift, isEdit, usingTime, workTypeList, offTypeList, isValid },
+    states: { shift, isEdit, isWorkTypeShift, usingTime, workTypeList, offTypeList, isValid,isDefaultShiftType },
     actions: {
       onChangeSwith,
       changeStartTime,

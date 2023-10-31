@@ -21,7 +21,7 @@ const PageViewContainer = ({ children, withoutLogin, style }: Props) => {
     if (Constants.appOwnership !== 'expo') {
       if (account.accountId === 0 && !withoutLogin) setTimeout(() => navigateToLoginAndResetHistory(), 100);
     } else {
-      setState('account', demoLoginAccount);
+      // setState('account', demoLoginAccount);
     }
   }, [account.accountId]);
 

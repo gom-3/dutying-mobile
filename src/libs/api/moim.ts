@@ -1,5 +1,6 @@
 import { yearMonthToDateString } from '@libs/utils/date';
 import axiosInstance from './client';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 
 // 모임 만들기

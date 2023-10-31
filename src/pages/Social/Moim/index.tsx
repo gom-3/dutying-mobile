@@ -31,7 +31,7 @@ const MoimPage = () => {
   const renderBackdrop = useCallback((props: any) => <BottomSheetBackdrop {...props} />, []);
   const {
     states: { moimList, createRef, isValid, moimNameRef, isLoading, isRefetching, createLoading },
-    actions: { pressMoimCard, pressCheck, navigateMoimEnter, setIsValid },
+    actions: { pressMoimCard, pressCheck, navigateMoimEnter, setIsValid, closeBottomSheet },
   } = useMoimPage();
 
   return (
@@ -125,17 +125,17 @@ const MoimPage = () => {
           snapPoints={[100, 300]}
           keyboardBehavior="interactive"
           onChange={(index) => {
-            if (index !== 1) createRef.current?.close();
+            if (index !== 1) closeBottomSheet();
           }}
         >
           <View style={{ padding: 14 }}>
             <BottomSheetHeader
               title="모임 생성하기"
-              onPressExit={() => createRef.current?.close()}
+              onPressExit={() => closeBottomSheet()}
               rightItems={
-                <Pressable onPress={pressCheck}>
+                <TouchableOpacity onPress={pressCheck}>
                   <CheckIcon />
-                </Pressable>
+                </TouchableOpacity>
               }
             />
             <View style={{ padding: 10 }}>

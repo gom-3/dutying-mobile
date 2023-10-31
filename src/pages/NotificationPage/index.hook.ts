@@ -18,8 +18,6 @@ const useNotificationPage = () => {
       }
     });
   }
-  console.log(notifications);
-  console.log(notificationDates);
 
   return { states: { notificationDates }, actions: {} };
 };

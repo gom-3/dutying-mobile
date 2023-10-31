@@ -70,7 +70,7 @@ const ScheduleCard = ({ isCardOpen }: Props) => {
           }}
         >
           {item?.schedules.map((schedule) => (
-            <TouchableOpacity key={schedule.id} onPress={() => editSchedulePressHandler(schedule)}>
+            <TouchableOpacity activeOpacity={schedule.editbale ? 0.2 : 1} key={schedule.id} onPress={() => editSchedulePressHandler(schedule)}>
               <View key={schedule.title} style={styles.scheduleView}>
                 <View
                   style={[
@@ -98,9 +98,9 @@ const ScheduleCard = ({ isCardOpen }: Props) => {
             </TouchableOpacity>
           ))}
         </ScrollView>
-        <Pressable style={styles.addButtonIcon} onPress={addSchedulePressHandler}>
-          <AddButtonIcon />
-        </Pressable>
+        <TouchableOpacity activeOpacity={0.4} style={styles.addButtonIcon} onPress={addSchedulePressHandler}>
+          <AddButtonIcon width={50} height={50}/>
+        </TouchableOpacity>
       </View>
     );
   };

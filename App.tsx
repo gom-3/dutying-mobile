@@ -14,13 +14,20 @@ import { useAccountStore } from './src/store/account';
 import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
 import Messaging from '@react-native-firebase/messaging';
-import * as Sentry from "@sentry/react-native";
+import * as Sentry from '@sentry/react-native';
+// import Airbridge from 'airbridge-react-native-sdk';
+// import analytics from '@react-native-firebase/analytics';
+
+// const appInstanceId = await analytics().getAppInstanceId();
+// if (appInstanceId) {
+//   Airbridge.state.setDeviceAlias('ga4_app_instance_id', appInstanceId);
+//   Airbridge.state.startTracking();
+// }
 
 Sentry.init({
-  dsn: "https://93ddd999daaaa867ad39989278a40c0b@o4505477969084416.ingest.sentry.io/4506099006898176",
+  dsn: 'https://93ddd999daaaa867ad39989278a40c0b@o4505477969084416.ingest.sentry.io/4506099006898176',
   tracesSampleRate: 1.0,
-})
-
+});
 
 const registerForPushNotificationAsync = async () => {
   if (Device.isDevice) {
@@ -55,10 +62,9 @@ const registerForPushNotificationAsync = async () => {
     if (Messaging().isDeviceRegisteredForRemoteMessages) {
       await Messaging().registerDeviceForRemoteMessages();
     }
-    
+
     token = await Messaging().getToken();
     useAccountStore.getState().setState('deviceToken', token);
-
   }
 };
 
@@ -89,7 +95,6 @@ export default function App() {
       NavigationBar.setButtonStyleAsync('dark');
     }
     registerForPushNotificationAsync();
-
   }, []);
 
   useAppState(onAppStateChange);

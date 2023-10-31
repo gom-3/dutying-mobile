@@ -6,22 +6,8 @@ import { useMutation } from '@tanstack/react-query';
 import { SignupRequestDTO, initAccount } from '@libs/api/account';
 import { useLinkProps } from '@react-navigation/native';
 import { useAccountStore } from 'store/account';
-import * as FileSystem from 'expo-file-system';
-import { Asset } from 'expo-asset';
 import { firebaseLogEvent } from '@libs/utils/event';
 import { Alert } from 'react-native';
-import { queryClient } from '../../../../../App';
-
-export const imageToBase64 = async (imageUri: string) => {
-  const asset = Asset.fromModule(imageUri);
-  await asset.downloadAsync();
-  if (!asset.localUri) return;
-  const base64String = await FileSystem.readAsStringAsync(asset.localUri, {
-    encoding: FileSystem.EncodingType.Base64,
-  });
-
-  return base64String;
-};
 
 const useProfile = () => {
   const [id, name, image, photo, isLoading, setState] = useSignupStore((state) => [
@@ -40,17 +26,6 @@ const useProfile = () => {
   const [photoPressed, setPhotoPressed] = useState(false);
 
   const { onPress: navigateToHome } = useLinkProps({ to: { screen: 'Onboarding' } });
-
-  // const { mutate: changeAccountStatusMutate } = useMutation(
-  //   () => changeAccountStatus(id, 'NURSE_INFO_PENDING'),
-  //   {
-  //     onSuccess: (data) => {
-  //       navigateToHome();
-  //       console.log(data);
-  //       queryClient.invalidateQueries(['getShiftTypes', id]);
-  //     },
-  //   },
-  // );
 
   const { mutate: signupMutate } = useMutation(
     ({ accountId, name, profileImgBase64 }: SignupRequestDTO) =>
@@ -71,9 +46,8 @@ const useProfile = () => {
     setState('isLoading', true);
     firebaseLogEvent('signup');
     const profile = photo ? photo : image;
-    const base64 = await imageToBase64(profile);
-    if (base64) {
-      signupMutate({ accountId: id, name: name, profileImgBase64: base64 });
+    if (profile) {
+      signupMutate({ accountId: id, name: name, profileImgBase64: profile });
     }
   };
 
@@ -87,7 +61,6 @@ const useProfile = () => {
     firebaseLogEvent('change_photo');
     try {
       const photo = await pickImage();
-      console.log(photo);
       if (photo) {
         setState('photo', photo);
       }

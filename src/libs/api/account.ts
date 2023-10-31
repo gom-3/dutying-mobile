@@ -2,7 +2,7 @@ import axios from 'axios';
 import axiosInstance, { API_URL, AccessToken } from './client';
 import { useAccountStore } from 'store/account';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-// import CookieManager from '@react-native-cookies/cookies';
+import CookieManager from '@react-native-cookies/cookies';
 
 export type OAuthResponseDTO = Pick<Account, 'accountId' | 'email' | 'name' | 'status'> &
   AccessToken;
@@ -18,9 +18,9 @@ export const oAuthLogin = async (idToken: string, provider: string, deviceToken:
   ).data;
   useAccountStore.getState().setState('accessToken', data.accessToken);
   axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${data.accessToken}`;
-  // const { refreshToken } = await CookieManager.get(API_URL);
-  // AsyncStorage.setItem('refresh', refreshToken.value);
-  // AsyncStorage.setItem('refreshExpires', refreshToken.expires || '');
+  const { refreshToken } = await CookieManager.get(API_URL);
+  AsyncStorage.setItem('refresh', refreshToken.value);
+  AsyncStorage.setItem('refreshExpires', refreshToken.expires || '');
   return data;
 };
 
@@ -49,7 +49,7 @@ export const getAccount = async (accountId: number) => {
 export type DemoLoginResponseDTO = { accessToken: string };
 
 export const demoLogin = async () => {
-  return (await axios.get<DemoLoginResponseDTO>(`${API_URL}/demo/login?email=test@demotest.dutyin`))
+  return (await axios.post<DemoLoginResponseDTO>(`${API_URL}/demo/login?email=test@demotest.dutyin`))
     .data;
 };
 

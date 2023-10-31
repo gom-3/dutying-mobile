@@ -35,7 +35,10 @@ export const useAccountStore = createWithEqualityFn<Store>()(
         accessToken: '',
         deviceToken: null,
         setState: (state, value) => set((prev) => ({ ...prev, [state]: value })),
-        logout: () => set(() => ({ account: initialAccount })),
+        logout: () =>
+          set((prev) => {
+            return { ...prev, accessToken: '', account: initialAccount };
+          }),
       }),
       { name: 'useAccountStore', storage: createJSONStorage(() => AsyncStorage) },
     ),

@@ -18,27 +18,34 @@ import * as AppleAuthentication from 'expo-apple-authentication';
 import { useEffect, useState } from 'react';
 import { screenHeight, screenWidth } from 'index.style';
 import { KakaoOAuthToken, login } from '@react-native-seoul/kakao-login';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { demoLogin, getAccount, oAuthLogin } from '@libs/api/account';
 import { useSignupStore } from '@pages/SignupPage/store';
 import { firebaseLogEvent } from '@libs/utils/event';
-import { demoLoginAccount } from '@mocks/account';
 import axiosInstance from '@libs/api/client';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as NavigationBar from 'expo-navigation-bar';
 
 const LoginPage = () => {
   const { onPress: navigateHome } = useLinkProps({ to: { screen: 'Home' } });
   const { onPress: navigateSignup } = useLinkProps({ to: { screen: 'Signup' } });
   const { onPress: navigateTerm } = useLinkProps({ to: { screen: 'Term' } });
-  const [deviceToken, setState] = useAccountStore((state) => [state.deviceToken, state.setState]);
+  const [deviceToken, setState, account] = useAccountStore((state) => [
+    state.deviceToken,
+    state.setState,
+    state.account,
+  ]);
   const [setSignupState] = useSignupStore((state) => [state.setState]);
   const [accountId, setAccountId] = useState(0);
   const [click, setClick] = useState(0);
+  const queryClient = useQueryClient();
 
   const { mutate: demoLoginMutate } = useMutation(() => demoLogin(), {
     onSuccess: (data) => {
       setAccountId(2);
+      queryClient.invalidateQueries(['getAccount', 2]);
+      AsyncStorage.setItem('access', data.accessToken);
       axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${data.accessToken}`;
-      console.log(data.accessToken);
     },
   });
 
@@ -51,7 +58,7 @@ const LoginPage = () => {
           }
         });
       } else {
-        // navigateSignup();
+        navigateSignup();
         demoLoginMutate();
       }
     }
@@ -71,6 +78,7 @@ const LoginPage = () => {
           navigateSignup();
         } else {
           setAccountId(1);
+          queryClient.invalidateQueries(['getAccount', 1]);
         }
       },
     },
@@ -79,7 +87,6 @@ const LoginPage = () => {
   useEffect(() => {
     if (accountData) {
       setState('account', accountData);
-      console.log(accountData);
       navigateHome();
     }
   }, [accountData]);
@@ -87,8 +94,12 @@ const LoginPage = () => {
   useEffect(() => {
     const backAction = () => true;
     const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction);
+    if (Platform.OS === 'android') NavigationBar.setVisibilityAsync('hidden');
 
-    return backHandler.remove();
+    return () => {
+      backHandler.remove();
+      if (Platform.OS === 'android') NavigationBar.setVisibilityAsync('visible');
+    };
   }, []);
 
   const onPressKakaoLogin = async () => {
@@ -105,16 +116,9 @@ const LoginPage = () => {
         AppleAuthentication.AppleAuthenticationScope.EMAIL,
       ],
     });
+    setSignupState('name', '' + token.fullName?.familyName + token.fullName?.givenName);
     oAuthLoginMutate({ idToken: token.identityToken || '', provider: 'apple' });
   };
-  // const link = async () => {
-  //   const result = await Share.share({
-  //     message: 'is Sharing',
-  //     url: 'dutying://login',
-  //     title: 'dutying://login',
-  //   });
-  //   console.log(result);
-  // };
 
   return (
     <PageViewContainer withoutLogin>
