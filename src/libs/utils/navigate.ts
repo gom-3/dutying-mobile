@@ -5,6 +5,7 @@ export type StackParams = {
   Login: undefined;
   Signup: undefined;
   Home: undefined;
+  MyPage: undefined;
   Group: undefined;
   RegistDuty: undefined;
   RegistSchedule: undefined;

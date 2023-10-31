@@ -1,4 +1,4 @@
-import { Text, TextInput, Pressable, StyleSheet, Platform, View } from 'react-native';
+import { Text, TextInput, Pressable, StyleSheet, Platform, View, TouchableOpacity } from 'react-native';
 import CheckIcon from '@assets/svgs/check.svg';
 import { COLOR, screenHeight, screenWidth } from 'index.style';
 import Time from './components/Time';
@@ -44,13 +44,13 @@ const RegistSchedulePage = () => {
               rightItems={
                 <View style={styles.headerIcons}>
                   {isEdit && (
-                    <Pressable style={styles.trashIcon} onPress={deleteEvent}>
+                    <TouchableOpacity style={styles.trashIcon} onPress={deleteEvent}>
                       <TrashIcon />
-                    </Pressable>
+                    </TouchableOpacity>
                   )}
-                  <Pressable onPress={isEdit ? updateEvent : createEvent}>
+                  <TouchableOpacity onPress={isEdit ? updateEvent : createEvent}>
                     <CheckIcon />
-                  </Pressable>
+                  </TouchableOpacity>
                 </View>
               }
             />

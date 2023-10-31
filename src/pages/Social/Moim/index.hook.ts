@@ -5,7 +5,6 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useRef, useState } from 'react';
 import { useAccountStore } from 'store/account';
 import { useMoimStore } from './store';
-import { TextInput } from 'react-native';
 
 const useMoimPage = () => {
   const [accountId] = useAccountStore((state) => [state.account.accountId]);
@@ -23,7 +22,7 @@ const useMoimPage = () => {
       onSuccess: () => {
         queryClient.invalidateQueries(['getMoimList', accountId]);
         queryClient.refetchQueries(['getMoimList', accountId]);
-        createRef.current?.close();
+        closeBottomSheet();
       },
       onError: () => {
         setIsValid(false);
@@ -31,6 +30,11 @@ const useMoimPage = () => {
 
     },
   );
+
+  const closeBottomSheet = () => {
+    createRef.current?.close();
+    moimNameRef.current = '';
+  };
 
   const pressCheck = () => {
     createMoimMutate();
@@ -51,7 +55,7 @@ const useMoimPage = () => {
   return {
     states: { createLoading, isValid, createRef, moimList, moimNameRef, isLoading, isRefetching },
 
-    actions: { setIsValid, pressMoimCard, pressCheck, navigateMoimEnter },
+    actions: { setIsValid, pressMoimCard, pressCheck, navigateMoimEnter, closeBottomSheet },
   };
 };
 

@@ -38,6 +38,18 @@ const useRegistDuty = (dateFrom?: string) => {
   const navigation = useNavigation();
   const queryClient = useQueryClient();
 
+  const shiftTypeButtons = useMemo(() => {
+    const array: (Shift | null)[] = Array.from(shiftTypes.values());
+    const result: (Shift | null)[][] = [];
+
+    for (let i = 0; i < array.length; i += 4) {
+      let chunk = array.slice(i, i + 4);
+      if (chunk.length < 4) chunk = chunk.concat(Array.from({ length: 4 - chunk.length }, () => null));
+      result.push(chunk);
+    }
+    return result;
+  }, []);
+
   const { mutate: editAccountShiftListMutate } = useMutation(
     (shiftList: AccountShiftListRequestDTO) => editAccountShiftList(userId, shiftList),
     {
@@ -156,10 +168,10 @@ const useRegistDuty = (dateFrom?: string) => {
     newArray[index] = newValue;
     setTempCalendar(newArray);
     if (
-      tempCalendar[index + 1] &&
-      tempCalendar[index + 1].date.getMonth() === tempCalendar[index].date.getMonth()
+      tempCalendar[index - 1] &&
+      tempCalendar[index - 1].date.getMonth() === tempCalendar[index].date.getMonth()
     ) {
-      setIndex(index + 1);
+      setIndex(index - 1);
     }
   };
 
@@ -190,6 +202,8 @@ const useRegistDuty = (dateFrom?: string) => {
     setTempCalendar(registCalendar);
   }, [registCalendar]);
 
+  console.log(shiftTypeButtons);
+
   return {
     state: {
       date,
@@ -197,6 +211,7 @@ const useRegistDuty = (dateFrom?: string) => {
       selectedDate,
       shiftTypes,
       shiftTypesCount,
+      shiftTypeButtons,
     },
     actions: {
       insertShift,

@@ -7,16 +7,14 @@ const useImagePicker = () => {
     // No permissions request is necessary for launching the image library
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      base64: true,
       allowsEditing: true,
       aspect: [1, 1],
-      quality: 0,
+      quality: 0.1,
     });
-
-    if (result.assets && result.assets[0].fileSize) {
-      if (result.assets[0].fileSize > 2 * 1024 * 1024)
-        throw new Error('선택한 이미지의 용량이 너무 큽니다');
-      setImage(result.assets[0].uri);
-      return result.assets[0].uri;
+    if (result.assets && result.assets[0].base64) {
+      setImage(result.assets[0].base64);
+      return result.assets[0].base64;
     }
   };
 

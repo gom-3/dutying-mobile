@@ -35,9 +35,9 @@ const Profile = () => {
       </View>
       <View style={styles.imageContainer}>
         {photo ? (
-          <Image source={{ uri: photo }} style={styles.image} />
+          <Image source={{ uri: `data:image/png;base64,${photo}` }} style={styles.image} />
         ) : (
-          <Image source={image} style={styles.image} />
+          <Image source={{ uri: `data:image/png;base64,${image}` }} style={styles.image} />
         )}
       </View>
       <View style={styles.buttonContainer}>

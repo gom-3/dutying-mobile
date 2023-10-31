@@ -1,6 +1,6 @@
 import { BottomSheetBackdrop, BottomSheetModal } from '@gorhom/bottom-sheet';
 import { useCallback, useRef } from 'react';
-import { Platform, Pressable, StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
+import { Keyboard, Platform, Pressable, StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
 import DateTimePicker, {
   DateTimePickerAndroid,
   DateTimePickerEvent,
@@ -22,6 +22,7 @@ const DatePicker = ({ date, mode, text, style, onChange }: Props) => {
   const renderBackdrop = useCallback((props: any) => <BottomSheetBackdrop {...props} />, []);
 
   const onPressTime = () => {
+    Keyboard.dismiss();
     const androidMode = mode === 'datetime' ? 'date' : mode;
     if (Platform.OS === 'android') {
       DateTimePickerAndroid.open({

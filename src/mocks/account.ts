@@ -1,8 +1,8 @@
 export const demoLoginAccount: Account = {
-  accountId: 46,
+  accountId: 190,
   email: 'test@demotest.dutyin',
   isManager: false,
-  name: '모바일테스터',
+  name: '데모계정2',
   nurseId: 0,
   shiftTeamId: 0,
   status: 'NURSE_INFO_PENDING',

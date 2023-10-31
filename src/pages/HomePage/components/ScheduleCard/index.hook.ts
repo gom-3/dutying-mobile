@@ -6,7 +6,7 @@ import { Schedule } from '@hooks/useDeviceCalendar';
 import { firebaseLogEvent } from '@libs/utils/event';
 import { useEffect, useRef } from 'react';
 import { isSameDate } from '@libs/utils/date';
-import { Platform } from 'react-native';
+import { BackHandler, Platform } from 'react-native';
 import * as NavigationBar from 'expo-navigation-bar';
 
 const useScheduleCard = () => {
@@ -54,9 +54,11 @@ const useScheduleCard = () => {
   };
 
   const editSchedulePressHandler = (schedule: Schedule) => {
-    firebaseLogEvent('move_edit_schedule');
-    initStateEdit(schedule);
-    onPressEditScheduleButton();
+    if (schedule.editbale) {
+      firebaseLogEvent('move_edit_schedule');
+      initStateEdit(schedule);
+      onPressEditScheduleButton();
+    }
   };
 
   const changeDate = (index: number) => {
@@ -69,12 +71,17 @@ const useScheduleCard = () => {
     carouselRef?.current?.scrollTo({ index, animated: false });
   }, [calendar]);
 
-  useEffect(()=>{
+  useEffect(() => {
     if (Platform.OS === 'android') {
       NavigationBar.setVisibilityAsync('hidden');
     }
+    const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
+      setState('isCardOpen', false);
+      return true;
+    });
     return () => {
       if (Platform.OS === 'android') NavigationBar.setVisibilityAsync('visible');
+      backHandler.remove();
     };
   }, []);
 

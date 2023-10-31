@@ -60,7 +60,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
     height: 16,
   },
-  shiftShoftNameText: { color: 'white', position: 'absolute', top: 3, right: 4, fontSize: 9 },
+  shiftShoftNameText: { color: 'white', position: 'absolute', top: 3, right: 4, fontSize: 10 },
   shiftFullNameView: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center' },
   shiftInitialText: { color: 'white', fontFamily: 'Poppins500', fontSize: 14, height: 20 },
   shiftFullNameText: { color: 'white', fontFamily: 'Apple', fontSize: 10 },

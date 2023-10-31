@@ -4,13 +4,6 @@ import { useAccountStore } from 'store/account';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import CookieManager from '@react-native-cookies/cookies';
 
-// import Constants from 'expo-constants';
-// let CookieManager: any;
-
-// if (Constants.appOwnership !== 'expo') {
-//   CookieManager = require('@react-native-cookies/cookies').default;
-// }
-
 export type OAuthResponseDTO = Pick<Account, 'accountId' | 'email' | 'name' | 'status'> &
   AccessToken;
 export type SignupRequestDTO = Pick<Account, 'accountId' | 'name' | 'profileImgBase64'>;
@@ -31,6 +24,15 @@ export const oAuthLogin = async (idToken: string, provider: string, deviceToken:
   return data;
 };
 
+export const editProfile = async (name: string, profileImgBase64: string, accountId: number) => {
+  return (
+    await axiosInstance.put<Account>(`/accounts/${accountId}`, {
+      name,
+      profileImgBase64,
+    })
+  ).data;
+};
+
 export const initAccount = async (accountId: number, name: string, profileImgBase64: string) => {
   return (
     await axiosInstance.patch<Account>(`/accounts/${accountId}/init`, {
@@ -41,13 +43,13 @@ export const initAccount = async (accountId: number, name: string, profileImgBas
 };
 
 export const getAccount = async (accountId: number) => {
-  return (await axiosInstance.get<Account>(`/accounts/${accountId}`)).data;
+  return (await axiosInstance.get<Account>(`/accounts/me`)).data;
 };
 
 export type DemoLoginResponseDTO = { accessToken: string };
 
 export const demoLogin = async () => {
-  return (await axios.get<DemoLoginResponseDTO>(`${API_URL}/demo/login?email=test@demotest.dutyin`))
+  return (await axios.post<DemoLoginResponseDTO>(`${API_URL}/demo/login?email=test@demotest.dutyin`))
     .data;
 };
 

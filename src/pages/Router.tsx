@@ -18,6 +18,7 @@ import { Stack, StackParams, navigationRef } from '@libs/utils/navigate';
 import * as Linking from 'expo-linking';
 import MoimEnterPage from './Social/Moim/MoimEnterPage';
 import WardPage from './Ward';
+import MyPage from './MyPage';
 // import Airbridge from 'airbridge-react-native-sdk';
 
 // Airbridge.deeplink.setDeeplinkListener((deeplink) => {
@@ -48,6 +49,7 @@ const Router = () => {
         <Stack.Screen name="Term" component={Term} />
         <Stack.Screen name="Signup" component={SignupPage} />
         <Stack.Screen name="Home" component={HomePage} options={{ gestureEnabled: false }} />
+        <Stack.Screen name="MyPage" component={MyPage} />
         <Stack.Screen
           name="Moim"
           component={MoimPage}

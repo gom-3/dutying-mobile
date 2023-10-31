@@ -4,14 +4,8 @@ import { useAccountStore } from 'store/account';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import CookieManager from '@react-native-cookies/cookies';
 import { Alert } from 'react-native';
-// import Constants from 'expo-constants';
-// let CookieManager: any;
 
-// if (Constants.appOwnership !== 'expo') {
-//   CookieManager = require('@react-native-cookies/cookies').default;
-// }
-
-export const API_URL = 'https://dev.api.dutying.net';
+export const API_URL = 'https://api.dutying.net';
 
 const axiosInstance = axios.create({
   baseURL: API_URL,
@@ -24,13 +18,6 @@ axiosInstance.interceptors.response.use(
   (response) => response,
   async (error) => {
     if (error.response) {
-      console.log(error);
-      if (error.response.status === 400) {
-        throw {
-          code: '400',
-          message: '400',
-        };
-      }
       if (error.response.status === 401) {
         try {
           // refreshToken Check
@@ -49,7 +36,6 @@ axiosInstance.interceptors.response.use(
               expires: refreshTokenExpires || '',
             });
           }
-
           // refresh
           const accessToken = await refresh();
           const originalRequest = error.config;
@@ -58,18 +44,10 @@ axiosInstance.interceptors.response.use(
         } catch {
           navigate('Login');
         }
-      }
-      if (error.response.status === 403) {
-        return {
-          code: '403',
-          message: '403',
-        };
-      }
-      if (error.response.status === 404) {
-        return {
-          code: '404',
-          message: '404',
-        };
+      } else {
+        Alert.alert(
+          error.response.data ? error.response.data.message : '서버에서 에러가 발생했습니다.',
+        );
       }
       if (error.response.status === 500) {
         Alert.alert('서버 오류가 발생했습니다.');

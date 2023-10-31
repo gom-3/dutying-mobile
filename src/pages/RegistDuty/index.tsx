@@ -18,7 +18,7 @@ const RegistDuty = () => {
   const { params } = route;
   const dateFrom = params ? params.dateFrom : undefined;
   const {
-    state: { date, weeks, selectedDate, shiftTypes, shiftTypesCount },
+    state: { date, weeks, selectedDate, shiftTypes, shiftTypesCount, shiftTypeButtons },
     actions: {
       insertShift,
       deleteShift,
@@ -36,9 +36,9 @@ const RegistDuty = () => {
           <PageHeader
             title="근무 등록"
             rightItems={
-              <Pressable onPress={saveRegistDutyChange}>
+              <TouchableOpacity onPress={saveRegistDutyChange}>
                 <CheckIcon />
-              </Pressable>
+              </TouchableOpacity>
             }
           />
           <View style={{ flexDirection: 'row', justifyContent: 'space-between', padding: 22 }}>
@@ -51,7 +51,7 @@ const RegistDuty = () => {
                   style={[
                     styles.dayText,
                     {
-                      color: day === '일' ? 'red' : day === '토' ? 'blue' : 'black',
+                      color: day === '일' ? '#FF99AA' : day === '토' ? '#8B9BFF' : COLOR.sub25,
                     },
                   ]}
                 >
@@ -116,27 +116,34 @@ const RegistDuty = () => {
                 </TouchableOpacity>
               </View>
             </View>
-            <View style={styles.registShiftItemsView}>
-              {Array.from(shiftTypes.values()).map((shift) => (
-                <TouchableOpacity
-                  activeOpacity={0.7}
-                  key={shift.name}
-                  onPress={() => insertShift(shift.accountShiftTypeId)}
-                  delayLongPress={700}
-                  onLongPress={() => longPressShift(shift)}
-                >
-                  <View style={styles.shiftItemView}>
-                    <Text style={styles.shiftCountText}>
-                      {shiftTypesCount.get(shift.accountShiftTypeId) || 0}
-                    </Text>
-                    <View style={[styles.shiftView, { backgroundColor: shift.color }]}>
-                      <Text style={styles.shiftShortNameText}>{shift.shortName}</Text>
-                      <Text style={styles.shiftFullNameText}>{shift.name}</Text>
-                    </View>
-                  </View>
-                </TouchableOpacity>
-              ))}
-            </View>
+            {shiftTypeButtons.map((shiftTypeList) => {
+              return (
+                <View style={styles.registShiftItemsView}>
+                  {shiftTypeList.map((shift) => {
+                    if (shift)
+                      return (
+                        <TouchableOpacity
+                          activeOpacity={0.7}
+                          key={shift.name}
+                          onPress={() => insertShift(shift.accountShiftTypeId)}
+                          delayLongPress={700}
+                          onLongPress={() => longPressShift(shift)}
+                          style={styles.shiftItemView}
+                        >
+                          <Text style={styles.shiftCountText}>
+                            {shiftTypesCount.get(shift.accountShiftTypeId) || 0}
+                          </Text>
+                          <View style={[styles.shiftView, { backgroundColor: shift.color }]}>
+                            <Text style={styles.shiftShortNameText}>{shift.shortName}</Text>
+                            <Text style={styles.shiftFullNameText}>{shift.name}</Text>
+                          </View>
+                        </TouchableOpacity>
+                      );
+                    else return <View style={styles.shiftItemView} />;
+                  })}
+                </View>
+              );
+            })}
           </View>
         </SafeAreaView>
       </BottomSheetModalProvider>
@@ -154,6 +161,7 @@ const styles = StyleSheet.create({
   dayView: { flex: 1, marginVertical: 10, justifyContent: 'center', alignItems: 'center' },
   dayText: {
     fontFamily: 'Apple',
+    fontSize:12,
   },
   weekView: { flexDirection: 'row', borderColor: '#d6d6de', borderTopWidth: 0.5 },
   dayPressable: {},
@@ -185,12 +193,10 @@ const styles = StyleSheet.create({
   deleteShiftText: { fontSize: 12, fontFamily: 'Apple', color: COLOR.main2 },
   registShiftItemsView: {
     flexDirection: 'row',
-    marginTop: 26,
-    flexWrap: 'wrap',
-    flex: 1,
-    justifyContent: 'space-evenly',
+    marginTop: 20,
+    justifyContent: 'flex-start',
   },
-  shiftItemView: { alignItems: 'center', justifyContent: 'center' },
+  shiftItemView: { flex: 1, alignItems: 'center', justifyContent: 'center' },
   shiftCountText: { fontFamily: 'Poppins', color: COLOR.sub25, fontSize: 12 },
   shiftView: {
     flexDirection: 'row',

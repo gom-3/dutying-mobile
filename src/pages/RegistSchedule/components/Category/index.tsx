@@ -10,7 +10,7 @@ import PlusIcon from '@assets/svgs/plus.svg';
 
 const Category = () => {
   const {
-    states: { deviceCalendar, selectedCalendar, ref },
+    states: { filteredDeviceCalendar, selectedCalendar, ref },
     actions: { openModal, pressCategoryHandler, navigateEditDeviceCalendar },
   } = useCategory();
 
@@ -35,7 +35,11 @@ const Category = () => {
             },
           ]}
         >
-          <Text style={styles.categoryText}>{selectedCalendar.title.slice(3)}</Text>
+          <Text style={styles.categoryText}>
+            {selectedCalendar.title.startsWith('듀팅-')
+              ? selectedCalendar.title.slice(3)
+              : selectedCalendar.title}
+          </Text>
           <ArrowIcon />
         </View>
       </TouchableOpacity>
@@ -61,7 +65,7 @@ const Category = () => {
           onPressExit={() => ref.current?.close()}
         />
         <ScrollView>
-          {deviceCalendar.map((calendar) => (
+          {filteredDeviceCalendar.map((calendar) => (
             <TouchableOpacity
               style={styles.item}
               key={calendar.id}
@@ -86,7 +90,7 @@ const Category = () => {
                   },
                 ]}
               >
-                {calendar.title.slice(3)}
+                {calendar.title.startsWith('듀팅-') ? calendar.title.slice(3) : calendar.title}
               </Text>
             </TouchableOpacity>
           ))}

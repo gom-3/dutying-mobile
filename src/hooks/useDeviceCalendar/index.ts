@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useCaledarDateStore } from 'store/calendar';
 import { useDeviceCalendarStore } from '../../store/device';
 import {
@@ -12,8 +12,8 @@ import {
   CalendarType,
   EntityTypes,
   CalendarAccessLevel,
-  deleteCalendarAsync,
 } from 'expo-calendar';
+import { Alert, Linking, Platform } from 'react-native';
 
 export type Schedule = Event & {
   level: number;
@@ -23,6 +23,7 @@ export type Schedule = Event & {
   endTime: Date;
   leftDuration: number;
   color: string;
+  editbale: boolean;
 };
 
 const useDeviceCalendar = () => {
@@ -39,16 +40,20 @@ const useDeviceCalendar = () => {
       state.isChanged,
       state.setState,
     ]);
+  const [editableCalendar, setEditableCalendar] = useState<Calendar[]>([]);
 
   const getEventFromDevice = async () => {
     const year = date.getFullYear();
     const month = date.getMonth();
     const first = new Date(year, month, 1);
-    const last = new Date(year, month + 1, 0);
+    const last = new Date(year, month + 1, 2);
 
     const idList = deviceCalendar
       .filter((calendar) => calendarLinks[calendar.id])
       .map((calendar) => calendar.id);
+
+    if (idList.length === 0) return;
+
     const events = await getEventsAsync(idList, first, last);
     const newCalendar = [...calendar];
 
@@ -57,7 +62,13 @@ const useDeviceCalendar = () => {
     }
     events.forEach((event) => {
       const eventStartDate = new Date(event.startDate);
-      const eventEndDate = new Date(event.endDate);
+      let eventEndDate = new Date(event.endDate);
+      if (event.allDay && Platform.OS === 'android')
+        eventEndDate = new Date(
+          eventEndDate.getFullYear(),
+          eventEndDate.getMonth(),
+          eventEndDate.getDate() - 1,
+        );
       const startIndex = first.getDay() + eventStartDate.getDate() - 1;
       const color =
         deviceCalendar.find((calendar) => calendar.id === event.calendarId)?.color || '#5AF8F8';
@@ -88,6 +99,9 @@ const useDeviceCalendar = () => {
             isStart: eventStartDate.getDate() === newCalendar[i].date.getDate(),
             isEnd: eventEndDate.getDate() === newCalendar[i].date.getDate(),
             leftDuration: endIndex - i,
+            editbale:
+              editableCalendar.find((calendar) => calendar.id === event.calendarId)
+                ?.allowsModifications || false,
           };
           const schedules = [...newCalendar[i].schedules];
           schedules.push(schedule);
@@ -104,12 +118,15 @@ const useDeviceCalendar = () => {
 
     if (status === 'granted') {
       let calendars = await getCalendarsAsync(EntityTypes.EVENT);
-      calendars = calendars.filter((calendar) => calendar.allowsModifications === true);
+      const editableCalendars = calendars.filter(
+        (calendar) => calendar.allowsModifications === true,
+      );
+      setEditableCalendar(editableCalendars);
       /**
        * 디바이스에서 캘린더들을 가져와 기존 zustand에 calendarLinks에 등록되지 않은 캘린더면 새로 등록하고 true 값을 넣는다.
        * 이것은 새로 생긴 캘린더들은 기본적으로 듀팅 캘린더에 연동되는 것을 의미한다. 이미 이전에 정의된 캘린더는 그대로 둔다.
        * */
-
+      // const editable = calendars.filter((calendar) => calendar.)
       const newMap: { [key: string]: boolean } = { ...calendarLinks };
       calendars.forEach((key) => {
         if (newMap[key.id] === undefined) {
@@ -136,6 +153,19 @@ const useDeviceCalendar = () => {
       }
       setDeivceCalendar('dutyingCalendars', deviceDutyingCalendars);
       setDeivceCalendar('calendars', calendars);
+    } else {
+      Alert.alert(
+        '권한 거부됨',
+        '캘린더 접근 권한이 거부되었습니다. 설정에서 권한을 허용해 주세요.',
+        [
+          { text: '취소', style: 'cancel' },
+          // 설정으로 이동하는 버튼
+          {
+            text: '설정으로 이동',
+            onPress: () => Linking.openURL('app-settings:'),
+          },
+        ],
+      );
     }
   };
 

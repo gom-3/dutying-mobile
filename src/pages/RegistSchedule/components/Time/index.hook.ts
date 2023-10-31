@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Platform } from 'react-native';
+import { Keyboard, Platform } from 'react-native';
 import { useScheduleStore } from 'store/schedule';
 import { DateTimePickerAndroid, DateTimePickerEvent } from '@react-native-community/datetimepicker';
 
@@ -17,6 +17,7 @@ const useTimeHook = () => {
 
   const changeSwitchHandler = (value:boolean) => {
     setState('isAllday', value);
+    Keyboard.dismiss();
   };
 
   const onChangeStartTime = (_: DateTimePickerEvent, selectedDate: Date | undefined) => {

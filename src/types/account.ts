@@ -12,5 +12,6 @@ type Account = {
     | 'NURSE_INFO_PENDING'
     | 'WARD_SELECT_PENDING'
     | 'WARD_ENTRY_PENDING'
-    | 'LINKED';
+    | 'LINKED'
+    | 'DEMO';
 };
