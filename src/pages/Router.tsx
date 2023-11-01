@@ -19,6 +19,7 @@ import * as Linking from 'expo-linking';
 import MoimEnterPage from './Social/Moim/MoimEnterPage';
 import WardPage from './Ward';
 import MyPage from './MyPage';
+import EnterWardPage from './EnterWardPage';
 
 // Airbridge.deeplink.setDeeplinkListener((deeplink) => {
 //   // code that will run when app is opened with deep-link or deferred-deep-link
@@ -62,6 +63,7 @@ const Router = () => {
         <Stack.Screen name="ShiftTypeEdit" component={ShiftTypeEditPage} />
         <Stack.Screen name="Share" component={SharePage} />
         <Stack.Screen name="Notification" component={Notification} />
+        <Stack.Screen name="EnterWard" component={EnterWardPage} />
         <Stack.Screen
           name="Onboarding"
           component={OnboardingPage}

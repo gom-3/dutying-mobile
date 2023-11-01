@@ -20,6 +20,7 @@ export type StackParams = {
   MoimDetail: undefined;
   MoimEnter: undefined;
   Ward: undefined;
+  EnterWard: undefined;
 };
 
 export const Stack = createNativeStackNavigator<StackParams>();
