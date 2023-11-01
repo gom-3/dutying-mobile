@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { useFonts } from 'expo-font';
 import Router from './src/pages/Router';
@@ -25,10 +25,10 @@ import * as Sentry from '@sentry/react-native';
 //   Airbridge.state.startTracking();
 // }
 
-// Sentry.init({
-//   dsn: 'https://93ddd999daaaa867ad39989278a40c0b@o4505477969084416.ingest.sentry.io/4506099006898176',
-//   tracesSampleRate: 1.0,
-// });
+Sentry.init({
+  dsn: 'https://93ddd999daaaa867ad39989278a40c0b@o4505477969084416.ingest.sentry.io/4506099006898176',
+  tracesSampleRate: 1.0,
+});
 
 const registerForPushNotificationAsync = async () => {
   if (Device.isDevice) {

@@ -19,7 +19,7 @@ import { useEffect, useState } from 'react';
 import { screenHeight, screenWidth } from 'index.style';
 import { KakaoOAuthToken, login } from '@react-native-seoul/kakao-login';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { demoLogin, getAccount, oAuthLogin } from '@libs/api/account';
+import { demoLogin, getAccountMe, oAuthLogin } from '@libs/api/account';
 import { useSignupStore } from '@pages/SignupPage/store';
 import { firebaseLogEvent } from '@libs/utils/event';
 import axiosInstance from '@libs/api/client';
@@ -64,7 +64,7 @@ const LoginPage = () => {
     }
   }, [click]);
 
-  const { data: accountData } = useQuery(['getAccount', accountId], () => getAccount(accountId), {
+  const { data: accountData } = useQuery(['getAccount', accountId], () => getAccountMe(accountId), {
     enabled: accountId > 0,
   });
 

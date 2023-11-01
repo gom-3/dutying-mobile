@@ -2,7 +2,7 @@ import { addMeToWatingNurses, getWardByCode } from '@libs/api/ward';
 import { useEnterWardStore } from '@pages/EnterWardPage/store';
 import { useLinkProps } from '@react-navigation/native';
 import { createRef, useEffect, useRef, useState } from 'react';
-import { createAccountNurse, getNurse, updateNurse } from '@libs/api/nurse';
+import { createAccountNurse } from '@libs/api/nurse';
 import { useAccountStore } from 'store/account';
 import { TextInputKeyPressEventData } from 'react-native';
 import { TextInput } from 'react-native-gesture-handler';
@@ -60,7 +60,6 @@ const useCode = () => {
 
     let nurseId = account.nurseId;
     /**게정 간호사 등록 */
-    console.log(account);
     if (!account.nurseId) {
       const nurse = await createAccountNurse(account.accountId, {
         name,
@@ -69,20 +68,8 @@ const useCode = () => {
         isWorker,
       });
       nurseId = nurse.nurseId;
-    } else {
-      const nurse = await getNurse(account.nurseId);
-      console.log(nurse);
-      await updateNurse(account.nurseId, {
-        ...nurse,
-        name,
-        phoneNum,
-        gender: gender!,
-        isWorker,
-      });
-      nurseId = account.nurseId;
     }
     /**병동 입장 */
-    console.log(account.accountId, account.status, nurseId, wardId);
     await addMeToWatingNurses(wardId);
     await eidtAccountStatus(account.accountId, 'WARD_ENTRY_PENDING');
     setAccountState('account', {
