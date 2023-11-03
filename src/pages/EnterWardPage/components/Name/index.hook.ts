@@ -1,8 +1,8 @@
-import { useEnterWardStore } from '@pages/EnterWardPage/store';
+import { useEnterWardPageStore } from '@pages/EnterWardPage/store';
 import { useEffect, useState } from 'react';
 
 const useName = () => {
-  const [name, setState] = useEnterWardStore((state) => [state.name, state.setState]);
+  const [name, setState] = useEnterWardPageStore((state) => [state.name, state.setState]);
   const [isValid, setIsValid] = useState(false);
   const [feedback, setFeedback] = useState(' ');
 

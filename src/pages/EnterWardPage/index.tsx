@@ -4,7 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import BackArrowIcon from '@assets/svgs/back-arrow.svg';
 import { COLOR, screenHeight, screenWidth } from 'index.style';
 import Name from './components/Name';
-import useSignupPage from './index.hook';
+import useEnterWardPage from './index.hook';
 import LottieView from 'lottie-react-native';
 import { hexToRgba } from '@libs/utils/color';
 import Gender from './components/Gender';
@@ -15,7 +15,7 @@ const EnterWardPage = () => {
   const {
     states: { step, isLoading },
     actions: { onPressBack },
-  } = useSignupPage();
+  } = useEnterWardPage();
 
   return (
     <PageViewContainer withoutLogin>

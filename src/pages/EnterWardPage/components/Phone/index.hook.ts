@@ -1,8 +1,8 @@
-import { useEnterWardStore } from '@pages/EnterWardPage/store';
+import { useEnterWardPageStore } from '@pages/EnterWardPage/store';
 import { useEffect, useState } from 'react';
 
 const usePhone = () => {
-  const [phoneNum, setState] = useEnterWardStore((state) => [state.phoneNum, state.setState]);
+  const [phoneNum, setState] = useEnterWardPageStore((state) => [state.phoneNum, state.setState]);
   const [isValid, setIsValid] = useState(false);
   const [feedback, setFeedback] = useState(' ');
 

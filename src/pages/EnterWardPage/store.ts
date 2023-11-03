@@ -16,7 +16,7 @@ interface Store extends State {
   setState: (key: keyof State, value: any) => void;
 }
 
-export const useEnterWardStore = createWithEqualityFn<Store>()(
+export const useEnterWardPageStore = createWithEqualityFn<Store>()(
   devtools((set, _) => ({
     name: '',
     step: 1,

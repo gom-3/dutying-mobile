@@ -1,7 +1,7 @@
-import { useEnterWardStore } from '@pages/EnterWardPage/store';
+import { useEnterWardPageStore } from '@pages/EnterWardPage/store';
 
 const useGender = () => {
-  const [gender, setState] = useEnterWardStore((state) => [state.gender, state.setState]);
+  const [gender, setState] = useEnterWardPageStore((state) => [state.gender, state.setState]);
 
   const onChangeGender = (gender: '남' | '여') => {
     setState('gender', gender);

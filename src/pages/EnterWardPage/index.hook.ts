@@ -1,11 +1,11 @@
 import { useNavigation } from '@react-navigation/native';
-import { useEnterWardStore } from './store';
+import { useEnterWardPageStore } from './store';
 import { useAccountStore } from 'store/account';
 import { getNurse } from '@libs/api/nurse';
 import { useEffect } from 'react';
 
-const useSignupPage = () => {
-  const [step, isLoading, setState] = useEnterWardStore((state) => [
+const useEnterWardPage = () => {
+  const [step, isLoading, setState] = useEnterWardPageStore((state) => [
     state.step,
     state.isLoading,
     state.setState,
@@ -37,4 +37,4 @@ const useSignupPage = () => {
   return { states: { step, isLoading }, actions: { onPressBack } };
 };
 
-export default useSignupPage;
+export default useEnterWardPage;

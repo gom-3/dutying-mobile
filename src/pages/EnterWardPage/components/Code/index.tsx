@@ -1,24 +1,40 @@
-import { View, Text, StyleSheet, Platform, TextInput, Pressable } from 'react-native';
+import { COLOR } from 'index.style';
+import { Platform, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import { hexToRgba } from '@libs/utils/color';
+import Modal from 'react-native-modal';
+import NextButton from '@components/NextButton';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 import NextArrowIcon from '@assets/svgs/next-arrow.svg';
 import PasteIcon from '@assets/svgs/paste.svg';
-import NextButton from '@components/NextButton';
-import { COLOR } from 'index.style';
-import useCode from './index.hook';
-import { TouchableOpacity } from 'react-native-gesture-handler';
-import Modal from 'react-native-modal';
+import useCodeInput from './useCodeInput';
+import useEnterWard from './useEnterWard';
+import { useEffect } from 'react';
 
 const Code = () => {
   const {
-    states: { focusedIndex, codeList, codeRefList, error, open, ward },
-    actions: { setFocusedIndex, enterWard, navigateToWard, handleKeyDown, handlePasteCode },
-  } = useCode();
+    states: { code, mainCodeInputRef },
+    actions: { handleMainInputChange, handlePasteCode },
+  } = useCodeInput();
+
+  const {
+    states: { error, openModal, ward },
+    actions: { setError, enterWard, handleGetWard, navigateToWard },
+  } = useEnterWard();
+
+  useEffect(() => {
+    if (code.length === 6) {
+      handleGetWard(code);
+    } else {
+      setError(false);
+    }
+  }, [code]);
 
   return (
     <View>
       <View style={styles.guidTextWrapper}>
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
           <View>
-            <Text style={styles.guideTextHighlight}>병동코드</Text>
+            <Text style={styles.guideTextHighlight}>병동 코드</Text>
             <View style={styles.guideTextUnderline} />
           </View>
           <Text style={[styles.guideText, { marginTop: Platform.OS === 'android' ? 7 : 0 }]}>
@@ -28,40 +44,65 @@ const Code = () => {
         <Text style={[styles.guideText, { marginTop: 10 }]}>입력해주세요</Text>
         <Text style={styles.guideSubText}>전달 받은 ‘병동 입장 코드’ 6자리를 입력해주세요.</Text>
       </View>
-      <View style={{ marginBottom: 42, marginTop: 52 }}>
-        <View style={styles.textInputView}>
-          {codeList.map((code, index) => (
+      <View
+        style={{
+          marginTop: 52,
+          marginBottom: error || ward ? 12 : 42,
+        }}
+      >
+        <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'center',
+          }}
+        >
+          <TextInput
+            ref={mainCodeInputRef}
+            style={styles.mainCodeInput}
+            value={code}
+            onChangeText={handleMainInputChange}
+          />
+          {[1, 2, 3, 4, 5, 6].map((_, i) => (
             <TextInput
-              key={index}
-              ref={codeRefList.current[index]}
+              key={i}
+              value={code[i]}
+              maxLength={1}
+              onFocus={() => mainCodeInputRef.current?.focus()}
               style={{
                 ...styles.codeInput,
-                borderColor: focusedIndex === index ? COLOR.main1 : COLOR.main4,
+                borderColor: !error
+                  ? code.length === i || (code.length === 6 && i === 5)
+                    ? COLOR.sub3
+                    : COLOR.main4
+                  : hexToRgba('#ff4a80', 0.7),
               }}
-              value={code === null ? undefined : code}
-              placeholder="0"
-              onPressIn={() => setFocusedIndex(index)}
-              onKeyPress={(e) => handleKeyDown(e.nativeEvent.key)}
             />
           ))}
-          <TouchableOpacity onPress={handlePasteCode}>
-            <PasteIcon />
-          </TouchableOpacity>
         </View>
-        {error && <Text style={styles.feedback}>{error}</Text>}
+        <TouchableOpacity onPress={handlePasteCode} style={styles.pasteButton}>
+          <PasteIcon />
+          <Text style={styles.pasteText}>붙여넣기</Text>
+        </TouchableOpacity>
+        {error && (
+          <View style={styles.feedBack}>
+            <Text style={styles.feedBackText}>올바른 코드가 아닙니다. 다시 한번 확인해주세요.</Text>
+          </View>
+        )}
         {ward && (
-          <Text style={styles.feedback}>
-            {ward.hospitalName}병원 {ward.name}병동
-          </Text>
+          <View style={styles.feedBack}>
+            <Text style={{ ...styles.feedBackText, color: COLOR.main2 }}>
+              {ward.hospitalName} - {ward.name}에 입장하시겠습니까?
+            </Text>
+          </View>
         )}
       </View>
       <NextButton
-        disabled={!ward || !!error || codeList.some((x) => x === null)}
+        disabled={!ward || !!error || code.length < 6}
         text="입장"
         Icon={NextArrowIcon}
         onPress={() => enterWard(ward!.wardId)}
       />
-      <Modal isVisible={open} onBackdropPress={() => navigateToWard()}>
+      <Modal isVisible={openModal} onBackdropPress={() => navigateToWard()}>
         <View
           style={{
             backgroundColor: 'white',
@@ -156,52 +197,51 @@ const styles = StyleSheet.create({
     color: '#ababb4',
   },
   textInputView: {
-    alignItems: 'center',
-    flexDirection: 'row',
+    marginTop: 70,
     marginBottom: 8,
-    gap: 10,
-    marginLeft: 33,
-    marginRight: 33,
+  },
+  mainCodeInput: {
+    position: 'absolute',
+    opacity: 0,
+    zIndex: 20,
+    width: '100%',
+    height: '100%',
+    fontSize: 1,
+    textAlign: 'center',
   },
   codeInput: {
     width: 35,
     height: 50,
-    alignItems: 'center',
     textAlign: 'center',
-    backgroundColor: COLOR.bg,
-    borderRadius: 5,
-    borderWidth: 1,
-    borderColor: COLOR.main4,
-    fontFamily: 'Poppins',
-    fontSize: 24,
-    color: COLOR.sub1,
-  },
-  clearPosition: {
-    position: 'absolute',
-    right: 3,
-    top: 3,
-  },
-  clear: {
-    width: 24,
-    height: 24,
-    borderRadius: 100,
-    backgroundColor: COLOR.main3,
     justifyContent: 'center',
     alignItems: 'center',
+    fontSize: 24,
+    fontFamily: 'Apple',
+    borderRadius: 5,
+    borderWidth: 1,
+    margin: 5,
+    backgroundColor: COLOR.bg,
   },
-  ward: {
-    textAlign: 'center',
-    marginBottom: 18,
-    color: COLOR.sub1,
+  pasteButton: {
+    justifyContent: 'center',
+    flexDirection: 'row',
+    gap: 6,
+    alignItems: 'center',
+  },
+  pasteText: {
     fontSize: 14,
+    color: COLOR.sub3,
     fontFamily: 'Apple',
   },
-  feedback: {
-    textAlign: 'center',
-    marginBottom: 18,
-    color: COLOR.main1,
+  feedBack: {
+    height: 22,
+    alignItems: 'center',
+    marginTop: 8,
+  },
+  feedBackText: {
     fontSize: 14,
     fontFamily: 'Apple',
+    color: '#ff4a80',
   },
 });
 
