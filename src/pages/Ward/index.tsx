@@ -8,7 +8,7 @@ const WardPage = () => {
   const {
     states: { account },
   } = useWardPage();
-
+  console.log(account.status);
   return (
     <PageViewContainer>
       {account.status === 'LINKED' ? (

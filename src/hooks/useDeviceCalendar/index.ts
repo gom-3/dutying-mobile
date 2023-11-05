@@ -197,7 +197,10 @@ const useDeviceCalendar = () => {
           // 설정으로 이동하는 버튼
           {
             text: '설정으로 이동',
-            onPress: () => Linking.openURL('app-settings:'),
+            onPress: () => {
+              if (Platform.OS === 'ios') Linking.openURL('app-settings:');
+              else Linking.openSettings();
+            },
           },
         ],
       );

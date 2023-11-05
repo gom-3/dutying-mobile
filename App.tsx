@@ -25,10 +25,10 @@ import * as Application from 'expo-application';
 //   Airbridge.state.startTracking();
 // }
 
-Sentry.init({
-  dsn: 'https://93ddd999daaaa867ad39989278a40c0b@o4505477969084416.ingest.sentry.io/4506099006898176',
-  tracesSampleRate: 1.0,
-});
+// Sentry.init({
+//   dsn: 'https://93ddd999daaaa867ad39989278a40c0b@o4505477969084416.ingest.sentry.io/4506099006898176',
+//   tracesSampleRate: 1.0,
+// });
 
 /** 업데이트 버전 확인 */
 const getAppVersion = () => {
@@ -83,7 +83,7 @@ const onAppStateChange = (status: AppStateStatus) => {
 };
 
 export const queryClient = new QueryClient({
-  defaultOptions: { queries: { retry: 2 } },
+  defaultOptions: { queries: { retry: 1 } },
 });
 
 export default function App() {

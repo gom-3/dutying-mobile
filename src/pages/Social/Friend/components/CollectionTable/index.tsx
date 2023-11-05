@@ -101,7 +101,7 @@ const CollectionTable = () => {
                     key={`shift ${currentWeek * 7 + j}`}
                     style={[
                       styles.shiftText,
-                      { color: `#${member.accountShiftTypes[currentWeek * 7 + j].color}` },
+                      { color: `#${member.accountShiftTypes[currentWeek * 7 + j]?.color}` },
                     ]}
                   >
                     {member.accountShiftTypes[currentWeek * 7 + j]?.name}

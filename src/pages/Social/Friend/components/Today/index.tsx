@@ -5,7 +5,7 @@ import { ScrollView, View, Text } from 'react-native';
 
 const TodayShift = () => {
   const { data: todayShifts } = useQuery(['getFriendTodayShift'], () => getFriendsTodayShifts());
-  if (todayShifts) console.log(todayShifts[1].accountShiftTypes);
+  if (!todayShifts) return; 
   return (
     <ScrollView style={{ marginLeft: 24 }} horizontal showsHorizontalScrollIndicator={false}>
       {todayShifts?.map((shift) => {
