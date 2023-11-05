@@ -23,6 +23,7 @@ export type StackParams = {
   WardCalendarPage: undefined;
   Friends: undefined;
   RequestFriend: undefined;
+  EnterWard: undefined;
 };
 
 export const Stack = createNativeStackNavigator<StackParams>();

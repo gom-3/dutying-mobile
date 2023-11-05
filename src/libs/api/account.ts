@@ -49,10 +49,17 @@ export const getAccount = async (accountId: number) => {
 export type DemoLoginResponseDTO = { accessToken: string };
 
 export const demoLogin = async () => {
-  return (await axios.post<DemoLoginResponseDTO>(`${API_URL}/demo/login?email=test@demotest.dutyin`))
-    .data;
+  return (
+    await axios.post<DemoLoginResponseDTO>(`${API_URL}/demo/login?email=test@demotest.dutyin`)
+  ).data;
 };
 
 export const deleteAccount = async (accountId: number) => {
   await axiosInstance.delete(`/accounts/${accountId}`);
 };
+
+export const eidtAccountStatus = async (accountId: number, status: Account['status']) =>
+  (await axiosInstance.patch<Account>(`/accounts/${accountId}/status?status=${status}`)).data;
+
+export const getAccountMeWaiting = async () =>
+  (await axiosInstance.get<Ward>(`/accounts/waiting`)).data;

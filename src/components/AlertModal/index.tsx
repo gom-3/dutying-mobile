@@ -1,5 +1,6 @@
 import { COLOR } from 'index.style';
 import { View, Text, TouchableOpacity, Pressable, Share, Alert, Image } from 'react-native';
+
 import CopyIcon from '@assets/svgs/copy.svg';
 import * as Clipboard from 'expo-clipboard';
 import { SearchMoimFromCodeResponseDTO, joinMoim } from '@libs/api/moim';

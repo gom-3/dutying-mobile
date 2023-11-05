@@ -22,6 +22,7 @@ import MyPage from './MyPage';
 import WardCalendarPage from './WardCalendarPage';
 import FriendsPage from './Social/Friend';
 import RequestFriendPage from './Social/Friend/Request';
+import EnterWardPage from './EnterWardPage';
 
 // Airbridge.deeplink.setDeeplinkListener((deeplink) => {
 //   // code that will run when app is opened with deep-link or deferred-deep-link
@@ -71,6 +72,7 @@ const Router = () => {
         <Stack.Screen name="ShiftTypeEdit" component={ShiftTypeEditPage} />
         <Stack.Screen name="Share" component={SharePage} />
         <Stack.Screen name="Notification" component={Notification} />
+        <Stack.Screen name="EnterWard" component={EnterWardPage} />
         <Stack.Screen
           name="Onboarding"
           component={OnboardingPage}
