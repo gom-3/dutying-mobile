@@ -1,5 +1,5 @@
 import { COLOR } from 'index.style';
-import { View, Text, TouchableOpacity, Pressable, Share, Alert } from 'react-native';
+import { View, Text, TouchableOpacity, Pressable, Share } from 'react-native';
 import CopyIcon from '@assets/svgs/copy.svg';
 import * as Clipboard from 'expo-clipboard';
 import { SearchMoimFromCodeResponseDTO, joinMoim } from '@libs/api/moim';
@@ -95,7 +95,7 @@ export const AlertModalEnter = ({ isOpen, close, moim, accountId }: EnterProps) 
       queryClient.invalidateQueries(['getMoimList', accountId]);
       queryClient.refetchQueries(['getMoimList', accountId]);
       navigate.goBack();
-    }
+    },
   });
 
   const pressEnterButton = () => {

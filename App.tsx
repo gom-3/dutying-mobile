@@ -30,7 +30,6 @@ Sentry.init({
   tracesSampleRate: 1.0,
 });
 
-
 const registerForPushNotificationAsync = async () => {
   if (Device.isDevice) {
     Notifications.setNotificationHandler({
