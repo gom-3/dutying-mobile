@@ -69,7 +69,8 @@ const MoimDetailPage = () => {
       <BottomSheetModalProvider>
         <SafeAreaView>
           <AlertModalInvite
-            moimCode={moim.moimCode}
+            text="모임 초대 코드"
+            code={moim.moimCode}
             isOpen={isInviteModalOpen}
             close={closeInviteModal}
           />
@@ -87,26 +88,24 @@ const MoimDetailPage = () => {
               onPress={() => memberRef.current?.present()}
               style={styles.profileImages}
             >
-              {moim?.memberInfoList
-                .slice(0, 3)
-                .map((member, i) => (
-                  <Image
-                    key={i}
-                    style={[
-                      styles.profileImage,
-                      {
-                        right:
-                          (Math.min(
-                            3,
-                            moim.memberCount > 4 ? moim.memberCount : moim.memberCount - 1,
-                          ) -
-                            i) *
-                          18,
-                      },
-                    ]}
-                    source={{ uri: `data:image/png;base64,${member.profileImgBase64}` }}
-                  />
-                ))}
+              {moim?.memberInfoList.slice(0, 3).map((member, i) => (
+                <Image
+                  key={i}
+                  style={[
+                    styles.profileImage,
+                    {
+                      right:
+                        (Math.min(
+                          3,
+                          moim.memberCount > 4 ? moim.memberCount : moim.memberCount - 1,
+                        ) -
+                          i) *
+                        18,
+                    },
+                  ]}
+                  source={{ uri: `data:image/png;base64,${member.profileImgBase64}` }}
+                />
+              ))}
               {moim && moim.memberCount > 4 && (
                 <View style={styles.profileCount}>
                   <Text style={styles.profileCountText}>+{moim.memberCount - 3}</Text>

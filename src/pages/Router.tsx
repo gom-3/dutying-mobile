@@ -19,6 +19,9 @@ import * as Linking from 'expo-linking';
 import MoimEnterPage from './Social/Moim/MoimEnterPage';
 import WardPage from './Ward';
 import MyPage from './MyPage';
+import WardCalendarPage from './WardCalendarPage';
+import FriendsPage from './Social/Friend';
+import RequestFriendPage from './Social/Friend/Request';
 
 // Airbridge.deeplink.setDeeplinkListener((deeplink) => {
 //   // code that will run when app is opened with deep-link or deferred-deep-link
@@ -50,6 +53,12 @@ const Router = () => {
         <Stack.Screen name="Home" component={HomePage} options={{ gestureEnabled: false }} />
         <Stack.Screen name="MyPage" component={MyPage} />
         <Stack.Screen
+          name="Friends"
+          component={FriendsPage}
+          options={{ animation: 'none', gestureEnabled: false }}
+        />
+        <Stack.Screen name="RequestFriend" component={RequestFriendPage} />
+        <Stack.Screen
           name="Moim"
           component={MoimPage}
           options={{ animation: 'none', gestureEnabled: false }}
@@ -71,6 +80,11 @@ const Router = () => {
         <Stack.Screen
           name="Ward"
           component={WardPage}
+          options={{ animation: 'none', gestureEnabled: false }}
+        />
+        <Stack.Screen
+          name="WardCalendarPage"
+          component={WardCalendarPage}
           options={{ animation: 'none', gestureEnabled: false }}
         />
       </Stack.Navigator>

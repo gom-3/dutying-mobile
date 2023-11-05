@@ -63,6 +63,7 @@ const useRegistSchedule = () => {
   };
 
   const createEvent = async () => {
+    console.log(event);
     await createEventAsync(calendarId, event);
     setState('isScheduleUpdated', true);
     navigation.goBack();

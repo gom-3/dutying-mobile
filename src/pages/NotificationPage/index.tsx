@@ -1,15 +1,15 @@
 import PageHeader from '@components/PageHeader';
 import PageViewContainer from '@components/PageView';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import useNotificationPage from './index.hook';
-import { Text, View } from 'react-native';
-import { COLOR } from 'index.style';
+import useNotificationPage, { notificationClass } from './index.hook';
+import { Text, TouchableOpacity, View, Image } from 'react-native';
+import { COLOR, screenWidth } from 'index.style';
 import SocialIcon from '@assets/svgs/social-selected.svg';
 
 const Notification = () => {
   const {
     states: { notificationDates },
-    actions: {},
+    actions: { refuseRequestMutate, acceptRequestMutate },
   } = useNotificationPage();
   return (
     <PageViewContainer>
@@ -22,32 +22,78 @@ const Notification = () => {
             {date}
           </Text>
           {notificationDates.get(date)?.map((notification) => (
-            <View
-              style={{
-                marginHorizontal: 24,
-                marginVertical: 10,
-                flexDirection: 'row',
-                alignItems: 'center',
-                width: '80%',
-              }}
-            >
+            <View key={notification.id} style={{ flexDirection: 'row', alignItems: 'center' }}>
               <View
                 style={{
-                  width: 40,
-                  height: 40,
-                  borderRadius: 100,
-                  backgroundColor: COLOR.main4,
-                  justifyContent: 'center',
+                  marginHorizontal: 24,
+                  marginVertical: 10,
+                  flexDirection: 'row',
                   alignItems: 'center',
                 }}
               >
-                <SocialIcon scaleX={0.9} scaleY={0.9}/>
+                {notificationClass.includes(notification.classification) ? (
+                  <Image
+                    source={{ uri: `data:image/png;base64,${notification.imgBase64}` }}
+                    style={{
+                      width: 40,
+                      height: 40,
+                      borderRadius: 100,
+                    }}
+                  />
+                ) : (
+                  <View
+                    style={{
+                      width: 40,
+                      height: 40,
+                      borderRadius: 100,
+                      backgroundColor: COLOR.main4,
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                    }}
+                  >
+                    <SocialIcon scaleX={0.9} scaleY={0.9} />
+                  </View>
+                )}
+                <Text
+                  style={{
+                    marginLeft: 14,
+                    fontSize: 12,
+                    fontFamily: 'Apple500',
+                    width:
+                      notification.classification === 'RECEIVE_FRIEND_REQUEST'
+                        ? screenWidth * 0.45
+                        : screenWidth,
+                    color: COLOR.sub1,
+                  }}
+                >
+                  {notification.content}
+                </Text>
               </View>
-              <Text
-                style={{ marginLeft: 14, fontSize: 12, fontFamily: 'Apple500', color: COLOR.sub1 }}
-              >
-                {notification.content}
-              </Text>
+              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                <TouchableOpacity
+                  onPress={() => acceptRequestMutate(notification.friendRequestInfo?.senderId || 0)}
+                  style={{
+                    paddingHorizontal: 10,
+                    paddingVertical: 3,
+                    borderRadius: 5,
+                    backgroundColor: COLOR.main1,
+                    marginRight: 5,
+                  }}
+                >
+                  <Text style={{ color: 'white', fontFamily: 'Apple500', fontSize: 14 }}>수락</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => refuseRequestMutate(notification.friendRequestInfo?.senderId || 0)}
+                  style={{
+                    paddingHorizontal: 10,
+                    paddingVertical: 3,
+                    borderRadius: 5,
+                    backgroundColor: COLOR.sub3,
+                  }}
+                >
+                  <Text style={{ color: 'white', fontFamily: 'Apple500', fontSize: 14 }}>거절</Text>
+                </TouchableOpacity>
+              </View>
             </View>
           ))}
         </View>

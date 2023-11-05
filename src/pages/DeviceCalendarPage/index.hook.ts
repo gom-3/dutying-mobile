@@ -8,6 +8,7 @@ import {
   createCalendarAsync,
   updateCalendarAsync,
   deleteCalendarAsync,
+  requestCalendarPermissionsAsync,
 } from 'expo-calendar';
 import { useEffect, useRef, useState } from 'react';
 import { useCaledarDateStore } from 'store/calendar';
@@ -57,11 +58,14 @@ const useDeviceCalendarPage = () => {
     ref.current?.present();
     setColor(calendar.color);
     setName(calendar.title.slice(3));
+    textRef.current = calendar.title.slice(3);
     setId(calendar.id);
     setIsEdit(true);
   };
 
+
   const createCalendar = async () => {
+    const permission = await requestCalendarPermissionsAsync();
     if (textRef.current.length > 0 && color.length > 0) {
       if (!isEdit) {
         await createCalendarAsync({

@@ -18,6 +18,7 @@ import LottieView from 'lottie-react-native';
 import { hexToRgba } from '@libs/utils/color';
 import { navigateToLoginAndResetHistory } from '@libs/utils/navigate';
 import { useCaledarDateStore } from 'store/calendar';
+import * as Linking from 'expo-linking';
 
 const MyPage = () => {
   const [account, logoutAccount, setState] = useAccountStore((state) => [
@@ -249,6 +250,14 @@ const MyPage = () => {
       <View style={{ height: 3, backgroundColor: COLOR.sub5, marginTop: 90 }} />
       <View style={{ height: screenHeight, backgroundColor: 'white' }}>
         <View style={{ height: 26 }} />
+        <TouchableOpacity
+          onPress={() => {
+            Linking.openURL('http://ye620.channel.io');
+          }}
+          style={{ paddingHorizontal: 24, paddingVertical: 16 }}
+        >
+          <Text style={{ fontSize: 16, fontFamily: 'Apple', color: COLOR.sub1 }}>고객센터</Text>
+        </TouchableOpacity>
         <TouchableOpacity onPress={logout} style={{ paddingHorizontal: 24, paddingVertical: 16 }}>
           <Text style={{ fontSize: 16, fontFamily: 'Apple', color: COLOR.sub1 }}>로그아웃</Text>
         </TouchableOpacity>

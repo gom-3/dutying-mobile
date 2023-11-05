@@ -202,8 +202,6 @@ const useRegistDuty = (dateFrom?: string) => {
     setTempCalendar(registCalendar);
   }, [registCalendar]);
 
-  console.log(shiftTypeButtons);
-
   return {
     state: {
       date,

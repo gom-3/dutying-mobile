@@ -35,7 +35,6 @@ const useCalendar = (isRender?: boolean) => {
       enabled: userId > 0,
     },
   );
-
   const dateClickHandler = (date: Date, index: number) => {
     firebaseLogEvent('select_date_cell');
     setState('date', date);

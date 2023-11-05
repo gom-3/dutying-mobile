@@ -1,4 +1,12 @@
-import { Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import {
+  FlatList,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import { COLOR, screenHeight, screenWidth } from 'index.style';
 import PencilIcon from '@assets/svgs/pencil.svg';
@@ -17,7 +25,7 @@ const days = ['일', '월', '화', '수', '목', '금', '토'];
 
 const ScheduleCard = ({ isCardOpen }: Props) => {
   const {
-    state: { carouselRef, calendar, cardDefaultIndex, shiftTypes },
+    state: { carouselRef, thisMonthCalendar, thisMonthDefaultIndex, shiftTypes },
     actions: {
       backDropPressHandler,
       addSchedulePressHandler,
@@ -25,7 +33,7 @@ const ScheduleCard = ({ isCardOpen }: Props) => {
       editShiftPressHandler,
       changeDate,
     },
-  } = useScheduleCard();
+  } = useScheduleCard(isCardOpen);
 
   const renderItem = ({ item }: { item: DateType }) => {
     const shift = shiftTypes.get(item.shift || 0);
@@ -37,12 +45,7 @@ const ScheduleCard = ({ isCardOpen }: Props) => {
         <View style={styles.cardHeaderView}>
           {item?.shift ? (
             <View style={styles.shiftWrapperView}>
-              <View
-                style={[
-                  styles.shiftBoxView,
-                  { backgroundColor: shift?.color },
-                ]}
-              >
+              <View style={[styles.shiftBoxView, { backgroundColor: shift?.color }]}>
                 <Text style={styles.shiftBoxText}>{shift?.shortName}</Text>
               </View>
               <Text style={styles.shiftNameText}>{shift?.name}</Text>
@@ -62,6 +65,7 @@ const ScheduleCard = ({ isCardOpen }: Props) => {
           )}
         </View>
         <ScrollView
+          nestedScrollEnabled
           style={{
             padding: 24,
             backgroundColor: 'white',
@@ -70,7 +74,11 @@ const ScheduleCard = ({ isCardOpen }: Props) => {
           }}
         >
           {item?.schedules.map((schedule) => (
-            <TouchableOpacity activeOpacity={schedule.editbale ? 0.2 : 1} key={schedule.id} onPress={() => editSchedulePressHandler(schedule)}>
+            <TouchableOpacity
+              activeOpacity={schedule.editbale ? 0.2 : 1}
+              key={schedule.id}
+              onPress={() => editSchedulePressHandler(schedule)}
+            >
               <View key={schedule.title} style={styles.scheduleView}>
                 <View
                   style={[
@@ -98,8 +106,12 @@ const ScheduleCard = ({ isCardOpen }: Props) => {
             </TouchableOpacity>
           ))}
         </ScrollView>
-        <TouchableOpacity activeOpacity={0.4} style={styles.addButtonIcon} onPress={addSchedulePressHandler}>
-          <AddButtonIcon width={50} height={50}/>
+        <TouchableOpacity
+          activeOpacity={0.4}
+          style={styles.addButtonIcon}
+          onPress={addSchedulePressHandler}
+        >
+          <AddButtonIcon width={50} height={50} />
         </TouchableOpacity>
       </View>
     );
@@ -116,21 +128,48 @@ const ScheduleCard = ({ isCardOpen }: Props) => {
       }}
     >
       <BackDrop clickHandler={backDropPressHandler} />
-      <Animated.View entering={FadeInDown.duration(250)} style={styles.scheduleCardContainer}>
+        <Animated.View entering={FadeInDown.duration(250)} style={styles.scheduleCardContainer}>
         <Carousel
+          panGestureHandlerProps={{ activeOffsetX: [-10, 10] }}
           loop={false}
           ref={carouselRef}
-          style={styles.scheduleCardContainer}
-          data={calendar}
+          data={thisMonthCalendar}
           renderItem={renderItem}
           width={screenWidth}
           mode="parallax"
           height={500}
           onScrollEnd={changeDate}
-          defaultIndex={cardDefaultIndex}
+          defaultIndex={thisMonthDefaultIndex}
+          
           windowSize={3}
         />
-      </Animated.View>
+        {/* <FlatList
+          scrollEnabled
+          horizontal
+          ref={carouselRef}
+          style={styles.scheduleCardContainer}
+          data={calendar}
+          renderItem={renderItem}
+          windowSize={3}
+        /> */}
+        {/* <ScrollView>
+          <View style={styles.cardView} />
+          <View style={styles.cardView} />
+          <View style={styles.cardView} />
+          <View style={styles.cardView} />
+          <View style={styles.cardView} />
+          <View style={styles.cardView} />
+          <View style={styles.cardView} />
+          <View style={styles.cardView} />
+          <View style={styles.cardView} />
+          <View style={styles.cardView} />
+          <View style={styles.cardView} />
+          <View style={styles.cardView} />
+          <View style={styles.cardView} />
+          <View style={styles.cardView} />
+          <View style={styles.cardView} />
+        </ScrollView> */}
+        </Animated.View>
     </View>
   );
 };

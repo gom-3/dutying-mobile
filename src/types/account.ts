@@ -6,6 +6,7 @@ type Account = {
   email: string;
   name: string;
   isManager: boolean;
+  code: string;
   profileImgBase64: string;
   status:
     | 'INITIAL'

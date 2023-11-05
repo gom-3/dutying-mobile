@@ -7,12 +7,10 @@ import ShareIcon from '@assets/svgs/share.svg';
 import SliderIcon from '@assets/svgs/slider.svg';
 import { useEffect, useMemo } from 'react';
 import { useAccountStore } from 'store/account';
-import { navigateToLoginAndResetHistory } from '@libs/utils/navigate';
-import { Alert, Platform } from 'react-native';
+import { Platform } from 'react-native';
 import { firebaseLogEvent } from '@libs/utils/event';
 import * as NavigationBar from 'expo-navigation-bar';
-import { useMutation } from '@tanstack/react-query';
-import { deleteAccount } from '@libs/api/account';
+import * as Linking from 'expo-linking';
 
 interface SideMenuItem {
   icon: React.FC<SvgProps>;
@@ -70,12 +68,20 @@ const useSideMenu = () => {
       },
       {
         icon: SliderIcon,
-        title: '캘린더 연동',
+        title: '캘린더 관리',
         onPress: () => {
           firebaseLogEvent('move_calendar_link');
           onPressDeviceCalendar();
         },
       },
+      {
+        icon: EditShiftTypeIcon,
+        title: '근무표 평가하기',
+        onPress: () => {
+          firebaseLogEvent('link_evaluate_duty_page');
+          Linking.openURL('https://abr.ge/ud2wuk')
+        }
+      }
     ],
     [],
   );

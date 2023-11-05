@@ -1,4 +1,4 @@
-import { Pressable, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Shift from '@components/Shift';
 import { COLOR } from 'index.style';
 import useCalendar from './index.hook';
@@ -35,7 +35,7 @@ const Calendar = ({ withoutSchedule }: Props) => {
 
   return (
     <PanGestureHandler onHandlerStateChange={onHandlerStateChange}>
-      <View style={styles.calendar}>
+      <ScrollView style={styles.calendar} showsVerticalScrollIndicator={false}>
         <View style={styles.calendarHeader}>
           {days.map((day) => (
             <View key={day} style={styles.calendarHeaderDay}>
@@ -51,86 +51,101 @@ const Calendar = ({ withoutSchedule }: Props) => {
         </View>
         {weeks.map((week, i) => (
           <View key={i} style={styles.week}>
-            {week.map((day, j) => (
-              <TouchableOpacity
-                activeOpacity={0.5}
-                key={day.date.getTime()}
-                style={[styles.day, { height: weeks.length === 6 ? 93 : 109 }]}
-                onPress={() => dateClickHandler(day.date, i * 7 + j)}
-              >
-                <View style={[styles.day, { height: weeks.length === 6 ? 93 : 109 }]}>
-                  <Shift
-                    date={day.date.getDate()}
-                    shift={day.shift && shiftTypes.size > 0 ? shiftTypes.get(day.shift) : undefined}
-                    isCurrent={date.getMonth() === day.date.getMonth()}
-                    isToday={isSameDate(today, day.date)}
-                    fullNameVisibilty={false}
-                  />
-                  {!withoutSchedule &&
-                    day.schedules.map((schedule, j) => {
-                      if (weeks.length === 6 && schedule.level > 4) return;
-                      if (weeks.length < 6 && schedule.level > 5) return;
-                      if (weeks.length === 6 && schedule.level === 4) {
-                        return (
-                          <ElseSchedule
-                            key={schedule.id}
-                            level={4}
-                            lefts={day.schedules.length - 3}
-                          />
-                        );
+            {week.map((day, j) => {
+              // console.log(day);
+              return (
+                <TouchableOpacity
+                  activeOpacity={0.5}
+                  key={day.date.getTime()}
+                  style={[styles.day, { height: weeks.length === 6 ? 93 : 109 }]}
+                  onPress={() => {
+                    if (date.getMonth() === day.date.getMonth())
+                      dateClickHandler(day.date, i * 7 + j);
+                  }}
+                >
+                  <View style={[styles.day, { height: weeks.length === 6 ? 93 : 109 }]}>
+                    <Shift
+                      date={day.date.getDate()}
+                      shift={
+                        day.shift && shiftTypes.size > 0 ? shiftTypes.get(day.shift) : undefined
                       }
-                      if (weeks.length < 6 && schedule.level === 5) {
-                        return (
-                          <ElseSchedule
-                            key={schedule.id}
-                            level={5}
-                            lefts={day.schedules.length - 4}
-                          />
-                        );
-                      }
-                      return (
-                        <View
-                          key={schedule.id}
-                          style={[
-                            styles.scheduleView,
-                            {
-                              backgroundColor: hexToRgba(schedule.color, 0.3),
-                              top: 27 + (schedule.level - 1) * 16,
-                              width:
-                                schedule.isStart || day.date.getDay() === 0
-                                  ? `${schedule.leftDuration * 100 + 98}%`
-                                  : 0,
-                              borderTopLeftRadius: schedule.isStart ? 2 : 0,
-                              borderBottomLeftRadius: schedule.isStart ? 2 : 0,
-                              borderTopRightRadius: schedule.isEnd ? 2 : 0,
-                              borderBottomRightRadius: schedule.isEnd ? 2 : 0,
-                            },
-                          ]}
-                        >
-                          {schedule.isStart && (
-                            <View
-                              style={[
-                                styles.scheduleStartView,
-                                {
-                                  backgroundColor: schedule.color,
-                                },
-                              ]}
+                      isCurrent={date.getMonth() === day.date.getMonth()}
+                      isToday={isSameDate(today, day.date)}
+                      fullNameVisibilty={false}
+                    />
+                    {!withoutSchedule &&
+                      day.date.getMonth() === date.getMonth() &&
+                      day.schedules.map((schedule, j) => {
+                        if (weeks.length === 6 && schedule.level > 4) return;
+                        if (weeks.length < 6 && schedule.level > 5) return;
+                        if (weeks.length === 6 && schedule.level === 4) {
+                          return (
+                            <ElseSchedule
+                              key={schedule.id}
+                              level={4}
+                              lefts={day.schedules.length - 3}
                             />
-                          )}
-                          {(schedule.isStart || day.date.getDay() === 0) && (
-                            <Text numberOfLines={1} style={styles.scheduleText}>
-                              {schedule.title}
-                            </Text>
-                          )}
-                        </View>
-                      );
-                    })}
-                </View>
-              </TouchableOpacity>
-            ))}
+                          );
+                        }
+                        if (weeks.length < 6 && schedule.level === 5) {
+                          return (
+                            <ElseSchedule
+                              key={schedule.id}
+                              level={5}
+                              lefts={day.schedules.length - 4}
+                            />
+                          );
+                        }
+                        return (
+                          <View
+                            key={schedule.id}
+                            style={[
+                              styles.scheduleView,
+                              {
+                                backgroundColor: hexToRgba(schedule.color, 0.3),
+                                top: 27 + (schedule.level - 1) * 16,
+                                width:
+                                  schedule.isStart ||
+                                  day.date.getDay() === 0 ||
+                                  (day.date.getMonth() === date.getMonth() &&
+                                    day.date.getDate() === 1)
+                                    ? `${schedule.leftDuration * 100 + 98}%`
+                                    : 0,
+                                borderTopLeftRadius: schedule.isStart ? 2 : 0,
+                                borderBottomLeftRadius: schedule.isStart ? 2 : 0,
+                                borderTopRightRadius: schedule.isEnd ? 2 : 0,
+                                borderBottomRightRadius: schedule.isEnd ? 2 : 0,
+                              },
+                            ]}
+                          >
+                            {schedule.isStart && (
+                              <View
+                                style={[
+                                  styles.scheduleStartView,
+                                  {
+                                    backgroundColor: schedule.color,
+                                  },
+                                ]}
+                              />
+                            )}
+                            {(schedule.isStart ||
+                              day.date.getDay() === 0 ||
+                              day.date.getDate() === 1) && (
+                              <Text numberOfLines={1} style={styles.scheduleText}>
+                                {schedule.title}
+                              </Text>
+                            )}
+                          </View>
+                        );
+                      })}
+                  </View>
+                </TouchableOpacity>
+              );
+            })}
           </View>
         ))}
-      </View>
+        <View style={{ height: 86 }} />
+      </ScrollView>
     </PanGestureHandler>
   );
 };
@@ -153,17 +168,17 @@ const styles = StyleSheet.create({
   },
   sunday: {
     color: '#FF99AA',
-    fontSize:12,
+    fontSize: 12,
     fontFamily: 'Apple',
   },
   saturday: {
     fontFamily: 'Apple',
-    fontSize:12,
+    fontSize: 12,
     color: '#8B9BFF',
   },
   weekday: {
     fontFamily: 'Apple',
-    fontSize:12,
+    fontSize: 12,
     color: COLOR.sub25,
   },
   week: {

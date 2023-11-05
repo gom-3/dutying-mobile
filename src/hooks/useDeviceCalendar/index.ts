@@ -14,6 +14,7 @@ import {
   CalendarAccessLevel,
 } from 'expo-calendar';
 import { Alert, Linking, Platform } from 'react-native';
+import { dateDiffInDays } from '@libs/utils/date';
 
 export type Schedule = Event & {
   level: number;
@@ -46,20 +47,27 @@ const useDeviceCalendar = () => {
     const year = date.getFullYear();
     const month = date.getMonth();
     const first = new Date(year, month, 1);
-    const last = new Date(year, month + 1, 2);
-
+    const last =
+      Platform.OS === 'android' ? new Date(year, month + 1, 10) : new Date(year, month + 1, 1);
     const idList = deviceCalendar
       .filter((calendar) => calendarLinks[calendar.id])
       .map((calendar) => calendar.id);
 
     if (idList.length === 0) return;
 
-    const events = await getEventsAsync(idList, first, last);
+    let events = await getEventsAsync(idList, first, last);
+    if (Platform.OS === 'android') {
+      events = events.filter((event) => new Date(event.startDate).getMonth() === date.getMonth());
+    }
     const newCalendar = [...calendar];
-
     if (isScheduleUpdated) {
       newCalendar.forEach((date) => (date.schedules = []));
     }
+    events = events.sort(
+      (a, b) =>
+        dateDiffInDays(new Date(b.startDate), new Date(b.endDate)) -
+        dateDiffInDays(new Date(a.startDate), new Date(a.endDate)),
+    );
     events.forEach((event) => {
       const eventStartDate = new Date(event.startDate);
       let eventEndDate = new Date(event.endDate);
@@ -69,11 +77,36 @@ const useDeviceCalendar = () => {
           eventEndDate.getMonth(),
           eventEndDate.getDate() - 1,
         );
-      const startIndex = first.getDay() + eventStartDate.getDate() - 1;
+      let startIndex = first.getDay() + eventStartDate.getDate() - 1;
       const color =
         deviceCalendar.find((calendar) => calendar.id === event.calendarId)?.color || '#5AF8F8';
       let level;
       let endIndex = first.getDay() + eventEndDate.getDate() - 1;
+
+      /**
+       * 이전 달에서 이번 달로 이어지는 Event, 이번 달에서 다음 달로 이어지는 Event
+       * 이전 년도에서 이번 년도로 이어지는 Event, 이번 년도에서 다음 년도로 이어지는 Event
+       * index 예외처리
+       */
+      if (
+        eventEndDate.getMonth() > date.getMonth() ||
+        eventEndDate.getFullYear() > date.getFullYear()
+      )
+        endIndex += new Date(eventEndDate.getFullYear(), eventEndDate.getMonth(), 0).getDate();
+
+      if (
+        (eventStartDate.getFullYear() > date.getFullYear() &&
+          eventStartDate.getMonth() > date.getMonth()) ||
+        eventStartDate.getFullYear() > date.getFullYear()
+      )
+        startIndex += new Date(eventEndDate.getFullYear(), eventEndDate.getMonth(), 0).getDate();
+
+      if (
+        eventStartDate.getMonth() < date.getMonth() ||
+        eventStartDate.getFullYear() < date.getFullYear()
+      )
+        startIndex -= new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
+
       if (endIndex > newCalendar.length - 1) endIndex = newCalendar.length - 1;
       let index = startIndex;
       while (index <= endIndex) {
@@ -96,7 +129,9 @@ const useDeviceCalendar = () => {
             endTime: eventEndDate,
             level,
             color: color,
-            isStart: eventStartDate.getDate() === newCalendar[i].date.getDate(),
+            isStart:
+              eventStartDate.getMonth() === newCalendar[i].date.getMonth() &&
+              eventStartDate.getDate() === newCalendar[i].date.getDate(),
             isEnd: eventEndDate.getDate() === newCalendar[i].date.getDate(),
             leftDuration: endIndex - i,
             editbale:

@@ -59,7 +59,7 @@ const Actions = ({ isActionOpen, moim, close }: Props) => {
 
   return (
     <View style={styles.container}>
-      <AlertModalInvite moimCode={moimCode} isOpen={isInviteModalOpen} close={closeInviteModal} />
+      <AlertModalInvite text='모임 초대 코드' code={moimCode} isOpen={isInviteModalOpen} close={closeInviteModal} />
       {!isHost && (
         <AlertModal
           text="모임을 탈퇴하시겠어요?"
