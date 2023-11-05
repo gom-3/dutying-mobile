@@ -1,5 +1,3 @@
-import { MoimCollectionResponseDTO } from '@libs/api/moim';
-
 export const isSameDate = (date1: Date, date2: Date) => {
   return date1.getDate() === date2.getDate() && date1.getMonth() === date2.getMonth();
 };
@@ -10,14 +8,17 @@ export const yearMonthToDateString = (year: number, month: number) => {
   const startDay = new Date(year, month, 1).getDay() - 1;
   const endDay = new Date(year, month + 1, 1).getDay();
   const startDate = new Date(year, month, -startDay);
-  const endDate = new Date(year, month + 1, endDay);
-  const startDateString = `${startDate.getFullYear()}-${(startDate.getMonth() + 1)
-    .toString()
-    .padStart(2, '0')}-${startDate.getDate().toString().padStart(2, '0')}`;
-  const endDateString = `${endDate.getFullYear()}-${(endDate.getMonth() + 1)
-    .toString()
-    .padStart(2, '0')}-${endDate.getDate().toString().padStart(2, '0')}`;
+  const endDate = new Date(year, month + 1, endDay + 1);
+  const startDateString = dateToString(startDate);
+  const endDateString = dateToString(endDate);
   return [startDateString, endDateString];
+};
+
+export const dateToString = (date: Date) => {
+  return `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date
+    .getDate()
+    .toString()
+    .padStart(2, '0')}`;
 };
 
 export const getCurrentWeekIndex = (date: Date, weeks: Date[][]) => {
@@ -33,4 +34,13 @@ export const getCurrentWeekIndex = (date: Date, weeks: Date[][]) => {
   }
 
   return index;
+};
+
+export const dateDiffInDays = (date1: Date, date2: Date) => {
+  const msPerDay = 1000 * 60 * 60 * 24;
+
+  const utc1 = Date.UTC(date1.getFullYear(), date1.getMonth(), date1.getDate());
+  const utc2 = Date.UTC(date2.getFullYear(), date2.getMonth(), date2.getDate());
+
+  return Math.floor((utc2 - utc1) / msPerDay);
 };

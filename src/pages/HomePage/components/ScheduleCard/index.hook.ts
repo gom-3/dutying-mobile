@@ -4,12 +4,12 @@ import { useLinkProps } from '@react-navigation/native';
 import { useScheduleStore } from 'store/schedule';
 import { Schedule } from '@hooks/useDeviceCalendar';
 import { firebaseLogEvent } from '@libs/utils/event';
-import { useEffect, useRef } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import { isSameDate } from '@libs/utils/date';
 import { BackHandler, Platform } from 'react-native';
 import * as NavigationBar from 'expo-navigation-bar';
 
-const useScheduleCard = () => {
+const useScheduleCard = (isCardOpen: boolean) => {
   const [date, calendar, setDateOnThread, cardDefaultIndex, setState] = useCaledarDateStore(
     (state) => [
       state.date,
@@ -33,6 +33,8 @@ const useScheduleCard = () => {
   });
   const carouselRef = useRef<any>(null);
   const nextDate = new Date(date);
+  const year = date.getFullYear();
+  const month = date.getMonth();
   nextDate.setDate(nextDate.getDate() + 1);
 
   const prevDate = new Date(date);
@@ -66,30 +68,49 @@ const useScheduleCard = () => {
     setState('date', newDate);
   };
 
+  const thisMonthDefaultIndex = useMemo(() => {
+    const first = new Date(year, month, 1).getDay();
+    return cardDefaultIndex - first;
+  }, [cardDefaultIndex]);
+
+  const thisMonthCalendar = useMemo(() => {
+    return calendar.filter((cell) => cell.date.getMonth() === date.getMonth());
+  }, [calendar]);
+
   useEffect(() => {
+    const first = new Date(year, month, 1).getDay();
     const index = calendar.findIndex((c) => isSameDate(c.date, date));
-    carouselRef?.current?.scrollTo({ index, animated: false });
+    carouselRef?.current?.scrollTo({ index: index - first, animated: false });
   }, [calendar]);
 
   useEffect(() => {
     if (Platform.OS === 'android') {
       NavigationBar.setVisibilityAsync('hidden');
     }
-    const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
-      setState('isCardOpen', false);
-      return true;
-    });
+
     return () => {
       if (Platform.OS === 'android') NavigationBar.setVisibilityAsync('visible');
-      backHandler.remove();
     };
   }, []);
+
+  useEffect(() => {
+    if (isCardOpen)
+      BackHandler.addEventListener('hardwareBackPress', () => {
+        setState('isCardOpen', false);
+        return true;
+      });
+    else
+      BackHandler.removeEventListener('hardwareBackPress', () => {
+        setState('isCardOpen', false);
+        return true;
+      });
+  }, [isCardOpen]);
 
   return {
     state: {
       carouselRef,
-      cardDefaultIndex,
-      calendar,
+      thisMonthDefaultIndex,
+      thisMonthCalendar,
       shiftTypes,
     },
     actions: {

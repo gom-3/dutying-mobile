@@ -6,4 +6,10 @@ type PushNotification = {
   classification: string;
   isRead: boolean;
   createdAt: string;
+  imgBase64: string;
+  friendRequestInfo: {
+    isAccepted: boolean;
+    isChecked: boolean;
+    senderId: number;
+  } | null;
 };

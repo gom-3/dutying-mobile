@@ -14,6 +14,7 @@ const initialAccount: Account = {
   nurseId: 0,
   wardId: 0,
   shiftTeamId: 0,
+  code:'',
   email: '',
   name: '',
   isManager: false,

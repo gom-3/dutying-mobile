@@ -49,9 +49,6 @@ axiosInstance.interceptors.response.use(
           error.response.data ? error.response.data.message : '서버에서 에러가 발생했습니다.',
         );
       }
-      if (error.response.status === 500) {
-        Alert.alert('서버 오류가 발생했습니다.');
-      }
     }
     return Promise.reject(error);
   },

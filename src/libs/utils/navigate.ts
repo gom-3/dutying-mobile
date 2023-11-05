@@ -20,6 +20,9 @@ export type StackParams = {
   MoimDetail: undefined;
   MoimEnter: undefined;
   Ward: undefined;
+  WardCalendarPage: undefined;
+  Friends: undefined;
+  RequestFriend: undefined;
   EnterWard: undefined;
 };
 

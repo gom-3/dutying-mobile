@@ -116,15 +116,18 @@ const RegistDuty = () => {
                 </TouchableOpacity>
               </View>
             </View>
-            {shiftTypeButtons.map((shiftTypeList) => {
+            {shiftTypeButtons.map((shiftTypeList, i) => {
               return (
-                <View style={styles.registShiftItemsView}>
+                <View
+                  key={shiftTypeList[0]?.accountShiftTypeId + `${i}`}
+                  style={styles.registShiftItemsView}
+                >
                   {shiftTypeList.map((shift) => {
                     if (shift)
                       return (
                         <TouchableOpacity
                           activeOpacity={0.7}
-                          key={shift.name}
+                          key={shift.accountShiftTypeId}
                           onPress={() => insertShift(shift.accountShiftTypeId)}
                           delayLongPress={700}
                           onLongPress={() => longPressShift(shift)}
@@ -161,7 +164,7 @@ const styles = StyleSheet.create({
   dayView: { flex: 1, marginVertical: 10, justifyContent: 'center', alignItems: 'center' },
   dayText: {
     fontFamily: 'Apple',
-    fontSize:12,
+    fontSize: 12,
   },
   weekView: { flexDirection: 'row', borderColor: '#d6d6de', borderTopWidth: 0.5 },
   dayPressable: {},

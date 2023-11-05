@@ -10,6 +10,7 @@ const useMoimPage = () => {
   const [accountId] = useAccountStore((state) => [state.account.accountId]);
   const { onPress: navigateDetailMoim } = useLinkProps({ to: { screen: 'MoimDetail' } });
   const { onPress: navigateMoimEnter } = useLinkProps({ to: { screen: 'MoimEnter' } });
+  const { onPress: navigateFriendsPage } = useLinkProps({ to: { screen: 'Friends' } });
   const moimNameRef = useRef<string>('');
   const queryClient = useQueryClient();
   const [isValid, setIsValid] = useState(true);
@@ -27,7 +28,6 @@ const useMoimPage = () => {
       onError: () => {
         setIsValid(false);
       },
-
     },
   );
 
@@ -55,7 +55,14 @@ const useMoimPage = () => {
   return {
     states: { createLoading, isValid, createRef, moimList, moimNameRef, isLoading, isRefetching },
 
-    actions: { setIsValid, pressMoimCard, pressCheck, navigateMoimEnter, closeBottomSheet },
+    actions: {
+      setIsValid,
+      pressMoimCard,
+      pressCheck,
+      navigateMoimEnter,
+      closeBottomSheet,
+      navigateFriendsPage,
+    },
   };
 };
 

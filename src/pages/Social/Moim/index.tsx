@@ -31,7 +31,14 @@ const MoimPage = () => {
   const renderBackdrop = useCallback((props: any) => <BottomSheetBackdrop {...props} />, []);
   const {
     states: { moimList, createRef, isValid, moimNameRef, isLoading, isRefetching, createLoading },
-    actions: { pressMoimCard, pressCheck, navigateMoimEnter, setIsValid, closeBottomSheet },
+    actions: {
+      pressMoimCard,
+      pressCheck,
+      navigateMoimEnter,
+      setIsValid,
+      closeBottomSheet,
+      navigateFriendsPage,
+    },
   } = useMoimPage();
 
   return (
@@ -39,23 +46,45 @@ const MoimPage = () => {
       <BottomSheetModalProvider>
         <SafeAreaView>
           <View style={styles.header}>
-            <Pressable>
-              <Text
-                style={[
-                  styles.headerText,
-                  {
-                    color: COLOR.main1,
-                    fontFamily: 'Apple600',
-                    textDecorationLine: 'underline',
-                  },
-                ]}
-              >
-                모임
-              </Text>
-            </Pressable>
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              <Pressable>
+                <Text
+                  style={[
+                    styles.headerText,
+                    {
+                      color: COLOR.main1,
+                      fontFamily: 'Apple600',
+                      textDecorationLine: 'underline',
+                    },
+                  ]}
+                >
+                  모임
+                </Text>
+              </Pressable>
+              <Pressable onPress={navigateFriendsPage}>
+                <Text
+                  style={[
+                    styles.headerText,
+                    {
+                      color: COLOR.sub3,
+                      fontFamily: 'Apple500',
+                      marginLeft: 18,
+                    },
+                  ]}
+                >
+                  친구
+                </Text>
+              </Pressable>
+            </View>
             <TouchableOpacity
               onPress={() => navigateMoimEnter()}
-              style={{ width: 35, height: 40, alignItems: 'center', justifyContent: 'center' }}
+              style={{
+                width: 35,
+                height: 40,
+                alignItems: 'center',
+                justifyContent: 'center',
+                marginTop: 5,
+              }}
             >
               <EnterIcon />
               <Text style={{ fontSize: 12, fontFamily: 'Apple500', color: COLOR.main2 }}>입장</Text>
@@ -208,10 +237,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
   },
   header: {
-    marginTop: 24,
+    // marginTop: 24,
     paddingHorizontal: 24,
     flexDirection: 'row',
     justifyContent: 'space-between',
+    alignItems: 'center',
   },
   headerText: {
     fontSize: 20,
@@ -220,7 +250,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     paddingHorizontal: 24,
-    marginTop: 18,
+    marginTop: 42,
   },
   countText: {
     fontFamily: 'Apple',

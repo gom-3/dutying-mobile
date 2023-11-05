@@ -14,8 +14,8 @@ import { useAccountStore } from './src/store/account';
 import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
 import Messaging from '@react-native-firebase/messaging';
-
 import * as Sentry from '@sentry/react-native';
+import * as Application from 'expo-application';
 // import Airbridge from 'airbridge-react-native-sdk';
 // import analytics from '@react-native-firebase/analytics';
 
@@ -29,6 +29,11 @@ Sentry.init({
   dsn: 'https://93ddd999daaaa867ad39989278a40c0b@o4505477969084416.ingest.sentry.io/4506099006898176',
   tracesSampleRate: 1.0,
 });
+
+/** 업데이트 버전 확인 */
+const getAppVersion = () => {
+  console.log(Application.nativeApplicationVersion);
+};
 
 const registerForPushNotificationAsync = async () => {
   if (Device.isDevice) {
@@ -60,7 +65,7 @@ const registerForPushNotificationAsync = async () => {
       Alert.alert('알림 권한을 가져오는데 실패했습니다.');
     }
 
-    if (Messaging().isDeviceRegisteredForRemoteMessages) {
+    if (!Messaging().isDeviceRegisteredForRemoteMessages) {
       await Messaging().registerDeviceForRemoteMessages();
     }
 
@@ -96,11 +101,12 @@ export default function App() {
       NavigationBar.setButtonStyleAsync('dark');
     }
     registerForPushNotificationAsync();
+    getAppVersion();
   }, []);
 
   useAppState(onAppStateChange);
 
-  const [fontsLoaded] = useFonts({
+  const [fontsLoaded, Error] = useFonts({
     Apple: require('./src/assets/fonts/AppleSDGothicNeoR.ttf'),
     Apple500: require('./src/assets/fonts/AppleSDGothicNeoM.ttf'),
     Apple600: require('./src/assets/fonts/AppleSDGothicNeoB.ttf'),
@@ -113,7 +119,7 @@ export default function App() {
   });
 
   const prepare = useCallback(async () => {
-    if (fontsLoaded) await SplashScreen.hideAsync();
+    if (fontsLoaded || Error) await SplashScreen.hideAsync();
   }, [fontsLoaded]);
 
   useEffect(() => {

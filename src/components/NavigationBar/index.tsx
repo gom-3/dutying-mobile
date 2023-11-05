@@ -16,7 +16,7 @@ const NavigationBar = ({ page }: Props) => {
   const { onPress: navigateToHome } = useLinkProps({ to: { screen: 'Home' } });
   const { onPress: navigateToSocial } = useLinkProps({ to: { screen: 'Moim' } });
   const { onPress: navigateToWard } = useLinkProps({ to: { screen: 'Ward' } });
-
+  // const { onPress: navigateToWard } = useLinkProps({ to: { screen: 'WardCalendarPage' } });
   return (
     <View style={styles.navigationContainer}>
       <View style={styles.navigationView}>

@@ -67,7 +67,6 @@ const LoginPage = () => {
   const { data: accountData } = useQuery(['getAccount', accountId], () => getAccount(accountId), {
     enabled: accountId > 0,
   });
-
   const { mutate: oAuthLoginMutate } = useMutation(
     ({ idToken, provider }: { idToken: string; provider: string }) =>
       oAuthLogin(idToken, provider, deviceToken),
