@@ -54,7 +54,6 @@ const useDeviceCalendar = () => {
       .filter((calendar) => calendarLinks[calendar.id])
       .map((calendar) => calendar.id);
     if (idList.length === 0) return;
-
     let events = await getEventsAsync(idList, first, last);
     if (Platform.OS === 'android') {
       events = events.filter((event) => new Date(event.startDate).getMonth() === date.getMonth());
@@ -95,20 +94,13 @@ const useDeviceCalendar = () => {
         endIndex += new Date(eventEndDate.getFullYear(), eventEndDate.getMonth(), 0).getDate();
 
       if (
-        (eventStartDate.getFullYear() > date.getFullYear() &&
-          eventStartDate.getMonth() > date.getMonth()) ||
-        eventStartDate.getFullYear() > date.getFullYear()
-      )
-        startIndex += new Date(eventEndDate.getFullYear(), eventEndDate.getMonth(), 0).getDate();
-
-      if (
         eventStartDate.getMonth() < date.getMonth() ||
         eventStartDate.getFullYear() < date.getFullYear()
       )
         startIndex -= new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
 
       if (endIndex > newCalendar.length - 1) endIndex = newCalendar.length - 1;
-      let index = startIndex;
+      let index = Math.max(0, startIndex);
       while (index <= endIndex) {
         const occupiedLevels = new Set();
         let jump = 0;
@@ -150,7 +142,6 @@ const useDeviceCalendar = () => {
 
   const getPermissionFromDevice = async () => {
     const { status } = await requestCalendarPermissionsAsync();
-    console.log(status);
 
     if (status === 'granted') {
       setGranted(true);
@@ -215,7 +206,6 @@ const useDeviceCalendar = () => {
 
   useEffect(() => {
     if (granted && isCalendarChanged) {
-      console.log('hi');
       getPermissionFromDevice();
       setDeivceCalendar('isChanged', false);
     }
