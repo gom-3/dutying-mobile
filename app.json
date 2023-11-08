@@ -1,6 +1,7 @@
 {
   "expo": {
     "name": "듀팅",
+    "owner": "dutying",
     "slug": "dutying-mobile",
     "version": "1.1.29",
     "orientation": "portrait",
@@ -10,7 +11,19 @@
     "plugins": [
       "expo-apple-authentication",
       "@react-native-firebase/app",
-      ["sentry-expo"],
+      [
+        "sentry-expo"
+      ],
+      [
+        "./app.plugin.js",
+        {
+          "widgetName": "widget",
+          "ios": {
+            "devTeamId": "Y4HPW9GX7Y",
+            "appGroupIdentifier": "group.expo.modules.widgetsync"
+          }
+        }
+      ],
       [
         "expo-calendar",
         {
@@ -58,18 +71,23 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "buildNumber": "1.0.5",
       "googleServicesFile": "./GoogleService-Info.plist",
       "usesAppleSignIn": true,
       "supportsTablet": false,
       "infoPlist": {
-        "NSCalendarsUsageDescription": "개인 일정을 앱에서 함께 관리하기 위해 캘린더 권한이 필요합니다.",
-        "NSRemindersUsageDescription": "개인 일정을 앱에서 함께 관리하기 위해 캘린더 권한이 필요합니다."
+        "NSCalendarsFullAccessUsageDescription": "개인 일정을 앱에서 함께 관리하기 위해 캘린더 권한이 필요합니다.",
+        "NSRemindersFullAccessUsageDescription": "개인 일정을 앱에서 함께 관리하기 위해 캘린더 권한이 필요합니다."
       },
       "bundleIdentifier": "com.gom3.dutying",
-      "associatedDomains": ["applinks:dutying.airbridge.io", "applinks:dutying.deeplink.page"]
+      "associatedDomains": [
+        "applinks:dutying.airbridge.io",
+        "applinks:dutying.deeplink.page"
+      ]
     },
     "android": {
       "enableProguardInReleaseBuilds": true,
@@ -93,7 +111,10 @@
             "scheme": "https",
             "host": "dutying.airbridge.io"
           },
-          "category": ["BROWSABLE", "DEFAULT"]
+          "category": [
+            "BROWSABLE",
+            "DEFAULT"
+          ]
         },
         {
           "autoVerify": true,
@@ -102,7 +123,10 @@
             "scheme": "https",
             "host": "dutying.deeplink.page"
           },
-          "category": ["BROWSABLE", "DEFAULT"]
+          "category": [
+            "BROWSABLE",
+            "DEFAULT"
+          ]
         },
         {
           "autoVerify": true,
@@ -111,7 +135,10 @@
             "scheme": "http",
             "host": "dutying.airbridge.io"
           },
-          "category": ["BROWSABLE", "DEFAULT"]
+          "category": [
+            "BROWSABLE",
+            "DEFAULT"
+          ]
         },
         {
           "autoVerify": true,
@@ -120,7 +147,10 @@
             "scheme": "http",
             "host": "dutying.deeplink.page"
           },
-          "category": ["BROWSABLE", "DEFAULT"]
+          "category": [
+            "BROWSABLE",
+            "DEFAULT"
+          ]
         }
       ]
     },
@@ -129,9 +159,8 @@
     },
     "extra": {
       "eas": {
-        "projectId": "4f3009ff-f032-4d32-b711-054b0d76e953"
+        "projectId": "fc14acf6-383b-46ff-a52b-40a3abab080a"
       }
-    },
-    "owner": "cksrb63"
+    }
   }
 }

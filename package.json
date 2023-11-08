@@ -75,7 +75,8 @@
     "reanimated-color-picker": "^2.3.4",
     "sentry-expo": "~7.0.0",
     "styled-components": "^6.0.5",
-    "zustand": "^4.3.9"
+    "zustand": "^4.3.9",
+    "expo-dev-client": "~2.4.12"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
