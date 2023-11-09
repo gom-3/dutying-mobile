@@ -15,6 +15,7 @@ import { useCaledarDateStore } from 'store/calendar';
 import { useDeviceCalendarStore } from 'store/device';
 import { firebaseLogEvent } from '@libs/utils/event';
 import { useRoute } from '@react-navigation/native';
+import { Alert } from 'react-native';
 
 const useDeviceCalendarPage = () => {
   const [calendars, dutyingCalendars, calendarLink, setLink, setState] = useDeviceCalendarStore(
@@ -67,26 +68,32 @@ const useDeviceCalendarPage = () => {
   const createCalendar = async () => {
     const permission = await requestCalendarPermissionsAsync();
     if (textRef.current.length > 0 && color.length > 0) {
-      if (!isEdit) {
-        await createCalendarAsync({
-          accessLevel: CalendarAccessLevel.OWNER,
-          ownerAccount: 'Dutying',
-          name: textRef.current,
-          id: textRef.current,
-          allowsModifications: true,
-          title: `듀팅-${textRef.current}`,
-          color: color,
-          allowedAvailabilities: [Availability.BUSY, Availability.FREE],
-          source: { name: 'dutying', type: CalendarType.LOCAL, id: 'Dutying' },
-          entityType: EntityTypes.EVENT,
-        });
-      } else {
-        await updateCalendarAsync(id, {
-          title: `듀팅-${textRef.current}`,
-          color: color,
-        });
+      try{
+        if (!isEdit) {
+          await createCalendarAsync({
+            accessLevel: CalendarAccessLevel.OWNER,
+            ownerAccount: 'Dutying',
+            name: textRef.current,
+            id: textRef.current,
+            allowsModifications: true,
+            title: `듀팅-${textRef.current}`,
+            color: color,
+            allowedAvailabilities: [Availability.BUSY, Availability.FREE],
+            source: { name: 'dutying', type: CalendarType.LOCAL, id: 'Dutying' },
+            entityType: EntityTypes.EVENT,
+          });
+        } else {
+          await updateCalendarAsync(id, {
+            title: `듀팅-${textRef.current}`,
+            color: color,
+          });
+        }
+        setState('isChanged', true);
+      }catch{
+        Alert.alert('권한 거부됨', '해당 기기에서 캘린더를 생성/수정 할 수 없습니다. 기기 설정을 확인해 주세요.');
       }
-      setState('isChanged', true);
+      
+      
       ref.current?.close();
     } else {
       if (textRef.current.length === 0) {

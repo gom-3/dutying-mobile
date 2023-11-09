@@ -6,12 +6,15 @@ export type Friend = Pick<Account, 'accountId' | 'name' | 'profileImgBase64'> & 
 };
 
 type FriendCollectionResponseDTO = (Friend & {
-  accountShiftTypes: (Pick<Shift, 'shortName' | 'name' | 'classification' | 'color'> & {
-    date: string;
-    startTime: string;
-    endTime: string;
-    dateDiff: number;
-  })[];
+  accountShiftTypes: (
+    | (Pick<Shift, 'shortName' | 'name' | 'classification' | 'color'> & {
+        date: string;
+        startTime: string;
+        endTime: string;
+        dateDiff: number;
+      })
+    | null
+  )[];
 })[];
 
 export const getFriendCollection = async (year: number, month: number) => {

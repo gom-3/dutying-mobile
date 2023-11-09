@@ -28,7 +28,7 @@ const useFriendPage = () => {
 
   const { data: accountData } = useQuery(
     ['getAccount', account.accountId],
-    () => getAccount(account.accountId),
+    () => getAccount(),
     {
       enabled: !account.code,
     },

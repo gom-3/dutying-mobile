@@ -2,7 +2,7 @@
   "expo": {
     "name": "듀팅",
     "slug": "dutying-mobile",
-    "version": "1.1.29",
+    "version": "1.1.32",
     "orientation": "portrait",
     "icon": "./src/assets/icon.png",
     "userInterfaceStyle": "light",
@@ -65,8 +65,8 @@
       "usesAppleSignIn": true,
       "supportsTablet": false,
       "infoPlist": {
-        "NSCalendarsUsageDescription": "개인 일정을 앱에서 함께 관리하기 위해 캘린더 권한이 필요합니다.",
-        "NSRemindersUsageDescription": "개인 일정을 앱에서 함께 관리하기 위해 캘린더 권한이 필요합니다."
+        "NSCalendarsFullAccessUsageDescription": "개인 일정을 앱에서 함께 관리하기 위해 캘린더 권한이 필요합니다.",
+        "NSRemindersFullAccessUsageDescription": "개인 일정을 앱에서 함께 관리하기 위해 캘린더 권한이 필요합니다."
       },
       "bundleIdentifier": "com.gom3.dutying",
       "associatedDomains": ["applinks:dutying.airbridge.io", "applinks:dutying.deeplink.page"]

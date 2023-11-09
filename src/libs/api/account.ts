@@ -42,7 +42,7 @@ export const initAccount = async (accountId: number, name: string, profileImgBas
   ).data;
 };
 
-export const getAccount = async (accountId: number) => {
+export const getAccount = async () => {
   return (await axiosInstance.get<Account>(`/accounts/me`)).data;
 };
 

@@ -42,6 +42,7 @@ const useDeviceCalendar = () => {
       state.setState,
     ]);
   const [editableCalendar, setEditableCalendar] = useState<Calendar[]>([]);
+  const [granted, setGranted] = useState(false);
 
   const getEventFromDevice = async () => {
     const year = date.getFullYear();
@@ -52,9 +53,7 @@ const useDeviceCalendar = () => {
     const idList = deviceCalendar
       .filter((calendar) => calendarLinks[calendar.id])
       .map((calendar) => calendar.id);
-
     if (idList.length === 0) return;
-
     let events = await getEventsAsync(idList, first, last);
     if (Platform.OS === 'android') {
       events = events.filter((event) => new Date(event.startDate).getMonth() === date.getMonth());
@@ -68,6 +67,7 @@ const useDeviceCalendar = () => {
         dateDiffInDays(new Date(b.startDate), new Date(b.endDate)) -
         dateDiffInDays(new Date(a.startDate), new Date(a.endDate)),
     );
+
     events.forEach((event) => {
       const eventStartDate = new Date(event.startDate);
       let eventEndDate = new Date(event.endDate);
@@ -95,20 +95,13 @@ const useDeviceCalendar = () => {
         endIndex += new Date(eventEndDate.getFullYear(), eventEndDate.getMonth(), 0).getDate();
 
       if (
-        (eventStartDate.getFullYear() > date.getFullYear() &&
-          eventStartDate.getMonth() > date.getMonth()) ||
-        eventStartDate.getFullYear() > date.getFullYear()
-      )
-        startIndex += new Date(eventEndDate.getFullYear(), eventEndDate.getMonth(), 0).getDate();
-
-      if (
         eventStartDate.getMonth() < date.getMonth() ||
         eventStartDate.getFullYear() < date.getFullYear()
       )
         startIndex -= new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
 
       if (endIndex > newCalendar.length - 1) endIndex = newCalendar.length - 1;
-      let index = startIndex;
+      let index = Math.max(0, startIndex);
       while (index <= endIndex) {
         const occupiedLevels = new Set();
         let jump = 0;
@@ -152,6 +145,7 @@ const useDeviceCalendar = () => {
     const { status } = await requestCalendarPermissionsAsync();
 
     if (status === 'granted') {
+      setGranted(true);
       let calendars = await getCalendarsAsync(EntityTypes.EVENT);
       const editableCalendars = calendars.filter(
         (calendar) => calendar.allowsModifications === true,
@@ -179,8 +173,12 @@ const useDeviceCalendar = () => {
         calendar.title.startsWith('듀팅'),
       );
       if (deviceDutyingCalendars.length === 0) {
-        await createCalendarAsync(newCalendars[0]);
-        await createCalendarAsync(newCalendars[1]);
+        try {
+          await createCalendarAsync(newCalendars[0]);
+          await createCalendarAsync(newCalendars[1]);
+        } catch {
+          Alert.alert('권한 거부됨', '해당 기기에서 캘린더를 생성할 수 없습니다. 기기 설정을 확인해 주세요.');
+        }
         calendars = await getCalendarsAsync();
         calendars = calendars.filter((calendar) => calendar.allowsModifications === true);
         deviceDutyingCalendars = calendars.filter((calendar) => calendar.title.startsWith('듀팅'));
@@ -197,7 +195,10 @@ const useDeviceCalendar = () => {
           // 설정으로 이동하는 버튼
           {
             text: '설정으로 이동',
-            onPress: () => Linking.openURL('app-settings:'),
+            onPress: () => {
+              if (Platform.OS === 'ios') Linking.openURL('app-settings:');
+              else Linking.openSettings();
+            },
           },
         ],
       );
@@ -209,11 +210,11 @@ const useDeviceCalendar = () => {
   }, []);
 
   useEffect(() => {
-    if (isCalendarChanged) {
+    if (granted && isCalendarChanged) {
       getPermissionFromDevice();
       setDeivceCalendar('isChanged', false);
     }
-  }, [isCalendarChanged]);
+  }, [granted, isCalendarChanged]);
 
   useEffect(() => {
     if (isScheduleUpdated) {

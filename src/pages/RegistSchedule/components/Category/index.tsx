@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Alert } from 'react-native';
 import ArrowIcon from '@assets/svgs/under-arrow-black.svg';
 import useCategory from './index.hook';
 import { hexToRgba } from '@libs/utils/color';
@@ -7,12 +7,20 @@ import { BottomSheetBackdrop, BottomSheetModal } from '@gorhom/bottom-sheet';
 import { useCallback } from 'react';
 import BottomSheetHeader from '@components/BottomSheetHeader';
 import PlusIcon from '@assets/svgs/plus.svg';
+import { useNavigation } from '@react-navigation/native';
 
 const Category = () => {
   const {
-    states: { filteredDeviceCalendar, selectedCalendar, ref },
+    states: { deviceCalendar, filteredDeviceCalendar, selectedCalendar, ref },
     actions: { openModal, pressCategoryHandler, navigateEditDeviceCalendar },
   } = useCategory();
+
+  const navigate = useNavigation();
+
+  if (deviceCalendar.length === 0) {
+    Alert.alert('일정 추가가 가능한 캘린더가 없습니다.');
+    navigate.goBack();
+  }
 
   const renderBackdrop = useCallback((props: any) => <BottomSheetBackdrop {...props} />, []);
 

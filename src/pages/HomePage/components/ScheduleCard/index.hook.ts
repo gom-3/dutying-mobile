@@ -32,13 +32,8 @@ const useScheduleCard = (isCardOpen: boolean) => {
     to: { screen: 'RegistDuty', params: { dateFrom: date.toISOString() } },
   });
   const carouselRef = useRef<any>(null);
-  const nextDate = new Date(date);
   const year = date.getFullYear();
   const month = date.getMonth();
-  nextDate.setDate(nextDate.getDate() + 1);
-
-  const prevDate = new Date(date);
-  prevDate.setDate(prevDate.getDate() - 1);
 
   const backDropPressHandler = () => {
     setState('isCardOpen', false);
@@ -64,14 +59,15 @@ const useScheduleCard = (isCardOpen: boolean) => {
   };
 
   const changeDate = (index: number) => {
-    const newDate = new Date(calendar[index].date);
+    const first = new Date(year, month, 1).getDay();
+    const newDate = new Date(calendar[index + first].date);
     setState('date', newDate);
   };
 
   const thisMonthDefaultIndex = useMemo(() => {
     const first = new Date(year, month, 1).getDay();
     return cardDefaultIndex - first;
-  }, [cardDefaultIndex]);
+  }, [cardDefaultIndex, month, year]);
 
   const thisMonthCalendar = useMemo(() => {
     return calendar.filter((cell) => cell.date.getMonth() === date.getMonth());

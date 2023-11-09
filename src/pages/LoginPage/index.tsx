@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   Pressable,
   Alert,
+  Linking,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import KakaoLogo from '@assets/svgs/kakao.svg';
@@ -64,7 +65,7 @@ const LoginPage = () => {
     }
   }, [click]);
 
-  const { data: accountData } = useQuery(['getAccount', accountId], () => getAccount(accountId), {
+  const { data: accountData } = useQuery(['getAccount', accountId], () => getAccount(), {
     enabled: accountId > 0,
   });
   const { mutate: oAuthLoginMutate } = useMutation(
@@ -72,6 +73,7 @@ const LoginPage = () => {
       oAuthLogin(idToken, provider, deviceToken),
     {
       onSuccess: (data) => {
+        console.log(data);
         if (data.status === 'INITIAL' || data.name === null) {
           setSignupState('id', data.accountId);
           navigateSignup();
@@ -109,14 +111,35 @@ const LoginPage = () => {
 
   const onPressAppleLogin = async () => {
     firebaseLogEvent('apple');
-    const token = await AppleAuthentication.signInAsync({
-      requestedScopes: [
-        AppleAuthentication.AppleAuthenticationScope.FULL_NAME,
-        AppleAuthentication.AppleAuthenticationScope.EMAIL,
-      ],
-    });
-    setSignupState('name', '' + token.fullName?.familyName + token.fullName?.givenName);
-    oAuthLoginMutate({ idToken: token.identityToken || '', provider: 'apple' });
+
+    try {
+      const token = await AppleAuthentication.signInAsync({
+        requestedScopes: [
+          AppleAuthentication.AppleAuthenticationScope.FULL_NAME,
+          AppleAuthentication.AppleAuthenticationScope.EMAIL,
+        ],
+      });
+      if (token.fullName?.familyName !== null) {
+        setSignupState('name', '' + token.fullName?.familyName + token.fullName?.givenName);
+      }
+      oAuthLoginMutate({ idToken: token.identityToken || '', provider: 'apple' });
+    } catch {
+      Alert.alert(
+        '애플 로그인 에러',
+        'Settings -> AppleId -> password&security -> Apps using Apple Id -> 듀팅 -> stop using Apple ID 후 재시도해주세요. ',
+        [
+          { text: '취소', style: 'cancel' },
+          // 설정으로 이동하는 버튼
+          {
+            text: '설정으로 이동',
+            onPress: () => {
+              if (Platform.OS === 'ios') Linking.openURL('app-settings:');
+              else Linking.openSettings();
+            },
+          },
+        ],
+      );
+    }
   };
 
   return (
