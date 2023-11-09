@@ -24,6 +24,7 @@ import FriendsPage from './Social/Friend';
 import RequestFriendPage from './Social/Friend/Request';
 import EnterWardPage from './EnterWardPage';
 import RequestWardShiftPage from './Ward/Request';
+import RequestShift from './Ward/Request/RequestShift';
 
 // Airbridge.deeplink.setDeeplinkListener((deeplink) => {
 //   // code that will run when app is opened with deep-link or deferred-deep-link
@@ -80,21 +81,23 @@ const Router = () => {
           options={{ gestureEnabled: false }}
         />
         <Stack.Screen name="DeviceCalendar" component={DeviceCalendarPage} />
-        {/* <Stack.Screen
+        <Stack.Screen
           name="Ward"
           component={WardPage}
           options={{ animation: 'none', gestureEnabled: false }}
-        /> */}
-        <Stack.Screen
+        />
+        {/* <Stack.Screen
           name="Ward"
           component={WardCalendarPage}
           options={{ animation: 'none', gestureEnabled: false }}
-        />
+        /> */}
         <Stack.Screen
           name="RequestWardShift"
           component={RequestWardShiftPage}
           options={{ animation: 'none', gestureEnabled: false }}
         />
+        <Stack.Screen
+          name='RequestWardShiftConfirm' component={RequestShift} />
       </Stack.Navigator>
     </NavigationContainer>
   );

@@ -67,6 +67,7 @@ const useDeviceCalendar = () => {
         dateDiffInDays(new Date(b.startDate), new Date(b.endDate)) -
         dateDiffInDays(new Date(a.startDate), new Date(a.endDate)),
     );
+
     events.forEach((event) => {
       const eventStartDate = new Date(event.startDate);
       let eventEndDate = new Date(event.endDate);
@@ -172,8 +173,12 @@ const useDeviceCalendar = () => {
         calendar.title.startsWith('듀팅'),
       );
       if (deviceDutyingCalendars.length === 0) {
-        await createCalendarAsync(newCalendars[0]);
-        await createCalendarAsync(newCalendars[1]);
+        try {
+          await createCalendarAsync(newCalendars[0]);
+          await createCalendarAsync(newCalendars[1]);
+        } catch {
+          Alert.alert('권한 거부됨', '해당 기기에서 캘린더를 생성할 수 없습니다. 기기 설정을 확인해 주세요.');
+        }
         calendars = await getCalendarsAsync();
         calendars = calendars.filter((calendar) => calendar.allowsModifications === true);
         deviceDutyingCalendars = calendars.filter((calendar) => calendar.title.startsWith('듀팅'));

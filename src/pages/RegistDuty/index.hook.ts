@@ -21,20 +21,16 @@ const useRegistDuty = (dateFrom?: string) => {
     state.calendar,
     state.setState,
   ]);
+  const [isLoading, setIsLoading] = useState(false);
   const [userId] = useAccountStore((state) => [state.account.accountId]);
   const [shiftTypes] = useShiftTypeStore((state) => [state.shiftTypes]);
   const [tempCalendar, setTempCalendar] = useState<DateType[]>(calendar);
   const [editShift] = useEditShiftTypeStore((state) => [state.editShift]);
   const { onPress: navigateToEidtShiftType } = useLinkProps({ to: { screen: 'ShiftTypeEdit' } });
   const { onPress: navigateToShiftType } = useLinkProps({ to: { screen: 'ShiftType' } });
-  const [index, setIndex] = useState(
-    calendar.findIndex((t) =>
-      isSameDate(
-        t.date,
-        dateFrom ? new Date(dateFrom) : new Date(date.getFullYear(), date.getMonth(), 1),
-      ),
-    ),
-  );
+  const year = date.getFullYear();
+  const month = date.getMonth();
+  const [index, setIndex] = useState(date.getDate() + new Date(year, month, 1).getDay() - 1);
   const navigation = useNavigation();
   const queryClient = useQueryClient();
 
@@ -44,7 +40,8 @@ const useRegistDuty = (dateFrom?: string) => {
 
     for (let i = 0; i < array.length; i += 4) {
       let chunk = array.slice(i, i + 4);
-      if (chunk.length < 4) chunk = chunk.concat(Array.from({ length: 4 - chunk.length }, () => null));
+      if (chunk.length < 4)
+        chunk = chunk.concat(Array.from({ length: 4 - chunk.length }, () => null));
       result.push(chunk);
     }
     return result;
@@ -63,6 +60,9 @@ const useRegistDuty = (dateFrom?: string) => {
           date.getFullYear(),
           date.getMonth(),
         ]);
+      },
+      onSettled: () => {
+        setIsLoading(false);
       },
     },
   );
@@ -85,8 +85,6 @@ const useRegistDuty = (dateFrom?: string) => {
   };
 
   const registCalendar = useMemo(() => {
-    const year = date.getFullYear();
-    const month = date.getMonth();
     const first = new Date(year, month, 1);
     const last = new Date(year, month + 1, 0);
     const calendar: DateType[] = [];
@@ -182,6 +180,8 @@ const useRegistDuty = (dateFrom?: string) => {
   };
 
   const saveRegistDutyChange = () => {
+    if (isLoading) return;
+    setIsLoading(true);
     firebaseLogEvent('regist_shift');
     const accountShiftList: AccountShiftRequest[] = [];
 
@@ -210,6 +210,7 @@ const useRegistDuty = (dateFrom?: string) => {
       shiftTypes,
       shiftTypesCount,
       shiftTypeButtons,
+      isLoading,
     },
     actions: {
       insertShift,

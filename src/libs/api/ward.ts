@@ -8,3 +8,7 @@ export const addMeToWatingNurses = async (wardId: number) =>
 
 export const deleteWatingNurses = async (wardId: number, nurseId: number) =>
   (await axiosInstance.delete(`/wards/${wardId}/waiting-nurses?nurseId=${nurseId}`)).data;
+
+export const getWardShiftCollection = async (wardId: number, shiftTeamId: number) => {
+  return (await axiosInstance.get(`/wards/${wardId}/shift-teams/${shiftTeamId}/duty/mobile`)).data;
+};

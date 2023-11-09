@@ -2,18 +2,18 @@ import axios from 'axios';
 import { navigate } from '@libs/utils/navigate';
 import { useAccountStore } from 'store/account';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-// import CookieManager from '@react-native-cookies/cookies';
+import CookieManager from '@react-native-cookies/cookies';
 import { Alert } from 'react-native';
 
-export const API_URL = 'https://dev.api.dutying.net';
-
+export const API_URL = process.env.NODE_ENV === 'production' ? 'https://api.dutying.net' : 'https://dev.api.dutying.net';
+// export const API_URL = 'https://api.dutying.net';
 const axiosInstance = axios.create({
   baseURL: API_URL,
   headers: {
     'Content-Type': 'application/json',
   },
 });
-
+console.log(API_URL);
 axiosInstance.interceptors.response.use(
   (response) => response,
   async (error) => {
@@ -21,21 +21,21 @@ axiosInstance.interceptors.response.use(
       if (error.response.status === 401) {
         try {
           // refreshToken Check
-          // const { refreshToken } = await CookieManager.get(API_URL);
-          // if (!refreshToken) {
-          //   const refreshTokenValue = await AsyncStorage.getItem('refresh');
-          //   const refreshTokenExpires = await AsyncStorage.getItem('refreshExpires');
-          //   CookieManager.set(API_URL, {
-          //     name: 'refreshToken',
-          //     value: refreshTokenValue || '',
-          //     domain: 'api.dutying.net',
-          //     path: '/',
-          //     secure: true,
-          //     version: '0',
-          //     httpOnly: true,
-          //     expires: refreshTokenExpires || '',
-          //   });
-          // }
+          const { refreshToken } = await CookieManager.get(API_URL);
+          if (!refreshToken) {
+            const refreshTokenValue = await AsyncStorage.getItem('refresh');
+            const refreshTokenExpires = await AsyncStorage.getItem('refreshExpires');
+            CookieManager.set(API_URL, {
+              name: 'refreshToken',
+              value: refreshTokenValue || '',
+              domain: 'api.dutying.net',
+              path: '/',
+              secure: true,
+              version: '0',
+              httpOnly: true,
+              expires: refreshTokenExpires || '',
+            });
+          }
           // refresh
           const accessToken = await refresh();
           const originalRequest = error.config;
@@ -48,6 +48,10 @@ axiosInstance.interceptors.response.use(
         Alert.alert(
           error.response.data ? error.response.data.message : '서버에서 에러가 발생했습니다.',
         );
+        if(error.config){
+          console.log(error.config.url);
+          throw error.config.url;
+        }
       }
     }
     return Promise.reject(error);

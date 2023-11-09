@@ -1,7 +1,7 @@
 import Shift from '@components/Shift';
 import useRegistDuty from './index.hook';
 import { COLOR } from 'index.style';
-import { View, Text, Pressable, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, Pressable, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import PageViewContainer from '@components/PageView';
 import PageHeader from '@components/PageHeader';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -12,13 +12,14 @@ import CheckIcon from '@assets/svgs/check.svg';
 import TrashIcon from '@assets/svgs/trash-color.svg';
 import EditIcon from '@assets/svgs/edit-shift-type-gray.svg';
 import { useRoute } from '@react-navigation/native';
+import LottieLoading from '@components/LottieLoading';
 
 const RegistDuty = () => {
   const route = useRoute<any>();
   const { params } = route;
   const dateFrom = params ? params.dateFrom : undefined;
   const {
-    state: { date, weeks, selectedDate, shiftTypes, shiftTypesCount, shiftTypeButtons },
+    state: { isLoading, date, weeks, selectedDate, shiftTypes, shiftTypesCount, shiftTypeButtons },
     actions: {
       insertShift,
       deleteShift,
@@ -41,114 +42,126 @@ const RegistDuty = () => {
               </TouchableOpacity>
             }
           />
-          <View style={{ flexDirection: 'row', justifyContent: 'space-between', padding: 22 }}>
-            <MonthSelector />
-          </View>
-          <View style={styles.calendarHeaderView}>
-            {days.map((day) => (
-              <View key={day} style={styles.dayView}>
-                <Text
-                  style={[
-                    styles.dayText,
-                    {
-                      color: day === '일' ? '#FF99AA' : day === '토' ? '#8B9BFF' : COLOR.sub25,
-                    },
-                  ]}
-                >
-                  {day}
-                </Text>
+          <ScrollView showsVerticalScrollIndicator={false}>
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                paddingLeft: 22,
+                paddingTop: 20,
+                paddingBottom: 12,
+              }}
+            >
+              <MonthSelector />
+            </View>
+            <View style={styles.calendarHeaderView}>
+              {days.map((day) => (
+                <View key={day} style={styles.dayView}>
+                  <Text
+                    style={[
+                      styles.dayText,
+                      {
+                        color: day === '일' ? '#FF99AA' : day === '토' ? '#8B9BFF' : COLOR.sub25,
+                      },
+                    ]}
+                  >
+                    {day}
+                  </Text>
+                </View>
+              ))}
+            </View>
+            {weeks.map((week, i) => (
+              <View key={i} style={styles.weekView}>
+                {week.map((day) => {
+                  const isSame = isSameDate(selectedDate, day.date);
+                  const isSameMonth = date.getMonth() === day.date.getMonth();
+                  return (
+                    <Pressable
+                      key={day.date.getTime()}
+                      style={{
+                        flex: 1,
+                        height: 67,
+                      }}
+                      onPress={() => selectDate(day.date)}
+                    >
+                      <View
+                        style={[
+                          styles.dateView,
+                          {
+                            backgroundColor: isSame ? COLOR.sub5 : 'white',
+                          },
+                        ]}
+                      >
+                        <Text style={[styles.dateText, { opacity: isSameMonth ? 1 : 0.3 }]}>
+                          {day.date.getDate()}
+                        </Text>
+                        <Shift
+                          date={day.date.getDate()}
+                          shift={day.shift !== null ? shiftTypes.get(day.shift) : undefined}
+                          isCurrent={isSameMonth}
+                          isToday={isSame}
+                          fullNameVisibilty
+                        />
+                      </View>
+                    </Pressable>
+                  );
+                })}
               </View>
             ))}
-          </View>
-          {weeks.map((week, i) => (
-            <View key={i} style={styles.weekView}>
-              {week.map((day) => {
-                const isSame = isSameDate(selectedDate, day.date);
-                const isSameMonth = date.getMonth() === day.date.getMonth();
-                return (
-                  <Pressable
-                    key={day.date.getTime()}
-                    style={{
-                      flex: 1,
-                      height: 67,
-                    }}
-                    onPress={() => selectDate(day.date)}
+            <View style={styles.registView}>
+              <View style={styles.registHeaderView}>
+                <Text style={styles.registHeaderText}>근무 유형 선택</Text>
+                <View style={{ flexDirection: 'row' }}>
+                  <TouchableOpacity
+                    onPress={navigateToShiftType}
+                    style={{ marginRight: 8, padding: 4 }}
                   >
-                    <View
-                      style={[
-                        styles.dateView,
-                        {
-                          backgroundColor: isSame ? COLOR.sub5 : 'white',
-                        },
-                      ]}
-                    >
-                      <Text style={[styles.dateText, { opacity: isSameMonth ? 1 : 0.3 }]}>
-                        {day.date.getDate()}
-                      </Text>
-                      <Shift
-                        date={day.date.getDate()}
-                        shift={day.shift !== null ? shiftTypes.get(day.shift) : undefined}
-                        isCurrent={isSameMonth}
-                        isToday={isSame}
-                        fullNameVisibilty
-                      />
+                    <EditIcon />
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={deleteShift} style={{ padding: 4 }}>
+                    <View style={styles.deleteShiftView}>
+                      <Text style={styles.deleteShiftText}>삭제</Text>
+                      <TrashIcon />
                     </View>
-                  </Pressable>
+                  </TouchableOpacity>
+                </View>
+              </View>
+              {shiftTypeButtons.map((shiftTypeList, i) => {
+                return (
+                  <View
+                    key={shiftTypeList[0]?.accountShiftTypeId + `${i}`}
+                    style={styles.registShiftItemsView}
+                  >
+                    {shiftTypeList.map((shift) => {
+                      if (shift)
+                        return (
+                          <TouchableOpacity
+                            activeOpacity={0.7}
+                            key={shift.accountShiftTypeId}
+                            onPress={() => insertShift(shift.accountShiftTypeId)}
+                            delayLongPress={700}
+                            onLongPress={() => longPressShift(shift)}
+                            style={styles.shiftItemView}
+                          >
+                            <Text style={styles.shiftCountText}>
+                              {shiftTypesCount.get(shift.accountShiftTypeId) || 0}
+                            </Text>
+                            <View style={[styles.shiftView, { backgroundColor: shift.color }]}>
+                              <Text style={styles.shiftShortNameText}>{shift.shortName}</Text>
+                              <Text style={styles.shiftFullNameText}>{shift.name}</Text>
+                            </View>
+                          </TouchableOpacity>
+                        );
+                      else return <View style={styles.shiftItemView} />;
+                    })}
+                  </View>
                 );
               })}
             </View>
-          ))}
-          <View style={styles.registView}>
-            <View style={styles.registHeaderView}>
-              <Text style={styles.registHeaderText}>근무 유형 선택</Text>
-              <View style={{ flexDirection: 'row' }}>
-                <TouchableOpacity
-                  onPress={navigateToShiftType}
-                  style={{ marginRight: 8, padding: 4 }}
-                >
-                  <EditIcon />
-                </TouchableOpacity>
-                <TouchableOpacity onPress={deleteShift} style={{ padding: 4 }}>
-                  <View style={styles.deleteShiftView}>
-                    <Text style={styles.deleteShiftText}>삭제</Text>
-                    <TrashIcon />
-                  </View>
-                </TouchableOpacity>
-              </View>
-            </View>
-            {shiftTypeButtons.map((shiftTypeList, i) => {
-              return (
-                <View
-                  key={shiftTypeList[0]?.accountShiftTypeId + `${i}`}
-                  style={styles.registShiftItemsView}
-                >
-                  {shiftTypeList.map((shift) => {
-                    if (shift)
-                      return (
-                        <TouchableOpacity
-                          activeOpacity={0.7}
-                          key={shift.accountShiftTypeId}
-                          onPress={() => insertShift(shift.accountShiftTypeId)}
-                          delayLongPress={700}
-                          onLongPress={() => longPressShift(shift)}
-                          style={styles.shiftItemView}
-                        >
-                          <Text style={styles.shiftCountText}>
-                            {shiftTypesCount.get(shift.accountShiftTypeId) || 0}
-                          </Text>
-                          <View style={[styles.shiftView, { backgroundColor: shift.color }]}>
-                            <Text style={styles.shiftShortNameText}>{shift.shortName}</Text>
-                            <Text style={styles.shiftFullNameText}>{shift.name}</Text>
-                          </View>
-                        </TouchableOpacity>
-                      );
-                    else return <View style={styles.shiftItemView} />;
-                  })}
-                </View>
-              );
-            })}
-          </View>
+            <View style={{ height: 150 }} />
+          </ScrollView>
         </SafeAreaView>
+        {isLoading && <LottieLoading />}
       </BottomSheetModalProvider>
     </PageViewContainer>
   );

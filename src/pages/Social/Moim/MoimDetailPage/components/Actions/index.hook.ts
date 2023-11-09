@@ -13,6 +13,7 @@ const useAction = (moim: Moim, close: () => void) => {
   const [accountId] = useAccountStore((state) => [state.account.accountId]);
   const [moimCode] = useMoimStore((state) => [state.moimCode]);
   const [isInviteModalOpen, setIsInviteModalOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isKickModalOpen, setIsKickModalOpen] = useState(false);
   const [isChangeMasterModalOpen, setIsChangeMasterModalOpen] = useState(false);
@@ -31,12 +32,18 @@ const useAction = (moim: Moim, close: () => void) => {
       queryClient.invalidateQueries(['getMoimList', accountId]);
       navigate.goBack();
     },
+    onSettled: () => {
+      setIsLoading(false);
+    },
   });
 
   const { mutate: outMoimMutate } = useMutation(() => withdrawMoim(moim.moimId), {
     onSuccess: () => {
       queryClient.invalidateQueries(['getMoimList', accountId]);
       navigate.goBack();
+    },
+    onSettled: () => {
+      setIsLoading(false);
     },
   });
 
@@ -49,6 +56,9 @@ const useAction = (moim: Moim, close: () => void) => {
         setIsKickModalOpen(false);
         kickRef.current?.present();
       },
+      onSettled: () => {
+        setIsLoading(false);
+      },
     },
   );
 
@@ -60,10 +70,15 @@ const useAction = (moim: Moim, close: () => void) => {
         setIsChangeMasterModalOpen(false);
         changeRef.current?.present();
       },
+      onSettled: () => {
+        setIsLoading(false);
+      },
     },
   );
 
   const pressAccetOutModal = () => {
+    if (isLoading) return;
+    setIsLoading(true);
     setIsOutModalOpen(false);
     outMoimMutate();
   };
@@ -121,6 +136,23 @@ const useAction = (moim: Moim, close: () => void) => {
     setIsKickModalOpen(false);
     kickRef.current?.present();
   };
+
+  const pressKickMemberButton = (id: number) => {
+    if (isLoading) return;
+    setIsLoading(true);
+    kickMemberMutate(id);
+  };
+  const pressDeleteMoimButton = () => {
+    if (isLoading) return;
+    setIsLoading(true);
+    deleteMoimMutate();
+  };
+  const pressChangeHostButton = (id: number) => {
+    if (isLoading) return;
+    setIsLoading(true);
+    changeHostMutate(id);
+  };
+
   return {
     states: {
       isInviteModalOpen,
@@ -149,8 +181,9 @@ const useAction = (moim: Moim, close: () => void) => {
       openOutModal,
       closeOutModal,
       pressAccetOutModal,
-      kickMemberMutate,
-      changeHostMutate
+      pressChangeHostButton,
+      pressKickMemberButton,
+      pressDeleteMoimButton,
     },
   };
 };

@@ -3,19 +3,15 @@ import PageViewContainer from '@components/PageView';
 import { View } from 'react-native';
 import useWardPage from './index.hook';
 import EnterWardPendingPage from './components/EnterWardPending';
+import WardCalendarPage from './Calendar';
 
 const WardPage = () => {
   const {
     states: { account },
   } = useWardPage();
-  console.log(account.status);
   return (
     <PageViewContainer>
-      {account.status === 'LINKED' ? (
-        <View>{/* @TODO 병동 페이지 제작 */}</View>
-      ) : (
-        <EnterWardPendingPage />
-      )}
+      {account.status === 'LINKED' ? <WardCalendarPage /> : <EnterWardPendingPage />}
       <NavigationBar page="ward" />
     </PageViewContainer>
   );

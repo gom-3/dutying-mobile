@@ -25,6 +25,7 @@ export type StackParams = {
   RequestFriend: undefined;
   EnterWard: undefined;
   RequestWardShift: undefined;
+  RequestWardShiftConfirm: undefined;
 };
 
 export const Stack = createNativeStackNavigator<StackParams>();
