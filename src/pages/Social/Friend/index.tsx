@@ -20,6 +20,17 @@ import LottieLoading from '@components/LottieLoading';
 
 const weekEnum = ['첫째 주', '둘째 주', '셋째 주', '넷째 주', '다섯째 주', '여섯째 주'];
 
+const NoFriend = (
+  <View style={{ alignItems: 'center', padding: 20 }}>
+    <Text style={{ color: COLOR.sub3, fontSize: 14, fontFamily: 'Apple' }}>
+      아직 친구가 없어요.
+    </Text>
+    <Text style={{ color: COLOR.sub3, fontSize: 14, fontFamily: 'Apple' }}>
+      코드를 공유해서 친구를 만들어보세요!
+    </Text>
+  </View>
+);
+
 const FriendsPage = () => {
   const {
     states: {
@@ -50,7 +61,7 @@ const FriendsPage = () => {
       <BottomSheetModalProvider>
         <AlertModalInvite
           text="내 코드 공유하기"
-          subText="아래 코드를 입력하면 친구를 맺을 수 있어요!"
+          subText="아래 코드를 입력하면 나와 친구를 맺을 수 있어요!"
           code={account.code || ''}
           close={() => setIsInviteModalOpen(false)}
           isOpen={isIniviteModalOpen}
@@ -102,7 +113,7 @@ const FriendsPage = () => {
               <Text style={styles.sectionDesc}>친구들의 근무는 무엇일까요?</Text>
             </View>
           </View>
-          <TodayShift />
+          {friends && friends.length > 0 ? <TodayShift /> : NoFriend}
           <View style={{ height: 1, backgroundColor: '#e7e7ef', marginVertical: 16 }} />
           <View
             style={{
@@ -119,27 +130,39 @@ const FriendsPage = () => {
           {favoriteFriends && favoriteFriends?.length > 0 && (
             <SelectedFriends favoriteFriends={favoriteFriends} />
           )}
-          <View style={styles.weekNumber}>
-            <Text style={styles.weekNumberText}>
-              {`${date.getMonth() + 1}월 `}
-              {weekEnum[currentWeek]}
-            </Text>
-            <TouchableOpacity
-              onPress={() =>
-                setState('date', new Date(date.getFullYear(), date.getMonth(), date.getDate() - 7))
-              }
-            >
-              <ArrowLeftIcon width={40} height={40} />
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() =>
-                setState('date', new Date(date.getFullYear(), date.getMonth(), date.getDate() + 7))
-              }
-            >
-              <ArrowRightIcon width={40} height={40} />
-            </TouchableOpacity>
-          </View>
-          <CollectionTable />
+          {friends && friends.length > 0 ? (
+            <View>
+              <View style={styles.weekNumber}>
+                <Text style={styles.weekNumberText}>
+                  {`${date.getMonth() + 1}월 `}
+                  {weekEnum[currentWeek]}
+                </Text>
+                <TouchableOpacity
+                  onPress={() =>
+                    setState(
+                      'date',
+                      new Date(date.getFullYear(), date.getMonth(), date.getDate() - 7),
+                    )
+                  }
+                >
+                  <ArrowLeftIcon width={40} height={40} />
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() =>
+                    setState(
+                      'date',
+                      new Date(date.getFullYear(), date.getMonth(), date.getDate() + 7),
+                    )
+                  }
+                >
+                  <ArrowRightIcon width={40} height={40} />
+                </TouchableOpacity>
+              </View>
+              <CollectionTable />
+            </View>
+          ) : (
+            <View style={{ marginTop: 50 }}>{NoFriend}</View>
+          )}
         </SafeAreaView>
       </BottomSheetModalProvider>
       {!isBottomSheetOpen && <NavigationBar page="social" />}

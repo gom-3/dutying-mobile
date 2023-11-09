@@ -11,13 +11,17 @@ const useCategory = () => {
     state.calendars,
     state.calendarLink,
   ]);
+
   const [calendarId, setState] = useScheduleStore((state) => [state.calendarId, state.setState]);
   const { onPress: navigateEditDeviceCalendar } = useLinkProps({
     to: { screen: 'DeviceCalendar', params: { isRedirected: true } },
   });
 
   const filteredDeviceCalendar = useMemo(
-    () => deviceCalendar.filter((calendar) => calendarLink[calendar.id] && calendar.allowsModifications === true),
+    () =>
+      deviceCalendar.filter(
+        (calendar) => calendarLink[calendar.id] && calendar.allowsModifications === true,
+      ),
     [],
   );
   const ref = useRef<BottomSheetModal>(null);
@@ -26,7 +30,8 @@ const useCategory = () => {
     if (calendarId === '') setState('calendarId', filteredDeviceCalendar[0].id);
   }, []);
   const selectedCalendar = useMemo(
-    () => filteredDeviceCalendar.find((calendar) => calendar.id === calendarId) || deviceCalendar[0],
+    () =>
+      filteredDeviceCalendar.find((calendar) => calendar.id === calendarId) || deviceCalendar[0],
     [calendarId],
   );
 
@@ -36,7 +41,7 @@ const useCategory = () => {
   };
 
   const pressCategoryHandler = (calendar: Calendar) => {
-    if(calendarId !== calendar.id){
+    if (calendarId !== calendar.id) {
       setState('prevCalendarId', calendarId);
       setState('calendarId', calendar.id);
     }
@@ -44,7 +49,7 @@ const useCategory = () => {
   };
 
   return {
-    states: { filteredDeviceCalendar, selectedCalendar, ref },
+    states: { deviceCalendar, filteredDeviceCalendar, selectedCalendar, ref },
     actions: { openModal, pressCategoryHandler, navigateEditDeviceCalendar },
   };
 };

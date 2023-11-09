@@ -40,7 +40,7 @@ const Calendar = ({ withoutSchedule }: Props) => {
             <Pressable
               key={`${day.date.getTime()}share`}
               style={[styles.day, { height: weeks.length === 6 ? 93 : 109 }]}
-              onPress={() => dateClickHandler(day.date)}
+              onPress={() => dateClickHandler(day.date,0)}
             >
               <View style={[styles.day, { height: weeks.length === 6 ? 93 : 109 }]}>
                 <Shift

@@ -3,7 +3,7 @@
     "name": "듀팅",
     "owner": "dutying",
     "slug": "dutying-mobile",
-    "version": "1.1.29",
+    "version": "1.1.32",
     "orientation": "portrait",
     "icon": "./src/assets/icon.png",
     "userInterfaceStyle": "light",

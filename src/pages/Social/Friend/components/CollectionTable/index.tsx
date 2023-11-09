@@ -24,7 +24,7 @@ const CollectionTable = () => {
   const week = useMemo(() => {
     return weeks.filter((_, i) => i === currentWeek)[0];
   }, [date, weeks]);
-  if (collection) console.log(collection[0].accountShiftTypes);
+
   return (
     <View>
       <View style={styles.week}>
@@ -74,8 +74,8 @@ const CollectionTable = () => {
             ))}
       </View>
       <ScrollView>
-        {sortedCollection?.map((member) => (
-          <View key={`member ${member.accountId} ${currentWeek}`} style={styles.memberView}>
+        {sortedCollection?.map((member, i) => (
+          <View key={`member ${member.accountId, i} ${currentWeek}`} style={styles.memberView}>
             <View style={styles.memberName}>
               <Text numberOfLines={1} style={styles.memberNameText}>
                 {member.name}
@@ -101,7 +101,7 @@ const CollectionTable = () => {
                     key={`shift ${currentWeek * 7 + j}`}
                     style={[
                       styles.shiftText,
-                      { color: `#${member.accountShiftTypes[currentWeek * 7 + j].color}` },
+                      { color: `#${member.accountShiftTypes[currentWeek * 7 + j]?.color}` },
                     ]}
                   >
                     {member.accountShiftTypes[currentWeek * 7 + j]?.name}

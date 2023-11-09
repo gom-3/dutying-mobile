@@ -34,7 +34,6 @@ const ScheduleCard = ({ isCardOpen }: Props) => {
       changeDate,
     },
   } = useScheduleCard(isCardOpen);
-
   const renderItem = ({ item }: { item: DateType }) => {
     const shift = shiftTypes.get(item.shift || 0);
     return (
@@ -140,7 +139,6 @@ const ScheduleCard = ({ isCardOpen }: Props) => {
           height={500}
           onScrollEnd={changeDate}
           defaultIndex={thisMonthDefaultIndex}
-          
           windowSize={3}
         />
         {/* <FlatList

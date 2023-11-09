@@ -39,12 +39,14 @@ const useShiftTypeEdit = () => {
     state.accountShiftTypeId,
     state.setState,
   ]);
+  const [isLoading, setIsLoading] = useState(false);
   const [usingTime, setUsingTime] = useState(shift.startTime ? true : false);
   const [isValid, setIsValid] = useState({ name: true, shortName: true });
   const navigation = useNavigation();
   const queryClient = useQueryClient();
   const isWorkTypeShift = workClassification.includes(shift.classification);
-  const isDefaultShiftType = shift.classification !== 'OTHER_WORK' && shift.classification !== 'OTHER_LEAVE';
+  const isDefaultShiftType =
+    shift.classification !== 'OTHER_WORK' && shift.classification !== 'OTHER_LEAVE';
   const onSuccessMutate = () => {
     queryClient.invalidateQueries(['getShiftTypes', userId]);
     queryClient.refetchQueries(['getShiftTypes', userId]);
@@ -57,6 +59,9 @@ const useShiftTypeEdit = () => {
       onSuccess: (data) => {
         onSuccessMutate();
       },
+      onSettled: () => {
+        setIsLoading(false);
+      },
     },
   );
   const { mutate: editShiftTypeMutate } = useMutation(
@@ -64,12 +69,18 @@ const useShiftTypeEdit = () => {
       editShiftType(userId, shiftId, shift),
     {
       onSuccess: onSuccessMutate,
+      onSettled: () => {
+        setIsLoading(false);
+      },
     },
   );
   const { mutate: deleteShiftTypeMutate } = useMutation(
     (shiftId: number) => deleteShiftType(userId, shiftId),
     {
       onSuccess: onSuccessMutate,
+      onSettled: () => {
+        setIsLoading(false);
+      },
     },
   );
 
@@ -119,10 +130,14 @@ const useShiftTypeEdit = () => {
     setState('currentShift', newShift);
   };
   const onPressDeleteButton = () => {
+    if (isLoading) return;
+    setIsLoading(true);
     firebaseLogEvent('delete_shfit_type');
     deleteShiftTypeMutate(accountShiftTypeId);
   };
   const onPressSaveButton = () => {
+    if (isLoading) return;
+    setIsLoading(true);
     if (shift.name.length > 0 && shift.shortName.length > 0) {
       const startTime = shift.startTime
         ? `${shift.startTime.getHours().toString().padStart(2, '0')}:${shift.startTime
@@ -159,7 +174,16 @@ const useShiftTypeEdit = () => {
     }
   };
   return {
-    states: { shift, isEdit, isWorkTypeShift, usingTime, workTypeList, offTypeList, isValid,isDefaultShiftType },
+    states: {
+      shift,
+      isEdit,
+      isWorkTypeShift,
+      usingTime,
+      workTypeList,
+      offTypeList,
+      isValid,
+      isDefaultShiftType,
+    },
     actions: {
       onChangeSwith,
       changeStartTime,

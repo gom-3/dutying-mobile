@@ -83,7 +83,7 @@ const onAppStateChange = (status: AppStateStatus) => {
 };
 
 export const queryClient = new QueryClient({
-  defaultOptions: { queries: { retry: 2 } },
+  defaultOptions: { queries: { retry: 1 } },
 });
 
 export default function App() {

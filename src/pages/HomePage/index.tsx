@@ -14,8 +14,8 @@ const HomePage = () => {
     state.isCardOpen,
     state.isSideMenuOpen,
   ]);
+  
   useDeviceCalendar();
-
   return (
     <PageViewContainer>
       <BottomSheetModalProvider>

@@ -51,15 +51,21 @@ const Actions = ({ isActionOpen, moim, close }: Props) => {
       closeChangeMasterModal,
       closeKickModal,
       pressAccetOutModal,
-      kickMemberMutate,
-      changeHostMutate,
+      pressKickMemberButton,
+      pressChangeHostButton,
+      pressDeleteMoimButton,
     },
   } = useAction(moim, close);
   const renderBackdrop = useCallback((props: any) => <BottomSheetBackdrop {...props} />, []);
 
   return (
     <View style={styles.container}>
-      <AlertModalInvite text='모임 초대 코드' code={moimCode} isOpen={isInviteModalOpen} close={closeInviteModal} />
+      <AlertModalInvite
+        text="모임 초대 코드"
+        code={moimCode}
+        isOpen={isInviteModalOpen}
+        close={closeInviteModal}
+      />
       {!isHost && (
         <AlertModal
           text="모임을 탈퇴하시겠어요?"
@@ -78,7 +84,7 @@ const Actions = ({ isActionOpen, moim, close }: Props) => {
         isOpen={isKickModalOpen}
         close={closeKickModal}
         cancelText="아니요"
-        accept={() => kickMemberMutate(member.accountId)}
+        accept={() => pressKickMemberButton(member.accountId)}
         acceptText="네, 추방할게요"
       />
       <AlertModal
@@ -88,7 +94,7 @@ const Actions = ({ isActionOpen, moim, close }: Props) => {
         isOpen={isDeleteModalOpen}
         close={() => setIsDeleteModalOpen(false)}
         cancelText="아니요"
-        accept={() => deleteMoimMutate()}
+        accept={() => pressDeleteMoimButton()}
         acceptText="네, 삭제할게요"
       />
       <AlertModal
@@ -98,7 +104,7 @@ const Actions = ({ isActionOpen, moim, close }: Props) => {
         isOpen={isChangeMasterModalOpen}
         close={closeChangeMasterModal}
         cancelText="아니요"
-        accept={() => changeHostMutate(member.accountId)}
+        accept={() => pressChangeHostButton(member.accountId)}
         acceptText="네, 변경할게요"
       />
 

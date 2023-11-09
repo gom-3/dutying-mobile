@@ -1,5 +1,6 @@
 import BellIcon from '@assets/svgs/bell.svg';
 import BurgerIcon from '@assets/svgs/burger.svg';
+import AddIcon from '@assets/svgs/plus-gray.svg';
 import { TouchableOpacity, StyleSheet, View, Text } from 'react-native';
 import useCalendarHeader from './index.hook';
 import { COLOR } from 'index.style';
@@ -57,7 +58,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
     paddingTop: 15,
     backgroundColor: 'white',
-    marginBottom:22
+    marginBottom: 22,
     // zIndex: 3,
   },
   firstLevelView: {
