@@ -7,6 +7,7 @@ import { days, isSameDate } from '@libs/utils/date';
 import { hexToRgba } from '@libs/utils/color';
 import { PanGestureHandler } from 'react-native-gesture-handler';
 import GrayDotsIcon from '@assets/svgs/dots-gray.svg';
+import useWidget from '@hooks/useWidget';
 
 export type DateType = {
   date: Date;

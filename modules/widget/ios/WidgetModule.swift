@@ -8,6 +8,7 @@ internal class VersionException: Exception {
     }
 }
 
+
 public class WidgetModule: Module {
       public func definition() -> ModuleDefinition {
         Name("Widget")

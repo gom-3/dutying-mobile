@@ -4,17 +4,11 @@ import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
 import android.content.Context
 import android.widget.RemoteViews
-import android.content.SharedPreferences
-import android.os.SystemClock
-import android.content.ComponentName;
-import android.content.Intent;
-import android.app.PendingIntent;
-import android.net.Uri;
 
 /**
  * Implementation of App Widget functionality.
  */
-class widget : AppWidgetProvider() {
+class SampleWidget : AppWidgetProvider() {
     override fun onUpdate(
         context: Context,
         appWidgetManager: AppWidgetManager,
@@ -40,22 +34,11 @@ internal fun updateAppWidget(
     appWidgetManager: AppWidgetManager,
     appWidgetId: Int
 ) {
-    // change this to group value passed in app.json
-    val text = getItem(context, "savedData", "group.expo.modules.widgetsync.example") ?: ""
-
+    val widgetText = context.getString(R.string.appwidget_text)
     // Construct the RemoteViews object
     val views = RemoteViews(context.packageName, R.layout.sample_widget)
-    views.setTextViewText(R.id.appwidget_text, text)
+    views.setTextViewText(R.id.appwidget_text, widgetText)
 
     // Instruct the widget manager to update the widget
     appWidgetManager.updateAppWidget(appWidgetId, views)
-}
-
-internal fun getItem(
-    context: Context,
-    key: String,
-    preferenceName: String
-): String? {
-    val preferences = context.getSharedPreferences(preferenceName, Context.MODE_PRIVATE)
-    return preferences.getString(key, null)
 }

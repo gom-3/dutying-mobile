@@ -9,6 +9,8 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 
+
+
 class WidgetModule : Module() {
   override fun definition() = ModuleDefinition {
   // Sets the name of the module that JavaScript code will use to refer to the module. Takes a

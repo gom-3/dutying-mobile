@@ -96,8 +96,7 @@ const Router = () => {
           component={RequestWardShiftPage}
           options={{ animation: 'none', gestureEnabled: false }}
         />
-        <Stack.Screen
-          name='RequestWardShiftConfirm' component={RequestShift} />
+        <Stack.Screen name="RequestWardShiftConfirm" component={RequestShift} />
       </Stack.Navigator>
     </NavigationContainer>
   );
