@@ -8,6 +8,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigation } from '@react-navigation/native';
 import Modal from 'react-native-modal';
 import { sendRequestFriend } from '@libs/api/friend';
+import Toast from 'react-native-toast-message';
 
 type ModalProps = {
   text: string;
@@ -25,6 +26,12 @@ type InviteProps = Pick<ModalProps, 'isOpen' | 'close' | 'text' | 'subText'> & {
 export const AlertModalInvite = ({ code, isOpen, text, subText, close }: InviteProps) => {
   const copyMoimCode = async () => {
     await Clipboard.setStringAsync(code);
+    close();
+    Toast.show({
+      type: 'success',
+      text1: '코드가 복사되었어요!',
+      visibilityTime: 2000,
+    });
   };
 
   return (
@@ -89,7 +96,18 @@ export const AlertModalInvite = ({ code, isOpen, text, subText, close }: InviteP
             borderBottomLeftRadius: 10,
             borderBottomRightRadius: 10,
           }}
-          onPress={() => Share.share({ message: code, title: '초대 코드' })}
+          onPress={() =>
+            Share.share({ message: code, title: '초대 코드' }).then((data) => {
+              if (data.action === 'sharedAction') {
+                close();
+                Toast.show({
+                  type: 'success',
+                  text1: '코드가 공유되었어요!',
+                  visibilityTime: 1500,
+                });
+              }
+            })
+          }
         >
           <Text style={{ color: 'white', fontSize: 16, fontFamily: 'Apple500' }}>공유하기</Text>
         </Pressable>
@@ -112,6 +130,12 @@ export const AlertModalRequestFriend = ({
   const { mutate: sendRequestFriendMutate } = useMutation(() => sendRequestFriend(accountId), {
     onSuccess: () => {
       navigate.goBack();
+      Toast.show({
+        type: 'success',
+        text1: `${name}님께 친구 요청을 보냈어요!`,
+        text2: `${name}님이 요청을 수락하셔야 친구가 돼요`,
+        visibilityTime: 2000,
+      });
     },
   });
 

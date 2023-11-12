@@ -11,6 +11,9 @@ import { useMemo, useState } from 'react';
 import { useCaledarDateStore } from 'store/calendar';
 import TrashIcon from '@assets/svgs/trash-color.svg';
 import { images } from '@assets/images/profiles';
+import { useQuery } from '@tanstack/react-query';
+import { WardShift, getWardShiftRequest } from '@libs/api/ward';
+import { useAccountStore } from 'store/account';
 
 const mockShift = [
   { shortName: 'D', name: '데이', color: '#4dc2ad' },
@@ -20,13 +23,38 @@ const mockShift = [
 ];
 
 const RequestShift = () => {
+  const [account] = useAccountStore((state) => [state.account]);
   const [date, setState] = useCaledarDateStore((state) => [state.date, state.setState]);
   const year = date.getFullYear();
   const month = date.getMonth();
   const [dateIndex, setDateIndex] = useState(
     date.getDate() + new Date(year, month, 1).getDay() - 1,
   );
-  console.log(dateIndex);
+
+  const { data: shiftRequests } = useQuery(
+    ['getShiftRequests', account.wardId, account.shiftTeamId, year, month],
+    () => getWardShiftRequest(account.wardId, account.shiftTeamId, year, month),
+  );
+
+  const shiftRequestDays = useMemo(() => {
+    if (!shiftRequests) return [];
+    const array: WardShift[][] = [];
+    for (let i = 0; i < new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate(); i++) {
+      array.push([]);
+    }
+    array.forEach((day, i) =>
+      shiftRequests.forEach((nurse) => {
+        if (nurse.accountShiftTypes[i]) {
+          day.push(nurse.accountShiftTypes[i]);
+        }
+      }),
+    );
+    return array;
+  }, [shiftRequests]);
+
+  console.log(shiftRequests);
+  // console.log(shiftRequestDays);
+
   const weeks = useMemo(() => {
     const first = new Date(year, month, 1);
     const last = new Date(year, month + 1, 0);

@@ -16,6 +16,8 @@ import * as Notifications from 'expo-notifications';
 import Messaging from '@react-native-firebase/messaging';
 import * as Sentry from '@sentry/react-native';
 import * as Application from 'expo-application';
+import Toast, { BaseToast, BaseToastProps, ErrorToast, SuccessToast } from 'react-native-toast-message';
+import { COLOR } from 'index.style';
 // import Airbridge from 'airbridge-react-native-sdk';
 // import analytics from '@react-native-firebase/analytics';
 
@@ -33,6 +35,21 @@ if (process.env.NODE_ENV === 'production') {
 /** 업데이트 버전 확인 */
 const getAppVersion = () => {
   console.log(Application.nativeApplicationVersion);
+};
+
+const toastConfig = {
+  success: (props: BaseToastProps) => (
+    <SuccessToast
+      {...props}
+      style={{ borderLeftColor: COLOR.main2 }}
+      
+      // contentContainerStyle={{ paddingHorizontal: 15 }}
+      // text1Style={{
+      //   fontSize: 15,
+      //   fontFamily: 'Apple500',
+      // }}
+    />
+  ),
 };
 
 const registerForPushNotificationAsync = async () => {
@@ -136,6 +153,7 @@ export default function App() {
         <GestureHandlerRootView style={{ flex: 1 }}>
           <StatusBar style="auto" />
           <Router />
+          <Toast config={toastConfig} />
         </GestureHandlerRootView>
       </EventProvider>
     </QueryClientProvider>

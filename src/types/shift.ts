@@ -17,3 +17,4 @@ type Shift = {
   isAlarm: boolean;
   alarmInfoList: AlarmInfo[];
 };
+

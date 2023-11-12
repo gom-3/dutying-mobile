@@ -7,23 +7,61 @@ import MonthSelector from '@components/MonthSelector';
 import { TouchableOpacity, View, Text, StyleSheet, ScrollView, Image } from 'react-native';
 import { COLOR } from 'index.style';
 import { days, initMonthCalendarDates, isSameDate } from '@libs/utils/date';
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { useCaledarDateStore } from 'store/calendar';
 import { images } from '@assets/images/profiles';
-import { useShiftTypeStore } from 'store/shift';
 import { useLinkProps } from '@react-navigation/native';
+import { useQuery } from '@tanstack/react-query';
+import { wardKeys } from '@libs/api/queryKey';
+import { useAccountStore } from 'store/account';
+import { WardShift, WardShiftsDTO, getWardShiftRequest } from '@libs/api/ward';
+
+export const getDayRequestShiftLists = (
+  requestShiftList: WardShiftsDTO | undefined,
+  date: Date,
+) => {
+  const array: WardShift[][] = [];
+  if (requestShiftList) {
+    for (let i = 0; i < new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate(); i++) {
+      array.push([]);
+    }
+    array.forEach((day, i) =>
+      requestShiftList.forEach((nurse) => {
+        if (nurse.accountShiftTypes[i]) {
+          day.push(nurse.accountShiftTypes[i]);
+        }
+      }),
+    );
+  }
+  return array;
+};
 
 const RequestWardShiftPage = () => {
   const [date, setState] = useCaledarDateStore((state) => [state.date, state.setState]);
+  const [account] = useAccountStore((state) => [state.account]);
   const { onPress: navigateToRequestConfirm } = useLinkProps({
     to: { screen: 'RequestWardShiftConfirm' },
   });
   const year = date.getFullYear();
   const month = date.getMonth();
-  const [shiftTypes] = useShiftTypeStore((state) => [state.shiftTypes]);
   const weeks = useMemo(() => {
     return initMonthCalendarDates(year, month);
   }, [year, month]);
+
+  const { data: requestShiftList } = useQuery(
+    wardKeys.requestList(account.wardId, account.shiftTeamId, year, month),
+    () => getWardShiftRequest(account.wardId, account.shiftTeamId, year, month),
+  );
+
+  const dayRequestShiftLists = useMemo(() => {
+    return getDayRequestShiftLists(requestShiftList, date);
+  }, [requestShiftList]);
+
+  console.log(requestShiftList);
+
+  console.log(dayRequestShiftLists);
+
+  if (requestShiftList) console.log(requestShiftList[0].accountShiftTypes.length);
 
   return (
     <PageViewContainer>
@@ -109,6 +147,21 @@ const RequestWardShiftPage = () => {
                           {day.getDate()}
                         </Text>
                       </View>
+                      {isSameMonth && dayRequestShiftLists[day.getDate() - 1] && (
+                        <View style={{ flexDirection: 'row' }}>
+                          {dayRequestShiftLists[day.getDate() - 1].map((request) => (
+                            <View
+                              style={{
+                                width: 6,
+                                height: 6,
+                                borderRadius: 10,
+                                margin: 1,
+                                backgroundColor: `#${request.color}`,
+                              }}
+                            />
+                          ))}
+                        </View>
+                      )}
                     </TouchableOpacity>
                   );
                 })}
@@ -128,49 +181,52 @@ const RequestWardShiftPage = () => {
                   {date.getMonth() + 1}월 {date.getDate()}일, {days[date.getDay()]}
                 </Text>
                 <Text style={{ color: COLOR.sub3, fontFamily: 'Apple', fontSize: 14 }}>
-                  {' '}
                   신청 근무 현황
                 </Text>
               </View>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  paddingHorizontal: 24,
-                  paddingVertical: 11,
-                }}
-              >
-                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                  <Image
-                    source={{ uri: `data:image/png;base64,${images[0]}` }}
-                    style={{ width: 24, height: 24, borderRadius: 100 }}
-                  />
-                  <Text
+              {dayRequestShiftLists[date.getDate() - 1].map((member) => {
+                return (
+                  <View
                     style={{
-                      marginLeft: 8,
-                      fontFamily: 'Apple500',
-                      fontSize: 16,
-                      color: COLOR.sub2,
+                      flexDirection: 'row',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                      paddingHorizontal: 24,
+                      paddingVertical: 11,
                     }}
                   >
-                    조성연
-                  </Text>
-                </View>
-                <View
-                  style={[
-                    styles.shiftBox,
-                    {
-                      backgroundColor: '#4dc2ad',
-                    },
-                  ]}
-                >
-                  <Text style={styles.shoftName}>D</Text>
-                  <Text numberOfLines={1} style={styles.name}>
-                    데이
-                  </Text>
-                </View>
-              </View>
+                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                      <Image
+                        source={{ uri: `data:image/png;base64,${images[0]}` }}
+                        style={{ width: 24, height: 24, borderRadius: 100 }}
+                      />
+                      <Text
+                        style={{
+                          marginLeft: 8,
+                          fontFamily: 'Apple500',
+                          fontSize: 16,
+                          color: COLOR.sub2,
+                        }}
+                      >
+                        조성연
+                      </Text>
+                    </View>
+                    <View
+                      style={[
+                        styles.shiftBox,
+                        {
+                          backgroundColor: '#4dc2ad',
+                        },
+                      ]}
+                    >
+                      <Text style={styles.shoftName}>D</Text>
+                      <Text numberOfLines={1} style={styles.name}>
+                        데이
+                      </Text>
+                    </View>
+                  </View>
+                );
+              })}
             </View>
           </ScrollView>
         </SafeAreaView>

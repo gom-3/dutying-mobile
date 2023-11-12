@@ -1,72 +1,33 @@
 import { TouchableOpacity, View, Text, StyleSheet, ScrollView, Image } from 'react-native';
 import UnderArrowIcon from '@assets/svgs/under-arrow-black.svg';
 import { COLOR } from 'index.style';
-import { useCallback, useRef, useState } from 'react';
+import { useCallback } from 'react';
 import { BottomSheetBackdrop, BottomSheetModal } from '@gorhom/bottom-sheet';
 import AlertModal from '@components/AlertModal';
-import { Friend, deleteFriend } from '@libs/api/friend';
-import { useAccountStore } from 'store/account';
-import { useCaledarDateStore } from 'store/calendar';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { useFriendStore } from '../../store';
+import { Friend } from '@libs/api/friend';
+import useFriendsList from './index.hook';
 
 interface Props {
   friends: Friend[] | undefined;
 }
 
 const FriendsList = ({ friends }: Props) => {
-  const [setFriendState] = useFriendStore((state) => [state.setState]);
-  const [date] = useCaledarDateStore((state) => [state.date]);
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [currentFriend, setCurrentFriend] = useState<Friend>();
-  const [account] = useAccountStore((state) => [state.account]);
-  const queryClient = useQueryClient();
-  const friendListRef = useRef<BottomSheetModal>(null);
-
-  const year = date.getFullYear();
-  const month = date.getMonth();
-
-  const { mutate: deleteFriendMutate } = useMutation((frinedId: number) => deleteFriend(frinedId), {
-    onSuccess: () => {
-      queryClient.invalidateQueries(['getFriendsList']);
-      queryClient.refetchQueries(['getFriendsList']);
-      queryClient.invalidateQueries(['getFriendTodayShift']);
-      queryClient.refetchQueries(['getFriendTodayShift']);
+  const {
+    states: { currentFriend, account, isDeleteModalOpen, friendListRef },
+    actions: {
+      pressBackdrop,
+      closeDeleteModal,
+      acceptDeleteFriend,
+      pressDeleteButton,
+      openFriendsListBottomSheet,
     },
-  });
+  } = useFriendsList();
 
-  const pressBackdrop = () => {
-    setFriendState('isBottomSheetOpen', false);
-    queryClient.invalidateQueries(['getFriendCollection', year, month]);
-    queryClient.refetchQueries(['getFriendCollection', year, month]);
-  };
   const renderBackdrop = useCallback(
     (props: any) => <BottomSheetBackdrop onPress={pressBackdrop} {...props} />,
     [],
   );
-  const openDeleteModal = () => {
-    friendListRef.current?.close();
-    setIsDeleteModalOpen(true);
-  };
 
-  const closeDeleteModal = () => {
-    setIsDeleteModalOpen(false);
-    friendListRef.current?.present();
-  };
-  const openFriendsListBottomSheet = () => {
-    friendListRef.current?.present();
-    setFriendState('isBottomSheetOpen', true);
-  };
-  const acceptDeleteFriend = async () => {
-    if (currentFriend) {
-      deleteFriendMutate(currentFriend?.accountId);
-      closeDeleteModal();
-    }
-  };
-  const pressDeleteButton = (friend: Friend) => {
-    setCurrentFriend(friend);
-    openDeleteModal();
-  };
   return (
     <View>
       <AlertModal

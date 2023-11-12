@@ -5,6 +5,8 @@ import { COLOR, screenHeight, screenWidth } from 'index.style';
 import ExitIcon from '@assets/svgs/exit.svg';
 import SettingIcon from '@assets/svgs/setting.svg';
 import useSideMenu from './index.hook';
+import CopyIcon from '@assets/svgs/copy.svg';
+import Toast from 'react-native-toast-message';
 
 const SideMenu = () => {
   const {
@@ -35,7 +37,31 @@ const SideMenu = () => {
             <SettingIcon />
           </TouchableOpacity>
         </View>
+        <View style={{ marginLeft: 22, marginTop: 10, flexDirection: 'row', alignItems: 'center' }}>
+          <View style={{ backgroundColor: COLOR.main4, padding: 4, borderRadius: 5 }}>
+            <Text style={{ color: COLOR.sub1, fontSize: 12, fontFamily: 'Apple' }}>
+              {account.code}
+            </Text>
+          </View>
+          <TouchableOpacity
+            onPress={() => {
+              Toast.show({
+                type: 'success',
+                text1: '코드가 복사되었어요!',
+                text2: '코드를 통해 친구를 맺을 수 있어요👋',
+                visibilityTime: 2000,
+              });
+            }}
+            style={{ marginLeft: 10, flexDirection: 'row', alignItems: 'center' }}
+          >
+            <CopyIcon />
+            <Text style={{ color: COLOR.main2, fontSize: 14, fontFamily: 'Apple', marginLeft: 2 }}>
+              복사하기
+            </Text>
+          </TouchableOpacity>
+        </View>
         <View style={styles.deviderView} />
+
         {menuItemList.map((item) => (
           <TouchableOpacity key={item.title} onPress={item.onPress}>
             <View style={styles.menuItemView}>

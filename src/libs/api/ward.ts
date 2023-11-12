@@ -9,6 +9,34 @@ export const addMeToWatingNurses = async (wardId: number) =>
 export const deleteWatingNurses = async (wardId: number, nurseId: number) =>
   (await axiosInstance.delete(`/wards/${wardId}/waiting-nurses?nurseId=${nurseId}`)).data;
 
-export const getWardShiftCollection = async (wardId: number, shiftTeamId: number) => {
-  return (await axiosInstance.get(`/wards/${wardId}/shift-teams/${shiftTeamId}/duty/mobile`)).data;
+export type WardShift = Omit<Shift, 'isAlarm' | 'alarmInfoList' | 'isDefault'>;
+
+export type WardShiftsDTO = (Pick<Account, 'accountId' | 'name' | 'profileImgBase64'> & {
+  accountShiftTypes: WardShift[];
+})[];
+
+export const getWardShiftCollection = async (
+  wardId: number,
+  shiftTeamId: number,
+  year: number,
+  month: number,
+) => {
+  return (
+    await axiosInstance.get<WardShiftsDTO>(
+      `/wards/${wardId}/shift-teams/${shiftTeamId}/duty/mobile?year=${year}&month=${month + 1}`,
+    )
+  ).data;
+};
+
+export const getWardShiftRequest = async (
+  wardId: number,
+  shiftTeamId: number,
+  year: number,
+  month: number,
+) => {
+  return (
+    await axiosInstance.get<WardShiftsDTO>(
+      `/wards/${wardId}/shift-teams/${shiftTeamId}/req-duty/mobile?year=${year}&month=${month + 1}`,
+    )
+  ).data;
 };

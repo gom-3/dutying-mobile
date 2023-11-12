@@ -5,6 +5,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useRef, useState } from 'react';
 import { useAccountStore } from 'store/account';
 import { useMoimStore } from './store';
+import Toast from 'react-native-toast-message';
 
 const useMoimPage = () => {
   const [accountId] = useAccountStore((state) => [state.account.accountId]);
@@ -24,6 +25,12 @@ const useMoimPage = () => {
         queryClient.invalidateQueries(['getMoimList', accountId]);
         queryClient.refetchQueries(['getMoimList', accountId]);
         closeBottomSheet();
+        Toast.show({
+          type: 'success',
+          text1: '모임이 생성되었어요!',
+          text2: '코드를 공유해 사람들을 초대할 수 있어요👋',
+          visibilityTime: 3000,
+        });
       },
       onError: () => {
         setIsValid(false);

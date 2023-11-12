@@ -5,6 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useRef, useState } from 'react';
 import { useAccountStore } from 'store/account';
+import Toast from 'react-native-toast-message';
 
 type ActionsAccountType = Pick<Account, 'accountId' | 'name'>;
 
@@ -31,6 +32,11 @@ const useAction = (moim: Moim, close: () => void) => {
     onSuccess: () => {
       queryClient.invalidateQueries(['getMoimList', accountId]);
       navigate.goBack();
+      Toast.show({
+        type: 'success',
+        text1: '모임이 삭제되었어요',
+        visibilityTime: 2000,
+      });
     },
     onSettled: () => {
       setIsLoading(false);
@@ -41,6 +47,11 @@ const useAction = (moim: Moim, close: () => void) => {
     onSuccess: () => {
       queryClient.invalidateQueries(['getMoimList', accountId]);
       navigate.goBack();
+      Toast.show({
+        type: 'success',
+        text1: '모임에서 탈퇴했어요',
+        visibilityTime: 2000,
+      });
     },
     onSettled: () => {
       setIsLoading(false);
@@ -55,6 +66,11 @@ const useAction = (moim: Moim, close: () => void) => {
         queryClient.invalidateQueries(['getMemberList', moim.moimId]);
         setIsKickModalOpen(false);
         kickRef.current?.present();
+        Toast.show({
+          type: 'success',
+          text1: '모임원을 내보냈어요',
+          visibilityTime: 2000,
+        });
       },
       onSettled: () => {
         setIsLoading(false);
@@ -69,6 +85,11 @@ const useAction = (moim: Moim, close: () => void) => {
         queryClient.invalidateQueries(['getMemberList', moim.moimId]);
         setIsChangeMasterModalOpen(false);
         changeRef.current?.present();
+        Toast.show({
+          type: 'success',
+          text1: '모임장을 변경했어요!',
+          visibilityTime: 2000,
+        });
       },
       onSettled: () => {
         setIsLoading(false);

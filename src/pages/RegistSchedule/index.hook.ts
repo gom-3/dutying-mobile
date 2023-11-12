@@ -5,6 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 import { Keyboard, Platform, ScrollView } from 'react-native';
 import { useScheduleStore } from 'store/schedule';
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
+import { firebaseLogEvent } from '@libs/utils/event';
 
 type DeviceEvent = Partial<Event>;
 
@@ -63,11 +64,13 @@ const useRegistSchedule = () => {
   };
 
   const createEvent = async () => {
+    firebaseLogEvent('createSchedule');
     await createEventAsync(calendarId, event);
     setState('isScheduleUpdated', true);
     navigation.goBack();
   };
   const updateEvent = async () => {
+    firebaseLogEvent('editSchedule');
     if (calendarId !== prevCalendarId) {
       await deleteEventAsync(id, { futureEvents: true });
       await createEventAsync(calendarId, event);

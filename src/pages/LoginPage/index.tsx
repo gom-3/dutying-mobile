@@ -73,7 +73,6 @@ const LoginPage = () => {
       oAuthLogin(idToken, provider, deviceToken),
     {
       onSuccess: (data) => {
-        console.log(data);
         if (data.status === 'INITIAL' || data.name === null) {
           setSignupState('id', data.accountId);
           navigateSignup();

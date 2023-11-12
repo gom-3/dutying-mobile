@@ -1,29 +1,12 @@
-import { getFriendCollection } from '@libs/api/friend';
-import { days, getCurrentWeekIndex, isSameDate } from '@libs/utils/date';
-import { useQuery } from '@tanstack/react-query';
+import { days, isSameDate } from '@libs/utils/date';
 import { COLOR } from 'index.style';
-import { useMemo } from 'react';
 import { ScrollView, View, Text, StyleSheet } from 'react-native';
-import { useCaledarDateStore } from 'store/calendar';
-import { useFriendStore } from '../../store';
+import useCollectionTable from './index.hook';
 
 const CollectionTable = () => {
-  const [date] = useCaledarDateStore((state) => [state.date, state.setState]);
-  const [weeks] = useFriendStore((state) => [state.weeks]);
-  const year = date.getFullYear();
-  const month = date.getMonth();
-  const currentWeek = getCurrentWeekIndex(date, weeks);
-  const { data: collection } = useQuery(['getFriendCollection', year, month], () =>
-    getFriendCollection(year, month),
-  );
-
-  const sortedCollection = useMemo(() => {
-    return collection?.sort((a, b) => (b.isFavorite ? 1 : 0) - (a.isFavorite ? 1 : 0));
-  }, [collection]);
-
-  const week = useMemo(() => {
-    return weeks.filter((_, i) => i === currentWeek)[0];
-  }, [date, weeks]);
+  const {
+    states: { week, currentWeek, sortedCollection },
+  } = useCollectionTable();
 
   return (
     <View>
@@ -75,7 +58,7 @@ const CollectionTable = () => {
       </View>
       <ScrollView>
         {sortedCollection?.map((member, i) => (
-          <View key={`member ${member.accountId, i} ${currentWeek}`} style={styles.memberView}>
+          <View key={`member ${(member.accountId, i)} ${currentWeek}`} style={styles.memberView}>
             <View style={styles.memberName}>
               <Text numberOfLines={1} style={styles.memberNameText}>
                 {member.name}

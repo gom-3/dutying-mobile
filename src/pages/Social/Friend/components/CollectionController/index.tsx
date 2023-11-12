@@ -4,9 +4,7 @@ import { COLOR } from 'index.style';
 import { TouchableOpacity, View, Text, ScrollView, Image, StyleSheet } from 'react-native';
 import CheckCircleEmpty from '@assets/svgs/check-circle-empty.svg';
 import CheckCircleFill from '@assets/svgs/check-circle-fill.svg';
-import { useFriendStore } from '../../store';
-import { useMemo, useRef } from 'react';
-import useFavorite from '@hooks/useFavorite';
+import useCollectionController from './index.hook';
 
 interface Props {
   friends: Friend[] | undefined;
@@ -15,27 +13,10 @@ interface Props {
 
 const CollectionContoller = ({ friends, backdrop }: Props) => {
   const {
-    states: { isCallingAPI },
-    actions: { deleteFavoriteMutate, registFavoriteMutate, setIsCallingAPI },
-  } = useFavorite();
+    states: { friendCollectionRef, favoriteFriends },
+    actions: { openFriendsCollectionBottomSheet, pressFavoiteCheckButton },
+  } = useCollectionController(friends);
 
-  const [setFriendState] = useFriendStore((state) => [state.setState]);
-  const friendCollectionRef = useRef<BottomSheetModal>(null);
-
-  const openFriendsCollectionBottomSheet = () => {
-    friendCollectionRef.current?.present();
-    setFriendState('isBottomSheetOpen', true);
-  };
-  const favoriteFriends = useMemo(() => {
-    return friends?.filter((friend) => friend.isFavorite);
-  }, [friends]);
-  const pressFavoiteCheckButton = (isFavorite: boolean, friendId: number) => {
-    if (isCallingAPI) return;
-
-    setIsCallingAPI(true);
-    if (isFavorite) deleteFavoriteMutate(friendId);
-    else registFavoriteMutate(friendId);
-  };
   return (
     <View>
       <TouchableOpacity

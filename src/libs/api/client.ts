@@ -4,8 +4,10 @@ import { useAccountStore } from 'store/account';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import CookieManager from '@react-native-cookies/cookies';
 import { Alert } from 'react-native';
+import Toast from 'react-native-toast-message';
 
-export const API_URL = process.env.NODE_ENV === 'production' ? 'https://api.dutying.net' : 'https://dev.api.dutying.net';
+export const API_URL =
+  process.env.NODE_ENV === 'production' ? 'https://api.dutying.net' : 'https://dev.api.dutying.net';
 // export const API_URL = 'https://api.dutying.net';
 const axiosInstance = axios.create({
   baseURL: API_URL,
@@ -13,7 +15,6 @@ const axiosInstance = axios.create({
     'Content-Type': 'application/json',
   },
 });
-console.log(API_URL);
 axiosInstance.interceptors.response.use(
   (response) => response,
   async (error) => {
@@ -45,10 +46,21 @@ axiosInstance.interceptors.response.use(
           navigate('Login');
         }
       } else {
-        Alert.alert(
-          error.response.data ? error.response.data.message : '서버에서 에러가 발생했습니다.',
-        );
-        if(error.config){
+        // Alert.alert(
+        //   error.response.data ? error.response.data.message : '서버에서 에러가 발생했습니다.',
+        // );
+        Toast.show({
+          type: 'error',
+          text1:
+            error.response.data && error.response.data.message
+              ? error.response.data.message
+              : '서버에서 문제가 발생했습니다.',
+          text2:
+            error.response.data && error.response.data.message ? '' : '잠시 후 다시 시도해주세요.',
+          visibilityTime: 2000,
+        });
+        if (error.config) {
+          console.log(error);
           console.log(error.config.url);
           throw error.config.url;
         }
