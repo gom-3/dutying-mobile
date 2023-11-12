@@ -40,15 +40,12 @@ axiosInstance.interceptors.response.use(
           // refresh
           const accessToken = await refresh();
           const originalRequest = error.config;
-          originalRequest.headers['Authorization'] = `Bearer $${accessToken}`;
+          originalRequest.headers['Authorization'] = `Bearer ${accessToken}`;
           return axiosInstance(originalRequest);
         } catch {
           navigate('Login');
         }
       } else {
-        // Alert.alert(
-        //   error.response.data ? error.response.data.message : '서버에서 에러가 발생했습니다.',
-        // );
         Toast.show({
           type: 'error',
           text1:
@@ -76,7 +73,6 @@ export const refresh = async () => {
   const data = (await axios.post<AccessToken>(`${API_URL}/token/refresh`)).data;
   axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${data.accessToken}`;
   useAccountStore.getState().setState('accessToken', data.accessToken);
-
   return data.accessToken;
 };
 

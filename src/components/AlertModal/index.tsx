@@ -1,5 +1,14 @@
 import { COLOR } from 'index.style';
-import { View, Text, TouchableOpacity, Pressable, Share, Alert, Image } from 'react-native';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  Pressable,
+  Share,
+  Alert,
+  Image,
+  StyleSheet,
+} from 'react-native';
 
 import CopyIcon from '@assets/svgs/copy.svg';
 import * as Clipboard from 'expo-clipboard';
@@ -9,6 +18,53 @@ import { useNavigation } from '@react-navigation/native';
 import Modal from 'react-native-modal';
 import { sendRequestFriend } from '@libs/api/friend';
 import Toast from 'react-native-toast-message';
+import ExitIcon from '@assets/svgs/exit.svg';
+
+type FreeModalProps = {
+  isOpen: boolean;
+  exitButton?: boolean;
+  closeButton?: boolean;
+  close: () => void;
+  accept: () => void;
+  closeText?: string | undefined;
+  acceptText: string;
+  context: JSX.Element;
+};
+
+export const FreeAlertModal = ({
+  isOpen,
+  exitButton = false,
+  closeButton = false,
+  close,
+  accept,
+  closeText,
+  acceptText,
+  context,
+}: FreeModalProps) => {
+  return (
+    <Modal isVisible={isOpen} onBackdropPress={close}>
+      <View style={styles.modal}>
+        {exitButton && (
+          <TouchableOpacity
+            onPress={close}
+            style={{ flexDirection: 'row', justifyContent: 'flex-end', width: '100%', padding: 10 }}
+          >
+            <ExitIcon />
+          </TouchableOpacity>
+        )}
+        {context}
+        <View style={{ flexDirection: 'row' }}>
+          <TouchableOpacity
+            onPress={accept}
+            style={[styles.modalAcceptButton, { borderBottomLeftRadius: !closeButton ? 10 : 0 }]}
+          >
+            <Text style={styles.modalAcceptButtonText}>{acceptText}</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    </Modal>
+  );
+};
 
 type ModalProps = {
   text: string;
@@ -250,15 +306,7 @@ export const AlertModalEnter = ({ isOpen, close, moim, accountId }: EnterProps) 
 
   return (
     <Modal isVisible={isOpen} onBackdropPress={close}>
-      <View
-        style={{
-          backgroundColor: 'white',
-          justifyContent: 'center',
-          alignItems: 'center',
-          borderRadius: 10,
-          // width: screenWidth * 0.84,
-        }}
-      >
+      <View style={styles.modal}>
         <View style={{ alignItems: 'center', marginTop: 42 }}>
           <Text style={{ fontSize: 20, fontFamily: 'Apple500' }}>
             <Text style={{ color: COLOR.main1, fontFamily: 'Apple600' }}>{moim.moimName}</Text>에
@@ -267,32 +315,26 @@ export const AlertModalEnter = ({ isOpen, close, moim, accountId }: EnterProps) 
         </View>
         <View style={{ flexDirection: 'row' }}>
           <Pressable
-            style={{
-              justifyContent: 'center',
-              alignItems: 'center',
-              backgroundColor: COLOR.sub4,
-              flex: 1.1,
-              marginTop: 49,
-              paddingVertical: 15,
-              borderBottomLeftRadius: 10,
-            }}
+            style={[
+              styles.modalCancelButton,
+              {
+                marginTop: 49,
+              },
+            ]}
             onPress={close}
           >
-            <Text style={{ color: COLOR.sub1, fontFamily: 'Apple500', fontSize: 16 }}>아니요</Text>
+            <Text style={styles.modalCancelButtonText}>아니요</Text>
           </Pressable>
           <Pressable
-            style={{
-              marginTop: 49,
-              flex: 1,
-              backgroundColor: COLOR.main1,
-              justifyContent: 'center',
-              alignItems: 'center',
-              padding: 15,
-              borderBottomRightRadius: 10,
-            }}
+            style={[
+              styles.modalAcceptButton,
+              {
+                marginTop: 49,
+              },
+            ]}
             onPress={pressEnterButton}
           >
-            <Text style={{ color: 'white', fontSize: 16, fontFamily: 'Apple500' }}>입장 하기</Text>
+            <Text style={styles.modalAcceptButtonText}>입장 하기</Text>
           </Pressable>
         </View>
       </View>
@@ -313,23 +355,8 @@ const AlertModal = ({
   const textArray = text.split(new RegExp(`(${highlight})`, 'gi'));
   return (
     <Modal isVisible={isOpen} onBackdropPress={close}>
-      <View
-        style={{
-          backgroundColor: 'white',
-          justifyContent: 'center',
-          alignItems: 'center',
-          // width: screenWidth * 0.84,
-          borderRadius: 10,
-        }}
-      >
-        <View
-          style={{
-            paddingHorizontal: 70,
-            paddingVertical: 42,
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}
-        >
+      <View style={styles.modal}>
+        <View style={styles.modalHeader}>
           <Text>
             {textArray.map((string, index) => (
               <Text
@@ -345,55 +372,67 @@ const AlertModal = ({
               </Text>
             ))}
           </Text>
-          {subText && (
-            <Text
-              style={{
-                textAlign: 'center',
-                marginTop: 16,
-                color: COLOR.sub2,
-                fontFamily: 'Apple',
-                fontSize: 14,
-              }}
-            >
-              {subText}
-            </Text>
-          )}
+          {subText && <Text style={styles.modalSubText}>{subText}</Text>}
         </View>
         <View style={{ flexDirection: 'row' }}>
-          <TouchableOpacity
-            style={{
-              justifyContent: 'center',
-              alignItems: 'center',
-              backgroundColor: COLOR.sub4,
-              flex: 1,
-              paddingVertical: 15,
-              borderBottomLeftRadius: 10,
-            }}
-            onPress={close}
-          >
-            <Text style={{ color: COLOR.sub1, fontFamily: 'Apple500', fontSize: 16 }}>
-              {cancelText}
-            </Text>
+          <TouchableOpacity style={styles.modalCancelButton} onPress={close}>
+            <Text style={styles.modalCancelButtonText}>{cancelText}</Text>
           </TouchableOpacity>
-          <TouchableOpacity
-            onPress={accept}
-            style={{
-              flex: 1,
-              justifyContent: 'center',
-              alignItems: 'center',
-              backgroundColor: COLOR.main1,
-              paddingVertical: 15,
-              borderBottomRightRadius: 10,
-            }}
-          >
-            <Text style={{ color: 'white', fontFamily: 'Apple500', fontSize: 16 }}>
-              {acceptText}
-            </Text>
+          <TouchableOpacity onPress={accept} style={styles.modalAcceptButton}>
+            <Text style={styles.modalAcceptButtonText}>{acceptText}</Text>
           </TouchableOpacity>
         </View>
       </View>
     </Modal>
   );
 };
+
+const styles = StyleSheet.create({
+  modal: {
+    backgroundColor: 'white',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 10,
+  },
+  modalHeader: {
+    paddingHorizontal: 70,
+    paddingVertical: 42,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalSubText: {
+    textAlign: 'center',
+    marginTop: 16,
+    color: COLOR.sub2,
+    fontFamily: 'Apple',
+    fontSize: 14,
+  },
+  modalCancelButton: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: COLOR.sub4,
+    flex: 1,
+    paddingVertical: 15,
+    borderBottomLeftRadius: 10,
+  },
+  modalCancelButtonText: {
+    color: COLOR.sub1,
+    fontFamily: 'Apple500',
+    fontSize: 16,
+  },
+  modalAcceptButton: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: COLOR.main1,
+    paddingVertical: 15,
+    borderBottomRightRadius: 10,
+  },
+  modalAcceptButtonText: {
+    color: 'white',
+    fontFamily: 'Apple500',
+    fontSize: 16,
+  },
+});
 
 export default AlertModal;

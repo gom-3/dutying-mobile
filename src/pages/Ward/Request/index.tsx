@@ -9,18 +9,24 @@ import { COLOR } from 'index.style';
 import { days, initMonthCalendarDates, isSameDate } from '@libs/utils/date';
 import { useMemo } from 'react';
 import { useCaledarDateStore } from 'store/calendar';
-import { images } from '@assets/images/profiles';
 import { useLinkProps } from '@react-navigation/native';
 import { useQuery } from '@tanstack/react-query';
 import { wardKeys } from '@libs/api/queryKey';
 import { useAccountStore } from 'store/account';
-import { WardShift, WardShiftsDTO, getWardShiftRequest } from '@libs/api/ward';
+import {
+  WardShift,
+  WardShiftsDTO,
+  WardUser,
+  getWardMembers,
+  getWardShiftRequest,
+} from '@libs/api/ward';
 
 export const getDayRequestShiftLists = (
   requestShiftList: WardShiftsDTO | undefined,
   date: Date,
+  linkedMemberListMap: Map<number, WardUser>,
 ) => {
-  const array: WardShift[][] = [];
+  const array: { shift: WardShift; name: string; profileImgBase64: string | undefined }[][] = [];
   if (requestShiftList) {
     for (let i = 0; i < new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate(); i++) {
       array.push([]);
@@ -28,7 +34,11 @@ export const getDayRequestShiftLists = (
     array.forEach((day, i) =>
       requestShiftList.forEach((nurse) => {
         if (nurse.accountShiftTypes[i]) {
-          day.push(nurse.accountShiftTypes[i]);
+          day.push({
+            shift: nurse.accountShiftTypes[i],
+            name: nurse.name,
+            profileImgBase64: linkedMemberListMap.get(nurse.accountId)?.profileImgBase64,
+          });
         }
       }),
     );
@@ -48,20 +58,30 @@ const RequestWardShiftPage = () => {
     return initMonthCalendarDates(year, month);
   }, [year, month]);
 
+  /** 연동된 간호사 정보 memo */
+  const { data: linkedMemberList } = useQuery(
+    wardKeys.linkedMembers(account.wardId, account.shiftTeamId),
+    () => getWardMembers(account.wardId, account.shiftTeamId),
+  );
+  const linkedMemberListMap = useMemo(() => {
+    const map = new Map<number, WardUser>();
+    if (linkedMemberList) {
+      linkedMemberList.forEach((member) => map.set(member.accountId, member));
+    }
+    return map;
+  }, [linkedMemberList]);
+
+  /** 날짜별 신청 근무 목록 memo */
   const { data: requestShiftList } = useQuery(
     wardKeys.requestList(account.wardId, account.shiftTeamId, year, month),
     () => getWardShiftRequest(account.wardId, account.shiftTeamId, year, month),
+    {
+      enabled: !!linkedMemberList && linkedMemberListMap.size > 0,
+    },
   );
-
   const dayRequestShiftLists = useMemo(() => {
-    return getDayRequestShiftLists(requestShiftList, date);
+    return getDayRequestShiftLists(requestShiftList, date, linkedMemberListMap);
   }, [requestShiftList]);
-
-  console.log(requestShiftList);
-
-  console.log(dayRequestShiftLists);
-
-  if (requestShiftList) console.log(requestShiftList[0].accountShiftTypes.length);
 
   return (
     <PageViewContainer>
@@ -156,7 +176,7 @@ const RequestWardShiftPage = () => {
                                 height: 6,
                                 borderRadius: 10,
                                 margin: 1,
-                                backgroundColor: `#${request.color}`,
+                                backgroundColor: `#${request.shift.color}`,
                               }}
                             />
                           ))}
@@ -184,49 +204,53 @@ const RequestWardShiftPage = () => {
                   신청 근무 현황
                 </Text>
               </View>
-              {dayRequestShiftLists[date.getDate() - 1].map((member) => {
-                return (
-                  <View
-                    style={{
-                      flexDirection: 'row',
-                      justifyContent: 'space-between',
-                      alignItems: 'center',
-                      paddingHorizontal: 24,
-                      paddingVertical: 11,
-                    }}
-                  >
-                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                      <Image
-                        source={{ uri: `data:image/png;base64,${images[0]}` }}
-                        style={{ width: 24, height: 24, borderRadius: 100 }}
-                      />
-                      <Text
-                        style={{
-                          marginLeft: 8,
-                          fontFamily: 'Apple500',
-                          fontSize: 16,
-                          color: COLOR.sub2,
-                        }}
-                      >
-                        조성연
-                      </Text>
-                    </View>
+              {dayRequestShiftLists[date.getDate() - 1] &&
+                dayRequestShiftLists[date.getDate() - 1].map((member) => {
+                  return (
                     <View
-                      style={[
-                        styles.shiftBox,
-                        {
-                          backgroundColor: '#4dc2ad',
-                        },
-                      ]}
+                      style={{
+                        flexDirection: 'row',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        paddingHorizontal: 24,
+                        paddingVertical: 11,
+                      }}
                     >
-                      <Text style={styles.shoftName}>D</Text>
-                      <Text numberOfLines={1} style={styles.name}>
-                        데이
-                      </Text>
+                      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                        <Image
+                          source={{
+                            uri: `data:image/png;base64,${member.profileImgBase64})
+                              ?.profileImgBase64}`,
+                          }}
+                          style={{ width: 24, height: 24, borderRadius: 100 }}
+                        />
+                        <Text
+                          style={{
+                            marginLeft: 8,
+                            fontFamily: 'Apple500',
+                            fontSize: 16,
+                            color: COLOR.sub2,
+                          }}
+                        >
+                          {member.name}
+                        </Text>
+                      </View>
+                      <View
+                        style={[
+                          styles.shiftBox,
+                          {
+                            backgroundColor: `#${member.shift.color}`,
+                          },
+                        ]}
+                      >
+                        <Text style={styles.shoftName}>{member.shift.shortName}</Text>
+                        <Text numberOfLines={1} style={styles.name}>
+                          {member.shift.name}
+                        </Text>
+                      </View>
                     </View>
-                  </View>
-                );
-              })}
+                  );
+                })}
             </View>
           </ScrollView>
         </SafeAreaView>

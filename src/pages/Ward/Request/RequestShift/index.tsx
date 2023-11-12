@@ -5,15 +5,16 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import CheckIcon from '@assets/svgs/check.svg';
 import MonthSelector from '@components/MonthSelector';
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
-import { days, initMonthCalendarDates, isSameDate } from '@libs/utils/date';
+import { days, isSameDate } from '@libs/utils/date';
 import { COLOR } from 'index.style';
 import { useMemo, useState } from 'react';
 import { useCaledarDateStore } from 'store/calendar';
 import TrashIcon from '@assets/svgs/trash-color.svg';
-import { images } from '@assets/images/profiles';
 import { useQuery } from '@tanstack/react-query';
-import { WardShift, getWardShiftRequest } from '@libs/api/ward';
+import { WardUser, getWardMembers, getWardShiftRequest } from '@libs/api/ward';
 import { useAccountStore } from 'store/account';
+import { wardKeys } from '@libs/api/queryKey';
+import { getDayRequestShiftLists } from '..';
 
 const mockShift = [
   { shortName: 'D', name: '데이', color: '#4dc2ad' },
@@ -31,28 +32,29 @@ const RequestShift = () => {
     date.getDate() + new Date(year, month, 1).getDay() - 1,
   );
 
-  const { data: shiftRequests } = useQuery(
-    ['getShiftRequests', account.wardId, account.shiftTeamId, year, month],
-    () => getWardShiftRequest(account.wardId, account.shiftTeamId, year, month),
+  /** 연동된 간호사 정보 memo */
+  const { data: linkedMemberList } = useQuery(
+    wardKeys.linkedMembers(account.wardId, account.shiftTeamId),
+    () => getWardMembers(account.wardId, account.shiftTeamId),
   );
-
-  const shiftRequestDays = useMemo(() => {
-    if (!shiftRequests) return [];
-    const array: WardShift[][] = [];
-    for (let i = 0; i < new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate(); i++) {
-      array.push([]);
+  const linkedMemberListMap = useMemo(() => {
+    const map = new Map<number, WardUser>();
+    if (linkedMemberList) {
+      linkedMemberList.forEach((member) => map.set(member.accountId, member));
     }
-    array.forEach((day, i) =>
-      shiftRequests.forEach((nurse) => {
-        if (nurse.accountShiftTypes[i]) {
-          day.push(nurse.accountShiftTypes[i]);
-        }
-      }),
-    );
-    return array;
-  }, [shiftRequests]);
+    return map;
+  }, [linkedMemberList]);
 
-  console.log(shiftRequests);
+  const { data: requestShiftList } = useQuery(
+    wardKeys.requestList(account.wardId, account.shiftTeamId, year, month),
+    () => getWardShiftRequest(account.wardId, account.shiftTeamId, year, month),
+    {
+      enabled: !!linkedMemberList && linkedMemberListMap.size > 0,
+    },
+  );
+  const dayRequestShiftLists = useMemo(() => {
+    return getDayRequestShiftLists(requestShiftList, date, linkedMemberListMap);
+  }, [requestShiftList]);
   // console.log(shiftRequestDays);
 
   const weeks = useMemo(() => {
@@ -133,6 +135,21 @@ const RequestShift = () => {
                         <Text style={[styles.dateText, { opacity: isSameMonth ? 1 : 0.3 }]}>
                           {day.date.getDate()}
                         </Text>
+                        {isSameMonth && dayRequestShiftLists[day.date.getDate() - 1] && (
+                          <View style={{ flexDirection: 'row', marginLeft: 5 }}>
+                            {dayRequestShiftLists[day.date.getDate() - 1].map((request) => (
+                              <View
+                                style={{
+                                  width: 6,
+                                  height: 6,
+                                  borderRadius: 10,
+                                  margin: 1,
+                                  backgroundColor: `#${request.shift.color}`,
+                                }}
+                              />
+                            ))}
+                          </View>
+                        )}
                         {/* <Shift
                           date={day.date.getDate()}
                           shift={day.shift !== null ? shiftTypes.get(day.shift) : undefined}
@@ -238,57 +255,53 @@ const RequestShift = () => {
               </View>
             ) : (
               <View style={{ marginTop: 10 }}>
-                <View
-                  style={{
-                    paddingVertical: 8,
-                    paddingHorizontal: 24,
-                    flexDirection: 'row',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    borderBottomColor: COLOR.sub45,
-                    borderBottomWidth: 0.5,
-                  }}
-                >
-                  <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                    <Image
-                      source={{ uri: `data:image/png;base64,${images[0]}` }}
-                      style={{ width: 24, height: 24, borderRadius: 100 }}
-                    />
-                    <Text
-                      style={{
-                        marginLeft: 8,
-                        color: COLOR.sub2,
-                        fontSize: 16,
-                        fontFamily: 'Apple500',
-                      }}
-                    >
-                      조성연
-                    </Text>
-                  </View>
-                  <View
-                    style={{
-                      backgroundColor: '#4dc2ad',
-                      flexDirection: 'row',
-                      alignItems: 'center',
-                      width: 54,
-                      height: 26,
-                      justifyContent: 'center',
-                      borderRadius: 5,
-                    }}
-                  >
-                    <Text style={{ color: 'white', fontSize: 14, fontFamily: 'Apple500' }}>D</Text>
-                    <Text
-                      style={{
-                        marginLeft: 2,
-                        color: 'white',
-                        fontSize: 10,
-                        fontFamily: 'Apple500',
-                      }}
-                    >
-                      데이
-                    </Text>
-                  </View>
-                </View>
+                {dayRequestShiftLists[date.getDate() - 1] &&
+                  dayRequestShiftLists[date.getDate() - 1].map((member) => {
+                    return (
+                      <View
+                        style={{
+                          flexDirection: 'row',
+                          justifyContent: 'space-between',
+                          alignItems: 'center',
+                          paddingHorizontal: 24,
+                          paddingVertical: 11,
+                        }}
+                      >
+                        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                          <Image
+                            source={{
+                              uri: `data:image/png;base64,${member.profileImgBase64})
+                              ?.profileImgBase64}`,
+                            }}
+                            style={{ width: 24, height: 24, borderRadius: 100 }}
+                          />
+                          <Text
+                            style={{
+                              marginLeft: 8,
+                              fontFamily: 'Apple500',
+                              fontSize: 16,
+                              color: COLOR.sub2,
+                            }}
+                          >
+                            {member.name}
+                          </Text>
+                        </View>
+                        <View
+                          style={[
+                            styles.shiftBox,
+                            {
+                              backgroundColor: `#${member.shift.color}`,
+                            },
+                          ]}
+                        >
+                          <Text style={styles.shoftName}>{member.shift.shortName}</Text>
+                          <Text numberOfLines={1} style={styles.name}>
+                            {member.shift.name}
+                          </Text>
+                        </View>
+                      </View>
+                    );
+                  })}
               </View>
             )}
           </ScrollView>
@@ -331,6 +344,26 @@ const styles = StyleSheet.create({
   },
   shiftShortNameText: { color: 'white', fontFamily: 'Apple600', fontSize: 20, height: 29 },
   shiftFullNameText: { marginLeft: 5, color: 'white', fontFamily: 'Apple', fontSize: 14 },
+  shiftBox: {
+    flexDirection: 'row',
+    width: 54,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 5,
+    borderRadius: 5,
+    marginLeft: 4,
+  },
+  shoftName: {
+    fontSize: 14,
+    fontFamily: 'Apple500',
+    color: 'white',
+  },
+  name: {
+    marginLeft: 5,
+    fontFamily: 'Apple500',
+    fontSize: 10,
+    color: 'white',
+  },
 });
 
 export default RequestShift;
