@@ -8,12 +8,14 @@ import Toast from 'react-native-toast-message';
 export const API_URL =
 process.env.NODE_ENV === 'production' ? 'https://api.dutying.net' : 'https://dev.api.dutying.net';
 // export const API_URL = 'https://dev.api.dutying.net';
+
 const axiosInstance = axios.create({
   baseURL: API_URL,
   headers: {
     'Content-Type': 'application/json',
   },
 });
+
 axiosInstance.interceptors.response.use(
   (response) => response,
   async (error) => {
@@ -61,6 +63,7 @@ axiosInstance.interceptors.response.use(
         }
         if (error.config) {
           console.log(error);
+
           console.log(error.config.url);
           throw error.config.url;
         }

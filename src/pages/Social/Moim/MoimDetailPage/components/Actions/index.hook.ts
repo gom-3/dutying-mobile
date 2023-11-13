@@ -41,6 +41,9 @@ const useAction = (moim: Moim, close: () => void) => {
     onSettled: () => {
       setIsLoading(false);
     },
+    onSettled: () => {
+      setIsLoading(false);
+    },
   });
 
   const { mutate: outMoimMutate } = useMutation(() => withdrawMoim(moim.moimId), {
@@ -52,6 +55,9 @@ const useAction = (moim: Moim, close: () => void) => {
         text1: '모임에서 탈퇴했어요',
         visibilityTime: 2000,
       });
+    },
+    onSettled: () => {
+      setIsLoading(false);
     },
     onSettled: () => {
       setIsLoading(false);
@@ -75,6 +81,9 @@ const useAction = (moim: Moim, close: () => void) => {
       onSettled: () => {
         setIsLoading(false);
       },
+      onSettled: () => {
+        setIsLoading(false);
+      },
     },
   );
 
@@ -90,6 +99,9 @@ const useAction = (moim: Moim, close: () => void) => {
           text1: '모임장을 변경했어요!',
           visibilityTime: 2000,
         });
+      },
+      onSettled: () => {
+        setIsLoading(false);
       },
       onSettled: () => {
         setIsLoading(false);

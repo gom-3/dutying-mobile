@@ -69,4 +69,5 @@ export type RequestShiftRequestDTO = {
 
 export const requestRequestShiftList = async (wardId: number, reqDto: RequestShiftRequestDTO) => {
   return await axiosInstance.post(`/wards/${wardId}/req-shifts/list`, reqDto);
+
 };

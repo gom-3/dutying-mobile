@@ -13,6 +13,7 @@ import MonthSelector from '@components/MonthSelector';
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { useAccountStore } from 'store/account';
 import { getWardShiftCollection } from '@libs/api/ward';
+
 import { wardKeys } from '@libs/api/queryKey';
 import LottieLoading from '@components/LottieLoading';
 
@@ -20,6 +21,7 @@ type DayShiftNurseListType = Pick<Shift, 'color' | 'shortName'> & { nurses: stri
 const order = ['DAY', 'EVENING', 'NIGHT', 'OFF'];
 
 // TODO: 로직 분리
+
 const WardCalendarPage = () => {
   const [date, setState] = useCaledarDateStore((state) => [state.date, state.setState]);
   const [account] = useAccountStore((state) => [state.account]);
