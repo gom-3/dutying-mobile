@@ -14,6 +14,14 @@ export const yearMonthToDateString = (year: number, month: number) => {
   return [startDateString, endDateString];
 };
 
+export const monthRangeString = (year: number, month: number) => {
+  const startDate = new Date(year, month, 1);
+  const endDate = new Date(year, month + 1, 0);
+  const startDateString = dateToString(startDate);
+  const endDateString = dateToString(endDate);
+  return [startDateString, endDateString];
+};
+
 export const dateToString = (date: Date) => {
   return `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date
     .getDate()

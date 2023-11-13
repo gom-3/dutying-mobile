@@ -19,6 +19,7 @@ import { hexToRgba } from '@libs/utils/color';
 import { navigateToLoginAndResetHistory } from '@libs/utils/navigate';
 import { useCaledarDateStore } from 'store/calendar';
 import * as Linking from 'expo-linking';
+import Toast from 'react-native-toast-message';
 
 const MyPage = () => {
   const [account, logoutAccount, setState] = useAccountStore((state) => [
@@ -41,6 +42,11 @@ const MyPage = () => {
     {
       onSuccess: (data) => {
         setState('account', data);
+        Toast.show({
+          type: 'success',
+          text1: '프로필 사진이 변경되었어요!',
+          visibilityTime: 1000,
+        });
       },
     },
   );
@@ -50,6 +56,11 @@ const MyPage = () => {
     {
       onSuccess: (data) => {
         setState('account', data);
+        Toast.show({
+          type: 'success',
+          text1: '이름이 변경되었어요!',
+          visibilityTime: 1000,
+        });
       },
     },
   );

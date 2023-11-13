@@ -38,8 +38,8 @@ const Header = ({ isImage }: Props) => {
       </View>
       <View style={styles.secondLevelView}>
         {shiftTypes.size > 0 &&
-          Array.from(shiftTypes.values()).map((shift) => (
-            <View key={shift.name} style={styles.shiftView}>
+          Array.from(shiftTypes.values()).map((shift, i) => (
+            <View key={`${shift.accountShiftTypeId}`} style={styles.shiftView}>
               <View style={[styles.shiftBoxView, { backgroundColor: shift.color }]}>
                 <Text style={styles.shiftText}>{shift.shortName}</Text>
               </View>

@@ -111,7 +111,6 @@ const useShiftTypeEdit = () => {
     }
   };
   const onChangeColor = (color: string) => {
-    // firebaseLogEvent('change_shift_color');
     const newShift: ShiftWithoutID = { ...shift, color: color };
     setState('currentShift', newShift);
   };

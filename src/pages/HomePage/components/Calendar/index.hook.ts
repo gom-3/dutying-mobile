@@ -12,6 +12,7 @@ import {
   State,
 } from 'react-native-gesture-handler';
 import { firebaseLogEvent } from '@libs/utils/event';
+import { getShiftTypesAll } from '@libs/api/shiftTypes';
 
 const useCalendar = (isRender?: boolean) => {
   const [userId] = useAccountStore((state) => [state.account.accountId]);
@@ -35,6 +36,7 @@ const useCalendar = (isRender?: boolean) => {
       enabled: userId > 0,
     },
   );
+
   const dateClickHandler = (date: Date, index: number) => {
     firebaseLogEvent('select_date_cell');
     setState('date', date);

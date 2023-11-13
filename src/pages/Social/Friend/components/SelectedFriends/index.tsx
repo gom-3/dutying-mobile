@@ -2,9 +2,7 @@ import { Friend } from '@libs/api/friend';
 import { COLOR } from 'index.style';
 import { TouchableOpacity, View, Text } from 'react-native';
 import ExitIcon from '@assets/svgs/exit-purple.svg';
-import { useCaledarDateStore } from 'store/calendar';
-import useFavorite from '@hooks/useFavorite';
-import { useQueryClient } from '@tanstack/react-query';
+import useSelectedFriends from './index.hook';
 
 interface Props {
   favoriteFriends: Friend[];
@@ -12,20 +10,9 @@ interface Props {
 
 const SelectedFriends = ({ favoriteFriends }: Props) => {
   const {
-    actions: { deleteFavoriteMutate },
-  } = useFavorite();
-  const [date] = useCaledarDateStore((state) => [state.date]);
-  const queryClient = useQueryClient();
-  const year = date.getFullYear();
-  const month = date.getMonth();
+    actions: { pressDeleteName },
+  } = useSelectedFriends();
 
-  const pressDeleteName = async (friendId: number) => {
-    deleteFavoriteMutate(friendId);
-    setTimeout(() => {
-      queryClient.invalidateQueries(['getFriendCollection', year, month]);
-      queryClient.refetchQueries(['getFriendCollection', year, month]);
-    }, 500);
-  };
   return (
     <View
       style={{

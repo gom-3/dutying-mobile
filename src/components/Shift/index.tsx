@@ -7,9 +7,17 @@ interface Props {
   isCurrent: boolean;
   isToday: boolean;
   fullNameVisibilty: boolean;
+  isWardRequest?: boolean;
 }
 
-const Shift = ({ shift, date, isCurrent, isToday, fullNameVisibilty }: Props) => {
+const Shift = ({
+  shift,
+  date,
+  isCurrent,
+  isToday,
+  fullNameVisibilty,
+  isWardRequest = false,
+}: Props) => {
   const transparency = isCurrent ? 1 : 0.5;
   const backgroundColor = `${shift?.color}${Math.round(transparency * 255).toString(16)}`;
   return (
@@ -17,7 +25,13 @@ const Shift = ({ shift, date, isCurrent, isToday, fullNameVisibilty }: Props) =>
       style={[
         styles.shiftContainer,
         {
-          backgroundColor: shift ? backgroundColor : isToday ? COLOR.sub5 : 'white',
+          backgroundColor: shift
+            ? backgroundColor
+            : isToday
+            ? isWardRequest
+              ? COLOR.main4
+              : COLOR.sub5
+            : 'white',
           paddingLeft: fullNameVisibilty ? 0 : 8,
           borderRadius: !fullNameVisibilty && isToday ? 50 : 5,
         },
