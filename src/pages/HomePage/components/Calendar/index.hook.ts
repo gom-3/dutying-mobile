@@ -106,7 +106,7 @@ const useCalendar = (isRender?: boolean) => {
     }
   };
 
-  useWidget({ weeks, shiftTypes });
+  useWidget({ shiftTypes });
 
   return {
     state: { weeks, shiftTypes, date, today },

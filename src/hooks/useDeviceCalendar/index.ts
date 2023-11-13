@@ -177,7 +177,10 @@ const useDeviceCalendar = () => {
           await createCalendarAsync(newCalendars[0]);
           await createCalendarAsync(newCalendars[1]);
         } catch {
-          Alert.alert('권한 거부됨', '해당 기기에서 캘린더를 생성할 수 없습니다. 기기 설정을 확인해 주세요.');
+          Alert.alert(
+            '권한 거부됨',
+            '해당 기기에서 캘린더를 생성할 수 없습니다. 기기 설정을 확인해 주세요.',
+          );
         }
         calendars = await getCalendarsAsync();
         calendars = calendars.filter((calendar) => calendar.allowsModifications === true);

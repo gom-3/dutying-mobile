@@ -1,198 +1,173 @@
 import { getItem, reloadAll, setItem } from '../../../modules/widget';
 import { useEffect, useState } from 'react';
-import { Schedule } from '@hooks/useDeviceCalendar';
 import { DateType } from '@pages/HomePage/components/Calendar';
+import { handleWidgetData } from './handler';
+import { useQuery } from '@tanstack/react-query';
+import { getAccountShiftList } from '@libs/api/shift';
+import { useAccountStore } from 'store/account';
+import { useDeviceCalendarStore } from 'store/device';
+import { Platform } from 'react-native';
+import { getEventsAsync } from 'expo-calendar';
+import { dateDiffInDays } from '@libs/utils/date';
+import { Schedule } from '@hooks/useDeviceCalendar';
 
 const GROUP_NAME = 'group.expo.modules.widgetsync.data';
 
 const getSharedData = getItem(GROUP_NAME);
 const setSharedData = setItem(GROUP_NAME);
 
-type WidgetDateType = {
-  day: string; //03
-  dayName: string; //금
-  dayType: 'saturday' | 'sunday' | 'workday';
-};
-
-type WidgetShift = {
-  name: string;
-  shortName: string;
-  color: number; // 0xFFFFFF
-  time: string; // 10:00 ~ 18:00
-};
-
-type WidgetSchedule = {
-  title: string;
-  color: number; // 0xFFFFFF
-  time: string; // HH:mm ~ HH:mm | -
-};
-
-type WidgetData = {
-  today: {
-    date: WidgetDateType;
-    shift: WidgetShift | null;
-    schedules: WidgetSchedule[];
-    closeSchedule: WidgetSchedule | null;
-  };
-  week: {
-    period: string; // mm.dd ~ mm.dd
-    shiftList: {
-      date: WidgetDateType;
-      shift: WidgetShift | null;
-      isCurrentMonth: boolean;
-    }[];
-  };
-  month: {
-    year: number;
-    month: number;
-    startDayIndex: number;
-    endDayIndex: number;
-    calendar: {
-      date: WidgetDateType;
-      shift: WidgetShift | null;
-      isCurrentMonth: boolean;
-    }[][];
-  };
-};
-
-function useWidget({ weeks, shiftTypes }: { weeks: DateType[][]; shiftTypes: Map<number, Shift> }) {
+function useWidget({ shiftTypes }: { shiftTypes: Map<number, Shift> }) {
+  const [userId] = useAccountStore((state) => [state.account.accountId]);
+  const [deviceCalendar, calendarLinks, isCalendarChanged, setDeivceCalendar] =
+    useDeviceCalendarStore((state) => [
+      state.calendars,
+      state.calendarLink,
+      state.isChanged,
+      state.setState,
+    ]);
   const [widgetData, setWidgetData] = useState(getSharedData(GROUP_NAME) ?? '');
   const now = new Date();
   const year = now.getFullYear();
-  const month = now.getMonth() + 1;
+  const month = now.getMonth();
 
-  const dateToHHMM = (date: Date) => {
-    const h = date.getHours();
-    const m = date.getMinutes();
-    return `${h < 10 ? `0${h}` : h}:${m < 10 ? `0${m}` : m}`;
-  };
+  const { data: shiftListResponse } = useQuery(
+    ['shiftForwidget', year, month],
+    () => getAccountShiftList(userId, year, month),
+    {
+      enabled: userId > 0,
+    },
+  );
 
-  const getDayName = (date: Date) => {
-    const week = ['일', '월', '화', '수', '목', '금', '토'];
-    const dayOfWeek = week[date.getDay()];
-    return dayOfWeek;
-  };
-
-  const dateToWidgetDateType = (date: Date) => {
-    return {
-      day: date.getDate().toString(),
-      dayName: getDayName(date),
-      dayType: date.getDay() === 0 ? 'sunday' : date.getDay() === 6 ? 'saturday' : 'workday',
-    } as WidgetDateType;
-  };
-
-  const shiftIdToWidgetShiftData = (shiftId: number) => {
-    const shift = shiftTypes.get(shiftId);
-    if (!shift) {
-      console.log(shiftId);
-      console.log(shiftTypes.get(shiftId));
+  const getEventFromDevice = async (calendar: DateType[]) => {
+    const first = new Date(year, month, 1);
+    const last =
+      Platform.OS === 'android' ? new Date(year, month + 1, 10) : new Date(year, month + 1, 1);
+    const idList = deviceCalendar
+      .filter((calendar) => calendarLinks[calendar.id])
+      .map((calendar) => calendar.id);
+    if (idList.length === 0) return;
+    let events = await getEventsAsync(idList, first, last);
+    if (Platform.OS === 'android') {
+      events = events.filter((event) => new Date(event.startDate).getMonth() === month);
     }
-    if (!shift) return null;
-    const widgetShift: WidgetShift = {
-      name: shift.name,
-      shortName: shift.shortName,
-      color: Number('0x' + shift.color.substring(1, shift.color.length)),
-      time:
-        shift.startTime === null || shift.endTime === null
-          ? '-'
-          : dateToHHMM(shift.startTime) + ' ~ ' + dateToHHMM(shift.endTime),
-    };
-    return widgetShift;
+    const newCalendar = [...calendar];
+    newCalendar.forEach((date) => (date.schedules = []));
+    events = events.sort(
+      (a, b) =>
+        dateDiffInDays(new Date(b.startDate), new Date(b.endDate)) -
+        dateDiffInDays(new Date(a.startDate), new Date(a.endDate)),
+    );
+
+    events.forEach((event) => {
+      const eventStartDate = new Date(event.startDate);
+      let eventEndDate = new Date(event.endDate);
+      if (event.allDay && Platform.OS === 'android')
+        eventEndDate = new Date(
+          eventEndDate.getFullYear(),
+          eventEndDate.getMonth(),
+          eventEndDate.getDate() - 1,
+        );
+      let startIndex = first.getDay() + eventStartDate.getDate() - 1;
+      const color =
+        deviceCalendar.find((calendar) => calendar.id === event.calendarId)?.color || '#5AF8F8';
+      let level;
+      let endIndex = first.getDay() + eventEndDate.getDate() - 1;
+
+      /**
+       * 이전 달에서 이번 달로 이어지는 Event, 이번 달에서 다음 달로 이어지는 Event
+       * 이전 년도에서 이번 년도로 이어지는 Event, 이번 년도에서 다음 년도로 이어지는 Event
+       * index 예외처리
+       */
+      if (eventEndDate.getMonth() > month || eventEndDate.getFullYear() > year)
+        endIndex += new Date(eventEndDate.getFullYear(), eventEndDate.getMonth(), 0).getDate();
+
+      if (eventStartDate.getMonth() < month || eventStartDate.getFullYear() < year)
+        startIndex -= new Date(year, month + 1, 0).getDate();
+
+      if (endIndex > newCalendar.length - 1) endIndex = newCalendar.length - 1;
+      let index = Math.max(0, startIndex);
+      while (index <= endIndex) {
+        const occupiedLevels = new Set();
+        let jump = 0;
+        for (let i = index; i <= endIndex; i++) {
+          const schedules = newCalendar[i].schedules;
+          jump++;
+          schedules.forEach((schedule) => occupiedLevels.add(schedule.level));
+          if (newCalendar[i].date.getDay() == 6) break;
+        }
+        level = 1;
+        while (occupiedLevels.has(level)) {
+          level++;
+        }
+        for (let i = index; i < index + jump; i++) {
+          const schedule = {
+            ...event,
+            startTime: eventStartDate,
+            endTime: eventEndDate,
+            color: color,
+          } as Schedule;
+          const schedules = [...newCalendar[i].schedules];
+          schedules.push(schedule);
+          newCalendar[i].schedules = schedules;
+        }
+        index = index + jump;
+      }
+    });
+    return newCalendar;
   };
 
-  const sheduleToWidgetSheduleData = (shedule: Schedule) => {
-    if (!shedule) return null;
-    return {
-      title: shedule.title,
-      color: Number('0x' + shedule.color.substring(1, shedule.color.length)),
-      time: dateToHHMM(shedule.startTime) + ' ~ ' + dateToHHMM(shedule.endTime),
-    } as WidgetSchedule;
-  };
+  const initCalendar = async (year: number, month: number) => {
+    const first = new Date(year, month, 1);
+    const last = new Date(year, month + 1, 0);
+    let calendar: DateType[] = [];
+    let dateIndex = 0;
 
-  const findCloseSchedule = (schedules: Schedule[]) => {
-    if (schedules.length === 0) return null;
-    const now = new Date();
-    const schedule = schedules
-      .filter((x) => x.startTime > now)
-      .sort((a, b) => a.startTime.getTime() - b.startTime.getTime())[0];
-    return sheduleToWidgetSheduleData(schedule);
-  };
-
-  const makeMonth = (
-    shiftList: {
-      date: WidgetDateType;
-      shift: WidgetShift | null;
-      isCurrentMonth: boolean;
-    }[],
-  ) => {
-    let arr: {
-      date: WidgetDateType;
-      shift: WidgetShift | null;
-      isCurrentMonth: boolean;
-    }[][] = [];
-    for (let i = 0; i < shiftList.length / 7; i++) {
-      arr = [...arr, shiftList.slice(7 * i, 7 * i + 7)];
+    const shiftList = shiftListResponse?.accountShiftTypeIdList;
+    for (let i = first.getDay() - 1; i >= 0; i--) {
+      const date: DateType = {
+        date: new Date(year, month, -i),
+        shift: shiftList ? shiftList[dateIndex++] : null,
+        schedules: [],
+      };
+      calendar.push(date);
     }
-    return arr;
-  };
+    for (let i = 1; i <= last.getDate(); i++) {
+      const date: DateType = {
+        date: new Date(year, month, i),
+        shift: shiftList ? shiftList[dateIndex++] : null,
+        schedules: [],
+      };
+      calendar.push(date);
+    }
+    for (let i = last.getDay(), j = 1; i < 6; i++, j++) {
+      const date: DateType = {
+        date: new Date(year, month + 1, j),
+        shift: shiftList ? shiftList[dateIndex++] : null,
+        schedules: [],
+      };
+      calendar.push(date);
+    }
 
-  const handleWidgetData = () => {
-    const startDayIndex = new Date(year, month - 1, 1).getDay();
-    const endDayIndex = new Date(year, month, 0).getDay();
-    const todayDayType = weeks.flatMap((x) => x).find((x) => x.date.getDate() === now.getDate());
-    const currentWeek = weeks.find((x) => x.some((y) => y.date.getDate() === now.getDate()));
+    calendar = (await getEventFromDevice(calendar)) || calendar;
 
-    if (!todayDayType || !currentWeek) return;
-    const widgetData: WidgetData = {
-      today: {
-        date: dateToWidgetDateType(now),
-        shift:
-          todayDayType && todayDayType.shift ? shiftIdToWidgetShiftData(todayDayType.shift) : null,
-        schedules: todayDayType.schedules
-          .map((x) => sheduleToWidgetSheduleData(x))
-          .filter((x) => x !== null) as WidgetSchedule[],
-        closeSchedule: todayDayType ? findCloseSchedule(todayDayType.schedules) : null,
-      },
-      week: {
-        period: `${currentWeek[0].date.getMonth() + 1}.${currentWeek[0].date.getDate()} ~ ${
-          currentWeek[6].date.getMonth() + 1
-        }.${currentWeek[6].date.getDate()}`,
-        shiftList: currentWeek.map((x) => ({
-          date: dateToWidgetDateType(x.date),
-          shift: x.shift ? shiftIdToWidgetShiftData(x.shift) : null,
-          isCurrentMonth: x.date.getMonth() + 1 === month,
-        })),
-      },
-      month: {
-        year,
-        month,
-        startDayIndex,
-        endDayIndex,
-        calendar: makeMonth(
-          weeks
-            .flatMap((x) => x)
-            .map((x) => ({
-              date: dateToWidgetDateType(x.date),
-              shift: x.shift ? shiftIdToWidgetShiftData(x.shift) : null,
-              isCurrentMonth: x.date.getMonth() + 1 === month,
-            })),
-        ),
-      },
-    };
-    console.log(JSON.stringify(widgetData.month));
+    const weeks: DateType[][] = [];
+    const temp = [...calendar];
+    while (temp.length > 0) weeks.push(temp.splice(0, 7));
+
+    const widgetData = handleWidgetData(year, month + 1, weeks, shiftTypes);
     setWidgetData(JSON.stringify(widgetData));
   };
+
+  useEffect(() => {
+    if (shiftListResponse && shiftTypes) {
+      initCalendar(year, month);
+    }
+  }, [year, month, shiftListResponse, shiftTypes]);
 
   useEffect(() => {
     setSharedData('savedData', widgetData);
     reloadAll();
   }, [widgetData]);
-
-  useEffect(() => {
-    if (weeks && shiftTypes.size > 0) {
-      handleWidgetData();
-    }
-  }, [weeks, shiftTypes]);
 }
 
 export default useWidget;
