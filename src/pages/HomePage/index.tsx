@@ -10,9 +10,10 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import useDeviceCalendar from '@hooks/useDeviceCalendar';
 import { useOnboardingStore } from 'store/onboarding';
 import { FreeAlertModal } from '@components/AlertModal';
-import { View, Text } from 'react-native';
+import { View, Text, Image } from 'react-native';
 import { useLinkProps } from '@react-navigation/native';
-import { COLOR } from 'index.style';
+import { COLOR, screenWidth } from 'index.style';
+import { registDutyImage } from '@assets/images/onboarding';
 
 const HomePage = () => {
   const [isCardOpen, isSideMenuOpen] = useCaledarDateStore((state) => [
@@ -33,6 +34,7 @@ const HomePage = () => {
     navigateToRegistDuty();
   };
 
+
   useDeviceCalendar();
   return (
     <PageViewContainer>
@@ -45,7 +47,18 @@ const HomePage = () => {
             accept={acceptRegistPopup}
             acceptText="근무 등록 하러 가기"
             context={
-              <View style={{ paddingBottom: 40, paddingTop: 20, alignItems: 'center' }}>
+              <View style={{ paddingBottom: 40, alignItems: 'center' }}>
+                <View style={{ flexDirection: 'row', justifyContent: 'flex-end', width: '100%' }}>
+                  <Image
+                    source={registDutyImage[0]}
+                    resizeMode="contain"
+                    style={{
+                      width: screenWidth * 0.7,
+                      height: (screenWidth * 0.7) / 4,
+                      marginBottom: 32,
+                    }}
+                  />
+                </View>
                 <Text style={{ fontFamily: 'Apple500', fontSize: 20, color: COLOR.sub1 }}>
                   간편하게
                 </Text>

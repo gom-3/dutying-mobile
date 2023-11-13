@@ -20,7 +20,7 @@ export const getShiftTypesAll = async (userId: number) => {
 };
 
 export const getShiftTypes = async (userId: number) => {
-  return (await axiosInstance.get<ShiftTypesResponseDTO>(`/accounts/${userId}/shift-types`)).data;
+  return (await axiosInstance.get<ShiftTypesResponseDTO>(`/accounts/${userId}/shift-types/v1`)).data;
 };
 
 export const addShiftType = async (userId: number, shift: ShiftTypeRequestDTO) => {

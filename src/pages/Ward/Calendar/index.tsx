@@ -14,10 +14,12 @@ import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { useAccountStore } from 'store/account';
 import { getWardShiftCollection } from '@libs/api/ward';
 import { wardKeys } from '@libs/api/queryKey';
+import LottieLoading from '@components/LottieLoading';
 
 type DayShiftNurseListType = Pick<Shift, 'color' | 'shortName'> & { nurses: string[] };
 const order = ['DAY', 'EVENING', 'NIGHT', 'OFF'];
 
+// TODO: 로직 분리
 const WardCalendarPage = () => {
   const [date, setState] = useCaledarDateStore((state) => [state.date, state.setState]);
   const [account] = useAccountStore((state) => [state.account]);
@@ -25,7 +27,7 @@ const WardCalendarPage = () => {
   const collectionRef = useRef<ScrollView>(null);
   const year = date.getFullYear();
   const month = date.getMonth();
-  const { data: collection } = useQuery(
+  const { data: collection, isLoading } = useQuery(
     wardKeys.shiftList(account.wardId, account.shiftTeamId, year, month),
     () => getWardShiftCollection(account.wardId, account.shiftTeamId, year, month),
   );
@@ -299,6 +301,7 @@ const WardCalendarPage = () => {
         </SafeAreaView>
         <NavigationBar page="ward" />
       </BottomSheetModalProvider>
+      {isLoading && <LottieLoading />}
     </PageViewContainer>
   );
 };

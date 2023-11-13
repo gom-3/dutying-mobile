@@ -9,7 +9,13 @@ export const addMeToWatingNurses = async (wardId: number) =>
 export const deleteWatingNurses = async (wardId: number, nurseId: number) =>
   (await axiosInstance.delete(`/wards/${wardId}/waiting-nurses?nurseId=${nurseId}`)).data;
 
-export type WardShift = Omit<Shift, 'isAlarm' | 'alarmInfoList' | 'isDefault'>;
+export type WardShift =
+  | (Omit<Shift, 'isAlarm' | 'alarmInfoList' | 'isDefault'> & {
+      isRequested: boolean;
+      isAccepted: boolean;
+      isRead: boolean;
+    })
+  | null;
 export type WardUser = Pick<Account, 'accountId' | 'name' | 'profileImgBase64'>;
 
 export type WardShiftsDTO = (WardUser & {
@@ -48,4 +54,19 @@ export const getWardMembers = async (wardId: number, shiftTeamId: number) => {
       `wards/${wardId}/shift-teams/${shiftTeamId}/accounts/linked`,
     )
   ).data;
+};
+
+export type WardReqShift = {
+  date: string;
+  accountShiftTypeId: number | null;
+};
+
+export type RequestShiftRequestDTO = {
+  wardReqShifts: WardReqShift[];
+  year: number;
+  month: number;
+};
+
+export const requestRequestShiftList = async (wardId: number, reqDto: RequestShiftRequestDTO) => {
+  return await axiosInstance.post(`/wards/${wardId}/req-shifts/list`, reqDto);
 };

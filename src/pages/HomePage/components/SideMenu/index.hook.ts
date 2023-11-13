@@ -7,7 +7,7 @@ import ShareIcon from '@assets/svgs/share.svg';
 import SliderIcon from '@assets/svgs/slider.svg';
 import { useEffect, useMemo } from 'react';
 import { useAccountStore } from 'store/account';
-import { Platform } from 'react-native';
+import { Alert, Platform } from 'react-native';
 import { firebaseLogEvent } from '@libs/utils/event';
 import * as NavigationBar from 'expo-navigation-bar';
 import * as Linking from 'expo-linking';
@@ -46,6 +46,10 @@ const useSideMenu = () => {
         icon: PlusIcon,
         title: '근무 등록',
         onPress: () => {
+          if (account.wardId > 0 && account.shiftTeamId > 0) {
+            Alert.alert('병동과 연동된 계정은 따로 근무 등록을 할 수 없습니다.');
+            return;
+          }
           firebaseLogEvent('move_regist_duty');
           onPressLinkRegistDuty();
         },
@@ -79,9 +83,9 @@ const useSideMenu = () => {
         title: '근무표 평가하기',
         onPress: () => {
           firebaseLogEvent('link_evaluate_duty_page');
-          Linking.openURL('https://abr.ge/ud2wuk')
-        }
-      }
+          Linking.openURL('https://abr.ge/ud2wuk');
+        },
+      },
     ],
     [],
   );

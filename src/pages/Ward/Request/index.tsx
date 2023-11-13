@@ -20,6 +20,7 @@ import {
   getWardMembers,
   getWardShiftRequest,
 } from '@libs/api/ward';
+import LottieLoading from '@components/LottieLoading';
 
 export const getDayRequestShiftLists = (
   requestShiftList: WardShiftsDTO | undefined,
@@ -46,6 +47,8 @@ export const getDayRequestShiftLists = (
   return array;
 };
 
+// TODO: 뷰 로직 분리
+// TODO: 스타일 정리
 const RequestWardShiftPage = () => {
   const [date, setState] = useCaledarDateStore((state) => [state.date, state.setState]);
   const [account] = useAccountStore((state) => [state.account]);
@@ -59,7 +62,7 @@ const RequestWardShiftPage = () => {
   }, [year, month]);
 
   /** 연동된 간호사 정보 memo */
-  const { data: linkedMemberList } = useQuery(
+  const { data: linkedMemberList, isLoading: isMemberListLoading } = useQuery(
     wardKeys.linkedMembers(account.wardId, account.shiftTeamId),
     () => getWardMembers(account.wardId, account.shiftTeamId),
   );
@@ -72,7 +75,7 @@ const RequestWardShiftPage = () => {
   }, [linkedMemberList]);
 
   /** 날짜별 신청 근무 목록 memo */
-  const { data: requestShiftList } = useQuery(
+  const { data: requestShiftList, isLoading: isRequestShiftListLoading } = useQuery(
     wardKeys.requestList(account.wardId, account.shiftTeamId, year, month),
     () => getWardShiftRequest(account.wardId, account.shiftTeamId, year, month),
     {
@@ -82,7 +85,6 @@ const RequestWardShiftPage = () => {
   const dayRequestShiftLists = useMemo(() => {
     return getDayRequestShiftLists(requestShiftList, date, linkedMemberListMap);
   }, [requestShiftList]);
-
   return (
     <PageViewContainer>
       <BottomSheetModalProvider>
@@ -176,7 +178,7 @@ const RequestWardShiftPage = () => {
                                 height: 6,
                                 borderRadius: 10,
                                 margin: 1,
-                                backgroundColor: `#${request.shift.color}`,
+                                backgroundColor: `#${request.shift?.color}`,
                               }}
                             />
                           ))}
@@ -219,8 +221,7 @@ const RequestWardShiftPage = () => {
                       <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                         <Image
                           source={{
-                            uri: `data:image/png;base64,${member.profileImgBase64})
-                              ?.profileImgBase64}`,
+                            uri: `data:image/png;base64,${member.profileImgBase64}`,
                           }}
                           style={{ width: 24, height: 24, borderRadius: 100 }}
                         />
@@ -239,13 +240,13 @@ const RequestWardShiftPage = () => {
                         style={[
                           styles.shiftBox,
                           {
-                            backgroundColor: `#${member.shift.color}`,
+                            backgroundColor: `#${member.shift?.color}`,
                           },
                         ]}
                       >
-                        <Text style={styles.shoftName}>{member.shift.shortName}</Text>
+                        <Text style={styles.shoftName}>{member.shift?.shortName}</Text>
                         <Text numberOfLines={1} style={styles.name}>
-                          {member.shift.name}
+                          {member.shift?.name}
                         </Text>
                       </View>
                     </View>
@@ -256,6 +257,7 @@ const RequestWardShiftPage = () => {
         </SafeAreaView>
         <NavigationBar page="ward" />
       </BottomSheetModalProvider>
+      {(isMemberListLoading || isRequestShiftListLoading) && <LottieLoading />}
     </PageViewContainer>
   );
 };

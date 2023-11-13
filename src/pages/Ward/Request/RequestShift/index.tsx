@@ -5,35 +5,64 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import CheckIcon from '@assets/svgs/check.svg';
 import MonthSelector from '@components/MonthSelector';
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
-import { days, isSameDate } from '@libs/utils/date';
+import { dateToString, days, isSameDate } from '@libs/utils/date';
 import { COLOR } from 'index.style';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useCaledarDateStore } from 'store/calendar';
 import TrashIcon from '@assets/svgs/trash-color.svg';
-import { useQuery } from '@tanstack/react-query';
-import { WardUser, getWardMembers, getWardShiftRequest } from '@libs/api/ward';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import {
+  WardReqShift,
+  WardUser,
+  getWardMembers,
+  getWardShiftRequest,
+  requestRequestShiftList,
+} from '@libs/api/ward';
 import { useAccountStore } from 'store/account';
 import { wardKeys } from '@libs/api/queryKey';
 import { getDayRequestShiftLists } from '..';
-
-const mockShift = [
-  { shortName: 'D', name: '데이', color: '#4dc2ad' },
-  { shortName: 'E', name: '이브닝', color: '#ff8ba5' },
-  { shortName: 'N', name: '나이트', color: '#3580ff' },
-  { shortName: 'O', name: '오프', color: '#465b7a' },
-];
+import { useShiftTypeStore } from 'store/shift';
+import Shift from '@components/Shift';
+import { useNavigation } from '@react-navigation/native';
+import Toast from 'react-native-toast-message';
+import LottieLoading from '@components/LottieLoading';
 
 const RequestShift = () => {
   const [account] = useAccountStore((state) => [state.account]);
+  const [shiftTypes] = useShiftTypeStore((state) => [state.shiftTypes]);
+  const [requestArray, setRequestArray] = useState<Map<string, number | null>>(new Map());
   const [date, setState] = useCaledarDateStore((state) => [state.date, state.setState]);
+  const navigation = useNavigation();
   const year = date.getFullYear();
   const month = date.getMonth();
-  const [dateIndex, setDateIndex] = useState(
-    date.getDate() + new Date(year, month, 1).getDay() - 1,
+  const queryClient = useQueryClient();
+
+  const { mutate: requestShiftListMutate } = useMutation(
+    (wardReqShifts: WardReqShift[]) =>
+      requestRequestShiftList(account.wardId, {
+        year,
+        month: month + 1,
+        wardReqShifts: wardReqShifts,
+      }),
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries(
+          wardKeys.requestList(account.wardId, account.shiftTeamId, year, month),
+        );
+        queryClient.refetchQueries(
+          wardKeys.requestList(account.wardId, account.shiftTeamId, year, month),
+        );
+        navigation.goBack();
+        Toast.show({
+          type: 'success',
+          text1: '신청근무가 수정되었습니다.',
+        });
+      },
+    },
   );
 
   /** 연동된 간호사 정보 memo */
-  const { data: linkedMemberList } = useQuery(
+  const { data: linkedMemberList, isLoading: isMemberListLoading } = useQuery(
     wardKeys.linkedMembers(account.wardId, account.shiftTeamId),
     () => getWardMembers(account.wardId, account.shiftTeamId),
   );
@@ -45,18 +74,37 @@ const RequestShift = () => {
     return map;
   }, [linkedMemberList]);
 
-  const { data: requestShiftList } = useQuery(
+  /** 신청 근무 목록 */
+  const { data: requestShiftList, isLoading: isRequestShiftListLoading } = useQuery(
     wardKeys.requestList(account.wardId, account.shiftTeamId, year, month),
     () => getWardShiftRequest(account.wardId, account.shiftTeamId, year, month),
     {
       enabled: !!linkedMemberList && linkedMemberListMap.size > 0,
     },
   );
+  // 날짜별
   const dayRequestShiftLists = useMemo(() => {
     return getDayRequestShiftLists(requestShiftList, date, linkedMemberListMap);
   }, [requestShiftList]);
-  // console.log(shiftRequestDays);
 
+  // 내 신청 근무 중 아직 확정안된 근무
+  useEffect(() => {
+    if (requestShiftList) {
+      const my = requestShiftList.find((v) => v.accountId === account.accountId);
+      console.log(my, 123);
+      const newMap = new Map(requestArray);
+      my?.accountShiftTypes.forEach((shift, i) => {
+        if (shift && !shift.isAccepted) {
+          const dateString = dateToString(new Date(date.getFullYear(), date.getMonth(), i + 1));
+          newMap.set(dateString, shift.accountShiftTypeId);
+        }
+      });
+      setRequestArray(newMap);
+      console.log(newMap);
+    }
+  }, [requestShiftList]);
+
+  console.log(shiftTypes);
   const weeks = useMemo(() => {
     const first = new Date(year, month, 1);
     const last = new Date(year, month + 1, 0);
@@ -78,7 +126,44 @@ const RequestShift = () => {
     return weeks;
   }, [year, month]);
 
+  const insertShift = (requestDate: Date, shiftId: number) => {
+    const newMap = new Map(requestArray);
+    const dateString = dateToString(requestDate);
+    newMap.set(dateString, shiftId);
+    setRequestArray(newMap);
+  };
+
+  const deleteShift = (requestDate: Date) => {
+    const newMap = new Map(requestArray);
+    const dateString = dateToString(requestDate);
+    newMap.set(dateString, null);
+    setRequestArray(newMap);
+  };
+
+  const shiftTypeButtons = useMemo(() => {
+    const array: (Shift | null)[] = Array.from(shiftTypes.values());
+    const result: (Shift | null)[][] = [];
+
+    for (let i = 0; i < array.length; i += 4) {
+      let chunk = array.slice(i, i + 4);
+      if (chunk.length < 4)
+        chunk = chunk.concat(Array.from({ length: 4 - chunk.length }, () => null));
+      result.push(chunk);
+    }
+    return result;
+  }, []);
+
   const [selectedTab, setSelectedTab] = useState<'request' | 'list'>('request');
+
+  const saveRequestShift = () => {
+    const array: WardReqShift[] = [];
+    if (requestArray.size === 0) return;
+    requestArray.forEach((value, key) => {
+      array.push({ date: key, accountShiftTypeId: value });
+    });
+    console.log(array);
+    requestShiftListMutate(array);
+  };
 
   return (
     <PageViewContainer>
@@ -87,7 +172,7 @@ const RequestShift = () => {
           <PageHeader
             title="근무 신청하기"
             rightItems={
-              <TouchableOpacity>
+              <TouchableOpacity onPress={saveRequestShift}>
                 <CheckIcon />
               </TouchableOpacity>
             }
@@ -136,7 +221,7 @@ const RequestShift = () => {
                           {day.date.getDate()}
                         </Text>
                         {isSameMonth && dayRequestShiftLists[day.date.getDate() - 1] && (
-                          <View style={{ flexDirection: 'row', marginLeft: 5 }}>
+                          <View style={{ flexDirection: 'row', marginLeft: 5, height: 8 }}>
                             {dayRequestShiftLists[day.date.getDate() - 1].map((request) => (
                               <View
                                 style={{
@@ -144,19 +229,24 @@ const RequestShift = () => {
                                   height: 6,
                                   borderRadius: 10,
                                   margin: 1,
-                                  backgroundColor: `#${request.shift.color}`,
+                                  backgroundColor: `#${request.shift?.color}`,
                                 }}
                               />
                             ))}
                           </View>
                         )}
-                        {/* <Shift
+                        <Shift
+                          isWardRequest
                           date={day.date.getDate()}
-                          shift={day.shift !== null ? shiftTypes.get(day.shift) : undefined}
+                          shift={
+                            requestArray.get(dateToString(day.date)) !== null
+                              ? shiftTypes.get(requestArray.get(dateToString(day.date)) || 0)
+                              : undefined
+                          }
                           isCurrent={isSameMonth}
                           isToday={isSame}
                           fullNameVisibilty
-                        /> */}
+                        />
                       </View>
                     </TouchableOpacity>
                   );
@@ -219,6 +309,7 @@ const RequestShift = () => {
                     신청할 근무 유형 선택
                   </Text>
                   <TouchableOpacity
+                    onPress={() => deleteShift(date)}
                     style={{
                       borderRadius: 5,
                       borderWidth: 1,
@@ -235,23 +326,32 @@ const RequestShift = () => {
                     <TrashIcon />
                   </TouchableOpacity>
                 </View>
-                <View style={{ flexDirection: 'row' }}>
-                  {mockShift.map((shift) => (
-                    <TouchableOpacity
-                      activeOpacity={0.7}
-                      key={shift.color}
-                      // onPress={() => insertShift(shift.accountShiftTypeId)}
-                      delayLongPress={700}
-                      // onLongPress={() => longPressShift(shift)}
-                      style={styles.shiftItemView}
+                {shiftTypeButtons.map((shiftTypeList, i) => {
+                  return (
+                    <View
+                      key={shiftTypeList[0]?.accountShiftTypeId + `${i}`}
+                      style={styles.registShiftItemsView}
                     >
-                      <View style={[styles.shiftView, { backgroundColor: shift.color }]}>
-                        <Text style={styles.shiftShortNameText}>{shift.shortName}</Text>
-                        <Text style={styles.shiftFullNameText}>{shift.name}</Text>
-                      </View>
-                    </TouchableOpacity>
-                  ))}
-                </View>
+                      {shiftTypeList.map((shift) => {
+                        if (shift)
+                          return (
+                            <TouchableOpacity
+                              activeOpacity={0.7}
+                              key={shift.accountShiftTypeId}
+                              onPress={() => insertShift(date, shift.accountShiftTypeId)}
+                              style={styles.shiftItemView}
+                            >
+                              <View style={[styles.shiftView, { backgroundColor: shift.color }]}>
+                                <Text style={styles.shiftShortNameText}>{shift.shortName}</Text>
+                                <Text style={styles.shiftFullNameText}>{shift.name}</Text>
+                              </View>
+                            </TouchableOpacity>
+                          );
+                        else return <View style={styles.shiftItemView} />;
+                      })}
+                    </View>
+                  );
+                })}
               </View>
             ) : (
               <View style={{ marginTop: 10 }}>
@@ -290,13 +390,13 @@ const RequestShift = () => {
                           style={[
                             styles.shiftBox,
                             {
-                              backgroundColor: `#${member.shift.color}`,
+                              backgroundColor: `#${member.shift?.color}`,
                             },
                           ]}
                         >
-                          <Text style={styles.shoftName}>{member.shift.shortName}</Text>
+                          <Text style={styles.shoftName}>{member.shift?.shortName}</Text>
                           <Text numberOfLines={1} style={styles.name}>
-                            {member.shift.name}
+                            {member.shift?.name}
                           </Text>
                         </View>
                       </View>
@@ -307,6 +407,7 @@ const RequestShift = () => {
           </ScrollView>
         </SafeAreaView>
       </BottomSheetModalProvider>
+      {(isMemberListLoading || isRequestShiftListLoading) && <LottieLoading />}
     </PageViewContainer>
   );
 };
@@ -363,6 +464,11 @@ const styles = StyleSheet.create({
     fontFamily: 'Apple500',
     fontSize: 10,
     color: 'white',
+  },
+  registShiftItemsView: {
+    flexDirection: 'row',
+    marginTop: 20,
+    justifyContent: 'flex-start',
   },
 });
 
