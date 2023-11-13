@@ -100,32 +100,32 @@ var mockWidgetData: WidgetData = WidgetData(
         isCurrentMonth: false
       ),
       DayDuty(
-        date: DateType(day: "30", dayName: "일", dayType: "sunday"),
+        date: DateType(day: "30", dayName: "월", dayType: "workday"),
         shift: Shift(name: "데이", shortName: "D", color: 0x4DC2AD, time: "07:00 ~ 15:00"),
         isCurrentMonth: false
       ),
       DayDuty(
-        date: DateType(day: "31", dayName: "일", dayType: "sunday"),
+        date: DateType(day: "31", dayName: "화", dayType: "workday"),
         shift: Shift(name: "이브닝", shortName: "E", color: 0xFF8BA5, time: "15:00 ~ 23:00"),
         isCurrentMonth: false
       ),
       DayDuty(
-        date: DateType(day: "1", dayName: "일", dayType: "sunday"),
+        date: DateType(day: "1", dayName: "수", dayType: "workday"),
         shift: Shift(name: "나이트", shortName: "N", color: 0x3580FF, time: "23:00 ~ 07:00"),
         isCurrentMonth: true
       ),
       DayDuty(
-        date: DateType(day: "2", dayName: "일", dayType: "sunday"),
+        date: DateType(day: "2", dayName: "목", dayType: "workday"),
         shift: Shift(name: "오프", shortName: "O", color: 0x465B7A, time: "-"),
         isCurrentMonth: true
       ),
       DayDuty(
-        date: DateType(day: "3", dayName: "일", dayType: "sunday"),
+        date: DateType(day: "3", dayName: "금", dayType: "workday"),
         shift: Shift(name: "오프", shortName: "O", color: 0x465B7A, time: "-"),
         isCurrentMonth: true
       ),
       DayDuty(
-        date: DateType(day: "4", dayName: "일", dayType: "saturday"),
+        date: DateType(day: "4", dayName: "토", dayType: "saturday"),
         shift: Shift(name: "나이트", shortName: "N", color: 0x3580FF, time: "23:00 ~ 07:00"),
         isCurrentMonth: true
       ),
@@ -139,27 +139,27 @@ var mockWidgetData: WidgetData = WidgetData(
         isCurrentMonth: false
       ),
       DayDuty(
-        date: DateType(day: "30", dayName: "일", dayType: "sunday"),
+        date: DateType(day: "30", dayName: "일", dayType: "workday"),
         shift: Shift(name: "데이", shortName: "D", color: 0x4DC2AD, time: "07:00 ~ 15:00"),
         isCurrentMonth: false
       ),
       DayDuty(
-        date: DateType(day: "31", dayName: "일", dayType: "sunday"),
+        date: DateType(day: "31", dayName: "일", dayType: "workday"),
         shift: Shift(name: "이브닝", shortName: "E", color: 0xFF8BA5, time: "15:00 ~ 23:00"),
         isCurrentMonth: false
       ),
       DayDuty(
-        date: DateType(day: "1", dayName: "일", dayType: "sunday"),
+        date: DateType(day: "1", dayName: "일", dayType: "workday"),
         shift: Shift(name: "나이트", shortName: "N", color: 0x3580FF, time: "23:00 ~ 07:00"),
         isCurrentMonth: true
       ),
       DayDuty(
-        date: DateType(day: "2", dayName: "일", dayType: "sunday"),
+        date: DateType(day: "2", dayName: "일", dayType: "workday"),
         shift: Shift(name: "오프", shortName: "O", color: 0x465B7A, time: "-"),
         isCurrentMonth: true
       ),
       DayDuty(
-        date: DateType(day: "3", dayName: "일", dayType: "sunday"),
+        date: DateType(day: "3", dayName: "일", dayType: "workday"),
         shift: Shift(name: "오프", shortName: "O", color: 0x465B7A, time: "-"),
         isCurrentMonth: true
       ),
@@ -176,27 +176,27 @@ var mockWidgetData: WidgetData = WidgetData(
         isCurrentMonth: true
       ),
       DayDuty(
-        date: DateType(day: "6", dayName: "일", dayType: "sunday"),
+        date: DateType(day: "6", dayName: "일", dayType: "workday"),
         shift: Shift(name: "데이", shortName: "D", color: 0x4DC2AD, time: "07:00 ~ 15:00"),
         isCurrentMonth: true
       ),
       DayDuty(
-        date: DateType(day: "7", dayName: "일", dayType: "sunday"),
+        date: DateType(day: "7", dayName: "일", dayType: "workday"),
         shift: Shift(name: "이브닝", shortName: "E", color: 0xFF8BA5, time: "15:00 ~ 23:00"),
         isCurrentMonth: true
       ),
       DayDuty(
-        date: DateType(day: "8", dayName: "일", dayType: "sunday"),
+        date: DateType(day: "8", dayName: "일", dayType: "workday"),
         shift: Shift(name: "나이트", shortName: "N", color: 0x3580FF, time: "23:00 ~ 07:00"),
         isCurrentMonth: true
       ),
       DayDuty(
-        date: DateType(day: "9", dayName: "일", dayType: "sunday"),
+        date: DateType(day: "9", dayName: "일", dayType: "workday"),
         shift: Shift(name: "오프", shortName: "O", color: 0x465B7A, time: "-"),
         isCurrentMonth: true
       ),
       DayDuty(
-        date: DateType(day: "10", dayName: "일", dayType: "sunday"),
+        date: DateType(day: "10", dayName: "일", dayType: "workday"),
         shift: Shift(name: "오프", shortName: "O", color: 0x465B7A, time: "-"),
         isCurrentMonth: true
       ),
@@ -213,27 +213,27 @@ var mockWidgetData: WidgetData = WidgetData(
         isCurrentMonth: true
       ),
       DayDuty(
-        date: DateType(day: "13", dayName: "일", dayType: "sunday"),
+        date: DateType(day: "13", dayName: "일", dayType: "workday"),
         shift: Shift(name: "데이", shortName: "D", color: 0x4DC2AD, time: "07:00 ~ 15:00"),
         isCurrentMonth: true
       ),
       DayDuty(
-        date: DateType(day: "14", dayName: "일", dayType: "sunday"),
+        date: DateType(day: "14", dayName: "일", dayType: "workday"),
         shift: Shift(name: "이브닝", shortName: "E", color: 0xFF8BA5, time: "15:00 ~ 23:00"),
         isCurrentMonth: true
       ),
       DayDuty(
-        date: DateType(day: "15", dayName: "일", dayType: "sunday"),
+        date: DateType(day: "15", dayName: "일", dayType: "workday"),
         shift: Shift(name: "나이트", shortName: "N", color: 0x3580FF, time: "23:00 ~ 07:00"),
         isCurrentMonth: true
       ),
       DayDuty(
-        date: DateType(day: "16", dayName: "일", dayType: "sunday"),
+        date: DateType(day: "16", dayName: "일", dayType: "workday"),
         shift: Shift(name: "오프", shortName: "O", color: 0x465B7A, time: "-"),
         isCurrentMonth: true
       ),
       DayDuty(
-        date: DateType(day: "17", dayName: "일", dayType: "sunday"),
+        date: DateType(day: "17", dayName: "일", dayType: "workday"),
         shift: Shift(name: "오프", shortName: "O", color: 0x465B7A, time: "-"),
         isCurrentMonth: true
       ),
@@ -250,27 +250,27 @@ var mockWidgetData: WidgetData = WidgetData(
         isCurrentMonth: true
       ),
       DayDuty(
-        date: DateType(day: "20", dayName: "일", dayType: "sunday"),
+        date: DateType(day: "20", dayName: "일", dayType: "workday"),
         shift: Shift(name: "데이", shortName: "D", color: 0x4DC2AD, time: "07:00 ~ 15:00"),
         isCurrentMonth: true
       ),
       DayDuty(
-        date: DateType(day: "21", dayName: "일", dayType: "sunday"),
+        date: DateType(day: "21", dayName: "일", dayType: "workday"),
         shift: Shift(name: "이브닝", shortName: "E", color: 0xFF8BA5, time: "15:00 ~ 23:00"),
         isCurrentMonth: true
       ),
       DayDuty(
-        date: DateType(day: "22", dayName: "일", dayType: "sunday"),
+        date: DateType(day: "22", dayName: "일", dayType: "workday"),
         shift: Shift(name: "나이트", shortName: "N", color: 0x3580FF, time: "23:00 ~ 07:00"),
         isCurrentMonth: true
       ),
       DayDuty(
-        date: DateType(day: "23", dayName: "일", dayType: "sunday"),
+        date: DateType(day: "23", dayName: "일", dayType: "workday"),
         shift: Shift(name: "오프", shortName: "O", color: 0x465B7A, time: "-"),
         isCurrentMonth: true
       ),
       DayDuty(
-        date: DateType(day: "24", dayName: "일", dayType: "sunday"),
+        date: DateType(day: "24", dayName: "일", dayType: "workday"),
         shift: Shift(name: "오프", shortName: "O", color: 0x465B7A, time: "-"),
         isCurrentMonth: true
       ),
@@ -287,27 +287,27 @@ var mockWidgetData: WidgetData = WidgetData(
         isCurrentMonth: true
       ),
       DayDuty(
-        date: DateType(day: "27", dayName: "일", dayType: "sunday"),
+        date: DateType(day: "27", dayName: "일", dayType: "workday"),
         shift: Shift(name: "데이", shortName: "D", color: 0x4DC2AD, time: "07:00 ~ 15:00"),
         isCurrentMonth: true
       ),
       DayDuty(
-        date: DateType(day: "28", dayName: "일", dayType: "sunday"),
+        date: DateType(day: "28", dayName: "일", dayType: "workday"),
         shift: Shift(name: "이브닝", shortName: "E", color: 0xFF8BA5, time: "15:00 ~ 23:00"),
         isCurrentMonth: true
       ),
       DayDuty(
-        date: DateType(day: "29", dayName: "일", dayType: "sunday"),
+        date: DateType(day: "29", dayName: "일", dayType: "workday"),
         shift: Shift(name: "나이트", shortName: "N", color: 0x3580FF, time: "23:00 ~ 07:00"),
         isCurrentMonth: true
       ),
       DayDuty(
-        date: DateType(day: "30", dayName: "일", dayType: "sunday"),
+        date: DateType(day: "30", dayName: "일", dayType: "workday"),
         shift: Shift(name: "오프", shortName: "O", color: 0x465B7A, time: "-"),
         isCurrentMonth: true
       ),
       DayDuty(
-        date: DateType(day: "1", dayName: "일", dayType: "sunday"),
+        date: DateType(day: "1", dayName: "일", dayType: "workday"),
         shift: Shift(name: "오프", shortName: "O", color: 0x465B7A, time: "-"),
         isCurrentMonth: false
       ),
@@ -683,11 +683,11 @@ struct medium02View : View {
               Text(item.date.dayName)
                 .font(.system(size: 12))
                 .fontWeight(.medium)
-                .foregroundColor(item.date.day == today ? Color.white : item.date.dayType == "workday" ? (scheme == .dark ? Color(UIColor(rgb: 0xD6D6DE)) :  Color(UIColor(rgb: 0xABABB4))) : item.date.dayType == "sunday" ?  Color(UIColor(rgb: 0xFF99AA)) : Color(UIColor(rgb: 0x8B9BFF)))
+                .foregroundColor(item.date.day == today ? Color.white : item.date.dayType == "workday" ? (scheme == .dark ? Color(UIColor(rgb: 0xD6D6DE).withAlphaComponent(item.isCurrentMonth ? 1 : 0.5)) :  Color(UIColor(rgb: 0xABABB4).withAlphaComponent(item.isCurrentMonth ? 1 : 0.5))) : item.date.dayType == "sunday" ?  Color(UIColor(rgb: 0xFF99AA).withAlphaComponent(item.isCurrentMonth ? 1 : 0.5)) : Color(UIColor(rgb: 0x8B9BFF).withAlphaComponent(item.isCurrentMonth ? 1 : 0.5)))
               Text(item.date.day)
                 .font(.system(size: 12))
                 .fontWeight(.semibold)
-                .foregroundColor(item.date.day == today ? Color.white : item.date.dayType == "workday" ? (scheme == .dark ? Color(UIColor(rgb: 0xFDFCFE)) :  Color(UIColor(rgb: 0x595961))) : item.date.dayType == "sunday" ?  Color(UIColor(rgb: 0xFF99AA)) : Color(UIColor(rgb: 0x8B9BFF)))
+                .foregroundColor(item.date.day == today ? Color.white : item.date.dayType == "workday" ? (scheme == .dark ? Color(UIColor(rgb: 0xFDFCFE).withAlphaComponent(item.isCurrentMonth ? 1 : 0.5)) :  Color(UIColor(rgb: 0x595961).withAlphaComponent(item.isCurrentMonth ? 1 : 0.5))) : item.date.dayType == "sunday" ?  Color(UIColor(rgb: 0xFF99AA).withAlphaComponent(item.isCurrentMonth ? 1 : 0.5)) : Color(UIColor(rgb: 0x8B9BFF).withAlphaComponent(item.isCurrentMonth ? 1 : 0.5)))
                 .padding(.top, 4)
               Spacer()
               if(item.shift != nil) {
@@ -698,7 +698,7 @@ struct medium02View : View {
                   .multilineTextAlignment(.center)
                   .frame(width: 40, height: 40)
                   .background(RoundedRectangle(cornerRadius: 8)
-                    .fill(Color(UIColor(rgb: item.shift!.color))))
+                    .fill(Color(UIColor(rgb: item.shift!.color).withAlphaComponent(item.isCurrentMonth ? 1 : 0.5))))
               } else {
                 Text("")
                   .font(.system(size: 24))
