@@ -11,6 +11,8 @@ import { Alert, Platform } from 'react-native';
 import { firebaseLogEvent } from '@libs/utils/event';
 import * as NavigationBar from 'expo-navigation-bar';
 import * as Linking from 'expo-linking';
+import Toast from 'react-native-toast-message';
+import * as Clipboard from 'expo-clipboard';
 
 interface SideMenuItem {
   icon: React.FC<SvgProps>;
@@ -31,13 +33,20 @@ const useSideMenu = () => {
     if (Platform.OS === 'android') {
       NavigationBar.setVisibilityAsync('hidden');
     }
-    return () => {
-      if (Platform.OS === 'android') NavigationBar.setVisibilityAsync('visible');
-    };
   }, []);
 
   const closeSideMenu = () => {
     setState('isSideMenuOpen', false);
+  };
+
+  const copyCode = async () => {
+    await Clipboard.setStringAsync(account.code);
+    Toast.show({
+      type: 'success',
+      text1: '코드가 복사되었어요!',
+      text2: '코드를 통해 친구를 맺을 수 있어요👋',
+      visibilityTime: 2000,
+    });
   };
 
   const menuItemList: SideMenuItem[] = useMemo(
@@ -91,7 +100,7 @@ const useSideMenu = () => {
   );
   return {
     state: { account, menuItemList },
-    actions: { closeSideMenu, navigateToMyPage },
+    actions: { closeSideMenu, navigateToMyPage, copyCode },
   };
 };
 

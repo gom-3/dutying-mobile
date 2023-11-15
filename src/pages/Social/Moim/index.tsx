@@ -38,6 +38,7 @@ const MoimPage = () => {
       setIsValid,
       closeBottomSheet,
       navigateFriendsPage,
+      pressEnterMoim,
     },
   } = useMoimPage();
 
@@ -77,7 +78,7 @@ const MoimPage = () => {
               </Pressable>
             </View>
             <TouchableOpacity
-              onPress={() => navigateMoimEnter()}
+              onPress={pressEnterMoim}
               style={{
                 width: 35,
                 height: 40,

@@ -1,11 +1,19 @@
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
-import { changeMoimHost, deleteMoim, kickMemberFromMoim, withdrawMoim } from '@libs/api/moim';
+import {
+  changeMoimHost,
+  changeMoimName,
+  deleteMoim,
+  kickMemberFromMoim,
+  withdrawMoim,
+} from '@libs/api/moim';
 import { useMoimStore } from '@pages/Social/Moim/store';
 import { useNavigation } from '@react-navigation/native';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useRef, useState } from 'react';
 import { useAccountStore } from 'store/account';
 import Toast from 'react-native-toast-message';
+import { BottomSheetModalMethods } from '@gorhom/bottom-sheet/lib/typescript/types';
+import { firebaseLogEvent } from '@libs/utils/event';
 
 type ActionsAccountType = Pick<Account, 'accountId' | 'name'>;
 
@@ -13,20 +21,36 @@ const useAction = (moim: Moim, close: () => void) => {
   const [member, setMember] = useState<ActionsAccountType>({ accountId: 0, name: '' });
   const [accountId] = useAccountStore((state) => [state.account.accountId]);
   const [moimCode] = useMoimStore((state) => [state.moimCode]);
-  const [isInviteModalOpen, setIsInviteModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [isKickModalOpen, setIsKickModalOpen] = useState(false);
-  const [isChangeMasterModalOpen, setIsChangeMasterModalOpen] = useState(false);
-  const [isOutModalOpen, setIsOutModalOpen] = useState(false);
+  const [modal, setModal] = useState<'invite' | 'delete' | 'kick' | 'host' | 'out' | null>(null);
+  const [isValid, setIsValid] = useState(true);
+
   const navigate = useNavigation();
   const queryClient = useQueryClient();
 
+  const moimNameRef = useRef<string>('');
   const inviteRef = useRef<BottomSheetModal>(null);
-  const changeRef = useRef<BottomSheetModal>(null);
+  const nameRef = useRef<BottomSheetModal>(null);
+  const hostRef = useRef<BottomSheetModal>(null);
   const kickRef = useRef<BottomSheetModal>(null);
 
   const isHost = moim.hostInfo.accountId === accountId;
+
+  const { mutate: changeMoimNameMutate } = useMutation(
+    () => changeMoimName(moim.moimId, moimNameRef.current),
+    {
+      onSuccess: () => {
+        firebaseLogEvent('change_moim_name');
+        queryClient.invalidateQueries(['getMoimList', accountId]);
+        navigate.goBack();
+        Toast.show({
+          type: 'success',
+          text1: '모임 이름이 변경되었어요!',
+          visibilityTime: 2000,
+        });
+      },
+    },
+  );
 
   const { mutate: deleteMoimMutate } = useMutation(() => deleteMoim(moim.moimId), {
     onSuccess: () => {
@@ -37,9 +61,6 @@ const useAction = (moim: Moim, close: () => void) => {
         text1: '모임이 삭제되었어요',
         visibilityTime: 2000,
       });
-    },
-    onSettled: () => {
-      setIsLoading(false);
     },
     onSettled: () => {
       setIsLoading(false);
@@ -59,9 +80,6 @@ const useAction = (moim: Moim, close: () => void) => {
     onSettled: () => {
       setIsLoading(false);
     },
-    onSettled: () => {
-      setIsLoading(false);
-    },
   });
 
   const { mutate: kickMemberMutate } = useMutation(
@@ -70,16 +88,14 @@ const useAction = (moim: Moim, close: () => void) => {
       onSuccess: () => {
         // queryClient.invalidateQueries(['getMoimCollection', moim.moimId, ])
         queryClient.invalidateQueries(['getMemberList', moim.moimId]);
-        setIsKickModalOpen(false);
+        setModal(null);
+        // setIsKickModalOpen(false);
         kickRef.current?.present();
         Toast.show({
           type: 'success',
           text1: '모임원을 내보냈어요',
           visibilityTime: 2000,
         });
-      },
-      onSettled: () => {
-        setIsLoading(false);
       },
       onSettled: () => {
         setIsLoading(false);
@@ -92,8 +108,9 @@ const useAction = (moim: Moim, close: () => void) => {
     {
       onSuccess: () => {
         queryClient.invalidateQueries(['getMemberList', moim.moimId]);
-        setIsChangeMasterModalOpen(false);
-        changeRef.current?.present();
+        setModal(null);
+        // setIsChangeMasterModalOpen(false);
+        hostRef.current?.present();
         Toast.show({
           type: 'success',
           text1: '모임장을 변경했어요!',
@@ -103,71 +120,37 @@ const useAction = (moim: Moim, close: () => void) => {
       onSettled: () => {
         setIsLoading(false);
       },
-      onSettled: () => {
-        setIsLoading(false);
-      },
     },
   );
 
-  const pressAccetOutModal = () => {
-    if (isLoading) return;
-    setIsLoading(true);
-    setIsOutModalOpen(false);
-    outMoimMutate();
-  };
-
-  const openBottomSheet = (sheet: 'invite' | 'change' | 'kick') => {
+  const openBottomSheet = (sheet: 'invite' | 'host' | 'kick' | 'name') => {
     if (sheet === 'invite') inviteRef.current?.present();
-    if (sheet === 'change') changeRef.current?.present();
+    if (sheet === 'host') hostRef.current?.present();
     if (sheet === 'kick') kickRef.current?.present();
+    if (sheet === 'name') nameRef.current?.present();
     close();
   };
 
-  const openDeleteModal = () => {
-    setIsDeleteModalOpen(true);
+  const openModal = (
+    type: 'invite' | 'delete' | 'kick' | 'host' | 'out',
+    ref?: React.RefObject<BottomSheetModalMethods>,
+    member?: ActionsAccountType,
+  ) => {
+    setModal(type);
     close();
+    if (ref) ref.current?.close();
+    if (member) setMember(member);
   };
 
-  const openOutModal = () => {
-    setIsOutModalOpen(true);
+  const closeModal = (ref?: React.RefObject<BottomSheetModalMethods>) => {
+    setModal(null);
     close();
+    if (ref) ref.current?.present();
   };
 
-  const closeOutModal = () => {
-    setIsOutModalOpen(false);
-    close();
-  };
-
-  const openInviteModal = () => {
-    setIsInviteModalOpen(true);
-    inviteRef.current?.close();
-  };
-
-  const closeInviteModal = () => {
-    setIsInviteModalOpen(false);
-    inviteRef.current?.present();
-  };
-
-  const openChangeMasterModal = (member: ActionsAccountType) => {
-    setMember(member);
-    setIsChangeMasterModalOpen(true);
-    changeRef.current?.close();
-  };
-
-  const closeChangeMasterModal = () => {
-    setIsChangeMasterModalOpen(false);
-    changeRef.current?.present();
-  };
-
-  const openKickModal = (member: ActionsAccountType) => {
-    setMember(member);
-    setIsKickModalOpen(true);
-    kickRef.current?.close();
-  };
-
-  const closeKickModal = () => {
-    setIsKickModalOpen(false);
-    kickRef.current?.present();
+  const closeNameBottomSheet = () => {
+    nameRef.current?.close();
+    moimNameRef.current = '';
   };
 
   const pressKickMemberButton = (id: number) => {
@@ -185,38 +168,38 @@ const useAction = (moim: Moim, close: () => void) => {
     setIsLoading(true);
     changeHostMutate(id);
   };
+  const pressAccetOutModal = () => {
+    if (isLoading) return;
+    setIsLoading(true);
+    setModal(null);
+    outMoimMutate();
+  };
 
   return {
     states: {
-      isInviteModalOpen,
       inviteRef,
-      changeRef,
+      hostRef,
       kickRef,
       member,
-      isDeleteModalOpen,
-      isKickModalOpen,
-      isChangeMasterModalOpen,
-      isOutModalOpen,
+      nameRef,
       moimCode,
       isHost,
+      modal,
+      isValid,
+      moimNameRef,
     },
     actions: {
-      openInviteModal,
-      closeInviteModal,
-      openChangeMasterModal,
-      openDeleteModal,
+      openModal,
+      closeModal,
       openBottomSheet,
       deleteMoimMutate,
-      closeKickModal,
-      openKickModal,
-      closeChangeMasterModal,
-      setIsDeleteModalOpen,
-      openOutModal,
-      closeOutModal,
       pressAccetOutModal,
       pressChangeHostButton,
       pressKickMemberButton,
       pressDeleteMoimButton,
+      closeNameBottomSheet,
+      setIsValid,
+      changeMoimNameMutate
     },
   };
 };

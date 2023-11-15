@@ -6,8 +6,9 @@ import { Schedule } from '@hooks/useDeviceCalendar';
 import { firebaseLogEvent } from '@libs/utils/event';
 import { useEffect, useMemo, useRef } from 'react';
 import { isSameDate } from '@libs/utils/date';
-import { BackHandler, Platform } from 'react-native';
+import { Alert, BackHandler, Platform } from 'react-native';
 import * as NavigationBar from 'expo-navigation-bar';
+import { useDeviceCalendarStore } from 'store/device';
 
 const useScheduleCard = (isCardOpen: boolean) => {
   const [date, calendar, setDateOnThread, cardDefaultIndex, setState] = useCaledarDateStore(
@@ -24,6 +25,10 @@ const useScheduleCard = (isCardOpen: boolean) => {
     state.initStateEdit,
   ]);
   const [shiftTypes] = useShiftTypeStore((state) => [state.shiftTypes]);
+  const [deviceCalendar, calendarLink] = useDeviceCalendarStore((state) => [
+    state.calendars,
+    state.calendarLink,
+  ]);
   const { onPress: onPressAddScheduleButton } = useLinkProps({ to: { screen: 'RegistSchedule' } });
   const { onPress: onPressEditScheduleButton } = useLinkProps({
     to: { screen: 'RegistSchedule', params: { isEdit: true } },
@@ -34,6 +39,14 @@ const useScheduleCard = (isCardOpen: boolean) => {
   const carouselRef = useRef<any>(null);
   const year = date.getFullYear();
   const month = date.getMonth();
+
+  const filteredDeviceCalendar = useMemo(
+    () =>
+      deviceCalendar.filter(
+        (calendar) => calendarLink[calendar.id] && calendar.allowsModifications === true,
+      ),
+    [],
+  );
 
   const backDropPressHandler = () => {
     setState('isCardOpen', false);
@@ -46,8 +59,13 @@ const useScheduleCard = (isCardOpen: boolean) => {
 
   const addSchedulePressHandler = () => {
     firebaseLogEvent('move_regist_schedule');
-    initStateCreate(date);
-    onPressAddScheduleButton();
+    if (filteredDeviceCalendar.length === 0) {
+      firebaseLogEvent('schedule_calendar_null');
+      Alert.alert('기기에 수정 가능한 캘린더가 없습니다.');
+    } else {
+      initStateCreate(date);
+      onPressAddScheduleButton();
+    }
   };
 
   const editSchedulePressHandler = (schedule: Schedule) => {
@@ -83,10 +101,6 @@ const useScheduleCard = (isCardOpen: boolean) => {
     if (Platform.OS === 'android') {
       NavigationBar.setVisibilityAsync('hidden');
     }
-
-    return () => {
-      if (Platform.OS === 'android') NavigationBar.setVisibilityAsync('visible');
-    };
   }, []);
 
   useEffect(() => {

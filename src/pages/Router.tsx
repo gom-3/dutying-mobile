@@ -58,13 +58,13 @@ const Router = () => {
         <Stack.Screen
           name="Friends"
           component={FriendsPage}
-          options={{ animation: 'none', gestureEnabled: false }}
+          options={{ animation: 'fade', gestureEnabled: false }}
         />
         <Stack.Screen name="RequestFriend" component={RequestFriendPage} />
         <Stack.Screen
           name="Moim"
           component={MoimPage}
-          options={{ animation: 'none', gestureEnabled: false }}
+          options={{ animation: 'fade', gestureEnabled: false }}
         />
         <Stack.Screen name="MoimEnter" component={MoimEnterPage} />
         <Stack.Screen name="MoimDetail" component={MoimDetailPage} />
@@ -84,7 +84,7 @@ const Router = () => {
         <Stack.Screen
           name="Ward"
           component={WardPage}
-          options={{ animation: 'none', gestureEnabled: false }}
+          options={{ animation: 'fade', gestureEnabled: false }}
         />
         {/* <Stack.Screen
           name="Ward"
@@ -94,10 +94,9 @@ const Router = () => {
         <Stack.Screen
           name="RequestWardShift"
           component={RequestWardShiftPage}
-          options={{ animation: 'none', gestureEnabled: false }}
+          options={{ animation: 'fade', gestureEnabled: false }}
         />
-        <Stack.Screen
-          name='RequestWardShiftConfirm' component={RequestShift} />
+        <Stack.Screen name="RequestWardShiftConfirm" component={RequestShift} />
       </Stack.Navigator>
     </NavigationContainer>
   );

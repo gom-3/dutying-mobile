@@ -12,6 +12,7 @@ interface State {
 interface Store extends State {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   setState: (key: keyof State, value: any) => void;
+  initState: () => void;
 }
 
 export const useOnboardingStore = createWithEqualityFn<Store>()(
@@ -22,6 +23,7 @@ export const useOnboardingStore = createWithEqualityFn<Store>()(
         moim: false,
         moimDetail: false,
         setState: (state, value) => set((prev) => ({ ...prev, [state]: value })),
+        initState: () => set(() => ({ regist: false, moim: false, moimDetail: false })),
       }),
       { name: 'useOnboardingStore', storage: createJSONStorage(() => AsyncStorage) },
     ),

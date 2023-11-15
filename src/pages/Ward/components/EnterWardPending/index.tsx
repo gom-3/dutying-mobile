@@ -20,7 +20,7 @@ interface CarouselDataType {
 function EnterWardPendingPage() {
   const {
     states: { account, accountWaitingWard },
-    actions: { cancelWaiting, navigateToEnterWard },
+    actions: { cancelWaiting, pressEnterWard },
   } = useEnterWardPending();
   const [open, setOpen] = useState(false);
   const [page, setPage] = useState(0);
@@ -175,7 +175,7 @@ function EnterWardPendingPage() {
                 이미 만들어진 병동이 있다면?
               </Text>
             </View>
-            <NextButton text="병동 입장" onPress={navigateToEnterWard} Icon={DoubleArrowIcon} />
+            <NextButton text="병동 입장" onPress={pressEnterWard} Icon={DoubleArrowIcon} />
           </View>
         )}
       </View>

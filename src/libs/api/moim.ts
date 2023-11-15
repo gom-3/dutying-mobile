@@ -68,3 +68,8 @@ export const searchMoimCode = async (moimCode: string) => {
 export const joinMoim = async (moimId: number, accountId: number) => {
   return await axiosInstance.post(`/moims/${moimId}/join?accountId=${accountId}`);
 };
+
+// 모임 이름 변경하기
+export const changeMoimName = async (moimId: number, name: string) => {
+  await axiosInstance.patch(`/moims/${moimId}`, { name });
+};

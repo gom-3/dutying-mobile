@@ -4,24 +4,45 @@ import SocialIcon from '@assets/svgs/social.svg';
 import SelectedSocialIcon from '@assets/svgs/social-selected.svg';
 import WardIcon from '@assets/svgs/ward.svg';
 import SelectedWardIcon from '@assets/svgs/ward-selected.svg';
-import { View, Text, StyleSheet, Pressable } from 'react-native';
+import { View, Text, StyleSheet, Pressable, Platform } from 'react-native';
 import { COLOR, screenWidth } from 'index.style';
 import { useLinkProps } from '@react-navigation/native';
+import { useQueryClient } from '@tanstack/react-query';
+import { firebaseLogEvent } from '@libs/utils/event';
 
 interface Props {
   page: 'home' | 'social' | 'ward';
 }
 
 const NavigationBar = ({ page }: Props) => {
+  const queryClient = useQueryClient();
   const { onPress: navigateToHome } = useLinkProps({ to: { screen: 'Home' } });
   const { onPress: navigateToSocial } = useLinkProps({ to: { screen: 'Moim' } });
   const { onPress: navigateToWard } = useLinkProps({ to: { screen: 'Ward' } });
   // const { onPress: navigateToWard } = useLinkProps({ to: { screen: 'WardCalendarPage' } });
+
+  const pressHomeTab = () => {
+    firebaseLogEvent('navigation_home');
+    navigateToHome();
+  };
+
+  const pressSocialTab = () => {
+    firebaseLogEvent('navigation_social');
+    navigateToSocial();
+  };
+
+  const pressWardTab = () => {
+    firebaseLogEvent('navigate_ward');
+    queryClient.invalidateQueries(['getMyAccount']);
+    queryClient.refetchQueries(['getMyAccount']);
+    navigateToWard();
+  };
+
   return (
     <View style={styles.navigationContainer}>
       <View style={styles.navigationView}>
         <Pressable
-          onPress={navigateToHome}
+          onPress={pressHomeTab}
           style={[styles.itemView, { backgroundColor: page === 'home' ? COLOR.main4 : COLOR.bg }]}
         >
           <View style={{ alignItems: 'center', justifyContent: 'center' }}>
@@ -40,7 +61,7 @@ const NavigationBar = ({ page }: Props) => {
           </View>
         </Pressable>
         <Pressable
-          onPress={navigateToSocial}
+          onPress={pressSocialTab}
           style={[styles.itemView, { backgroundColor: page === 'social' ? COLOR.main4 : COLOR.bg }]}
         >
           <View style={{ alignItems: 'center', justifyContent: 'center' }}>
@@ -59,7 +80,7 @@ const NavigationBar = ({ page }: Props) => {
           </View>
         </Pressable>
         <Pressable
-          onPress={navigateToWard}
+          onPress={pressWardTab}
           style={[styles.itemView, { backgroundColor: page === 'ward' ? COLOR.main4 : COLOR.bg }]}
         >
           <View style={{ alignItems: 'center', justifyContent: 'center' }}>
@@ -85,7 +106,7 @@ const NavigationBar = ({ page }: Props) => {
 const styles = StyleSheet.create({
   navigationContainer: {
     position: 'absolute',
-    bottom: 0,
+    bottom: Platform.OS === 'android' ? 10 : 0,
     borderTopColor: COLOR.sub45,
     borderTopWidth: 1,
     backgroundColor: COLOR.bg,

@@ -99,7 +99,6 @@ const LoginPage = () => {
 
     return () => {
       backHandler.remove();
-      if (Platform.OS === 'android') NavigationBar.setVisibilityAsync('visible');
     };
   }, []);
 

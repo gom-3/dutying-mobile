@@ -1,4 +1,4 @@
-import { BottomSheetBackdrop, BottomSheetModal } from '@gorhom/bottom-sheet';
+import { BottomSheetBackdrop, BottomSheetModal, BottomSheetTextInput } from '@gorhom/bottom-sheet';
 import { COLOR } from 'index.style';
 import { useCallback } from 'react';
 import {
@@ -15,6 +15,9 @@ import OutsidePressHandler from 'react-native-outside-press';
 import PlusIcon from '@assets/svgs/plus.svg';
 import AlertModal, { AlertModalInvite } from '@components/AlertModal';
 import useAction from './index.hook';
+import BottomSheetHeader from '@components/BottomSheetHeader';
+import { hexToRgba } from '@libs/utils/color';
+import CheckIcon from '@assets/svgs/check.svg';
 
 interface Props {
   moim: Moim;
@@ -25,53 +28,46 @@ interface Props {
 const Actions = ({ isActionOpen, moim, close }: Props) => {
   const {
     states: {
-      isInviteModalOpen,
+      nameRef,
       inviteRef,
-      changeRef,
+      hostRef,
       kickRef,
       member,
-      isDeleteModalOpen,
-      isChangeMasterModalOpen,
-      isKickModalOpen,
-      isOutModalOpen,
       moimCode,
       isHost,
+      modal,
+      isValid,
+      moimNameRef,
     },
     actions: {
-      openOutModal,
-      closeOutModal,
-      openInviteModal,
-      closeInviteModal,
-      setIsDeleteModalOpen,
+      setIsValid,
+      openModal,
+      closeModal,
       openBottomSheet,
-      openChangeMasterModal,
-      openDeleteModal,
-      openKickModal,
-      deleteMoimMutate,
-      closeChangeMasterModal,
-      closeKickModal,
       pressAccetOutModal,
       pressKickMemberButton,
       pressChangeHostButton,
       pressDeleteMoimButton,
+      closeNameBottomSheet,
+      changeMoimNameMutate,
     },
   } = useAction(moim, close);
   const renderBackdrop = useCallback((props: any) => <BottomSheetBackdrop {...props} />, []);
-
+  console.log(modal);
   return (
     <View style={styles.container}>
       <AlertModalInvite
         text="모임 초대 코드"
         code={moimCode}
-        isOpen={isInviteModalOpen}
-        close={closeInviteModal}
+        isOpen={modal === 'invite'}
+        close={() => closeModal(inviteRef)}
       />
       {!isHost && (
         <AlertModal
           text="모임을 탈퇴하시겠어요?"
           highlight="탈퇴"
-          isOpen={isOutModalOpen}
-          close={closeOutModal}
+          isOpen={modal === 'out'}
+          close={closeModal}
           cancelText="아니요"
           acceptText="네, 탈퇴할게요"
           accept={pressAccetOutModal}
@@ -81,8 +77,8 @@ const Actions = ({ isActionOpen, moim, close }: Props) => {
         text={`${member.name}님을 모임에서 추방하시겠어요?`}
         highlight={`${member.name}님`}
         subText="추방하시면 모임원께 알림이 가며, 관련 내용은 즉시 삭제됩니다."
-        isOpen={isKickModalOpen}
-        close={closeKickModal}
+        isOpen={modal === 'kick'}
+        close={() => closeModal(kickRef)}
         cancelText="아니요"
         accept={() => pressKickMemberButton(member.accountId)}
         acceptText="네, 추방할게요"
@@ -91,8 +87,8 @@ const Actions = ({ isActionOpen, moim, close }: Props) => {
         text="모임을 삭제하시겠어요?"
         highlight="삭제"
         subText="모임을 삭제하시면 내용은 모두 삭제되며, 모임원들도 해산됩니다."
-        isOpen={isDeleteModalOpen}
-        close={() => setIsDeleteModalOpen(false)}
+        isOpen={modal === 'delete'}
+        close={closeModal}
         cancelText="아니요"
         accept={() => pressDeleteMoimButton()}
         acceptText="네, 삭제할게요"
@@ -101,13 +97,12 @@ const Actions = ({ isActionOpen, moim, close }: Props) => {
         text={`모임장을 ${member.name}님으로 변경하시겠어요?`}
         highlight={`${member.name}`}
         subText={`모임에 대한 모든 권한을 ${member.name}님께 전달합니다.`}
-        isOpen={isChangeMasterModalOpen}
-        close={closeChangeMasterModal}
+        isOpen={modal === 'host'}
+        close={() => closeModal(hostRef)}
         cancelText="아니요"
         accept={() => pressChangeHostButton(member.accountId)}
         acceptText="네, 변경할게요"
       />
-
       {isActionOpen && (
         <OutsidePressHandler disabled={false} onOutsidePress={close}>
           <View style={styles.items}>
@@ -115,7 +110,12 @@ const Actions = ({ isActionOpen, moim, close }: Props) => {
               <Text style={styles.itemText}>모임 초대</Text>
             </TouchableOpacity>
             {isHost && (
-              <TouchableOpacity style={styles.item} onPress={() => openBottomSheet('change')}>
+              <TouchableOpacity style={styles.item} onPress={() => openBottomSheet('name')}>
+                <Text style={styles.itemText}>모임 이름 변경</Text>
+              </TouchableOpacity>
+            )}
+            {isHost && (
+              <TouchableOpacity style={styles.item} onPress={() => openBottomSheet('host')}>
                 <Text style={styles.itemText}>모임장 변경</Text>
               </TouchableOpacity>
             )}
@@ -126,7 +126,7 @@ const Actions = ({ isActionOpen, moim, close }: Props) => {
             )}
             {isHost && (
               <TouchableOpacity
-                onPress={openDeleteModal}
+                onPress={() => openModal('delete')}
                 style={[styles.item, { borderBottomWidth: 0 }]}
               >
                 <Text style={styles.itemText}>모임 삭제</Text>
@@ -134,7 +134,7 @@ const Actions = ({ isActionOpen, moim, close }: Props) => {
             )}
             {!isHost && (
               <TouchableOpacity
-                onPress={openOutModal}
+                onPress={() => openModal('out')}
                 style={[styles.item, { borderBottomWidth: 0 }]}
               >
                 <Text style={styles.itemText}>모임 탈퇴</Text>
@@ -143,6 +143,54 @@ const Actions = ({ isActionOpen, moim, close }: Props) => {
           </View>
         </OutsidePressHandler>
       )}
+      <BottomSheetModal
+        backdropComponent={renderBackdrop}
+        index={1}
+        ref={nameRef}
+        enableContentPanningGesture={false}
+        handleComponent={null}
+        snapPoints={[100, 300]}
+        keyboardBehavior="interactive"
+      >
+        <View style={{ padding: 14 }}>
+          <BottomSheetHeader
+            title="모임 이름 변경"
+            onPressExit={closeNameBottomSheet}
+            rightItems={
+              <TouchableOpacity onPress={() => changeMoimNameMutate()}>
+                <CheckIcon />
+              </TouchableOpacity>
+            }
+          />
+          <View style={{ padding: 10 }}>
+            <BottomSheetTextInput
+              autoFocus
+              style={[
+                styles.input,
+                { borderColor: isValid ? COLOR.main4 : hexToRgba('#ff4a80', 0.7) },
+              ]}
+              placeholder="모임 이름"
+              maxLength={12}
+              onChangeText={(text) => {
+                moimNameRef.current = text;
+                setIsValid(true);
+              }}
+            />
+          </View>
+          {!isValid && (
+            <Text
+              style={{
+                paddingHorizontal: 20,
+                color: '#ff4a80',
+                fontSize: 14,
+                fontFamily: 'Apple',
+              }}
+            >
+              올바른 입력이 아닙니다. 다시 한번 확인해주세요.
+            </Text>
+          )}
+        </View>
+      </BottomSheetModal>
       <BottomSheetModal
         enableContentPanningGesture={false}
         ref={inviteRef}
@@ -163,7 +211,7 @@ const Actions = ({ isActionOpen, moim, close }: Props) => {
           <View style={styles.bottomSheetHeader}>
             <Text style={styles.bottomSheetHeaderText}>모임원</Text>
           </View>
-          <TouchableOpacity onPress={openInviteModal}>
+          <TouchableOpacity onPress={() => openModal('invite', inviteRef)}>
             <View style={{ width: 24, height: 24, justifyContent: 'center', alignItems: 'center' }}>
               <PlusIcon />
             </View>
@@ -186,7 +234,7 @@ const Actions = ({ isActionOpen, moim, close }: Props) => {
       </BottomSheetModal>
       <BottomSheetModal
         enableContentPanningGesture={false}
-        ref={changeRef}
+        ref={hostRef}
         snapPoints={[100, 350, 700]}
         handleIndicatorStyle={styles.bottomSheetHandleIndicator}
         backdropComponent={renderBackdrop}
@@ -208,7 +256,7 @@ const Actions = ({ isActionOpen, moim, close }: Props) => {
               <TouchableOpacity
                 onPress={() => {
                   if (moim.hostInfo.accountId !== member.accountId)
-                    openChangeMasterModal({ accountId: member.accountId, name: member.name });
+                    openModal('host', hostRef, { accountId: member.accountId, name: member.name });
                 }}
                 style={[
                   styles.changeButton,
@@ -270,7 +318,9 @@ const Actions = ({ isActionOpen, moim, close }: Props) => {
                     paddingVertical: 4,
                     backgroundColor: pressed ? COLOR.sub3 : 'white',
                   })}
-                  onPress={() => openKickModal({ accountId: member.accountId, name: member.name })}
+                  onPress={() =>
+                    openModal('kick', kickRef, { accountId: member.accountId, name: member.name })
+                  }
                 >
                   {({ pressed }) => (
                     <Text
@@ -295,6 +345,17 @@ const Actions = ({ isActionOpen, moim, close }: Props) => {
 };
 
 const styles = StyleSheet.create({
+  input: {
+    borderRadius: 5,
+    borderWidth: 0.5,
+    borderColor: COLOR.main4,
+    width: '100%',
+    fontSize: 20,
+    fontFamily: 'Apple',
+    color: COLOR.sub1,
+    paddingVertical: 7,
+    paddingHorizontal: 14,
+  },
   container: {
     position: 'absolute',
     top: Platform.OS === 'android' ? 60 : 80,

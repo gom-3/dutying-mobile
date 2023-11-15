@@ -5,9 +5,9 @@ import { useShiftTypeStore } from 'store/shift';
 import { useAccountStore } from 'store/account';
 
 const useShiftType = () => {
-  const [userId] = useAccountStore((state) => [state.account.accountId]);
+  const [userId, account] = useAccountStore((state) => [state.account.accountId, state.account]);
   const { data: shiftTypesResponse } = useQuery(
-    ['getShiftTypes', userId],
+    ['getShiftTypes', userId, account.status],
     () => getShiftTypes(userId),
     {
       enabled: userId > 0,

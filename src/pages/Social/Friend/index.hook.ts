@@ -7,6 +7,7 @@ import { getFriendsList } from '@libs/api/friend';
 import { getCurrentWeekIndex } from '@libs/utils/date';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { getAccount } from '@libs/api/account';
+import { firebaseLogEvent } from '@libs/utils/event';
 
 const useFriendPage = () => {
   const [account, setAccountState] = useAccountStore((state) => [state.account, state.setState]);
@@ -46,6 +47,16 @@ const useFriendPage = () => {
     queryClient.refetchQueries(['getFriendCollection', year, month]);
   };
 
+  const pressInvite = () => {
+    firebaseLogEvent('friend_code_invite');
+    setIsInviteModalOpen(true);
+  };
+
+  const pressAddFriend = () => {
+    firebaseLogEvent('friend_add');
+    navigateRequestPage();
+  };
+
   useEffect(() => {
     if (accountData) setAccountState('account', accountData);
   }, [accountData]);
@@ -77,6 +88,8 @@ const useFriendPage = () => {
       navigateMoimPage,
       navigateRequestPage,
       setState,
+      pressInvite,
+      pressAddFriend
     },
   };
 };

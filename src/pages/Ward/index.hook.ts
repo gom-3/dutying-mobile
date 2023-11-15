@@ -6,11 +6,11 @@ import { useAccountStore } from 'store/account';
 const useWardPage = () => {
   const [account, setState] = useAccountStore((state) => [state.account, state.setState]);
 
-  // const { data: accountData } = useQuery(['getMyAccount'], () => getAccount());
+  const { data: accountData } = useQuery(['getMyAccount'], () => getAccount());
 
-  // useEffect(() => {
-  //   if (accountData) setState('account', accountData);
-  // }, [accountData]);
+  useEffect(() => {
+    if (accountData) setState('account', accountData);
+  }, [accountData]);
 
   return {
     states: { account },

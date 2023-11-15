@@ -13,19 +13,20 @@ const useCollectionTable = () => {
   const month = date.getMonth();
   const currentWeek = getCurrentWeekIndex(date, weeks);
 
-  const { data: collection } = useQuery(['getFriendCollection', year, month], () =>
+  const { data: collection, isFetching } = useQuery(['getFriendCollection', year, month], () =>
     getFriendCollection(year, month),
   );
 
   const sortedCollection = useMemo(() => {
+    if(isFetching) return undefined;
     return collection?.sort((a, b) => (b.isFavorite ? 1 : 0) - (a.isFavorite ? 1 : 0));
-  }, [collection]);
+  }, [isFetching, collection]);
 
   const week = useMemo(() => {
     return weeks.filter((_, i) => i === currentWeek)[0];
   }, [date, weeks]);
 
-  return { states: { week, currentWeek, sortedCollection } };
+  return { states: { week, currentWeek, sortedCollection, isFetching } };
 };
 
 export default useCollectionTable;

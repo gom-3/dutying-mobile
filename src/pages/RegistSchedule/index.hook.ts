@@ -64,13 +64,13 @@ const useRegistSchedule = () => {
   };
 
   const createEvent = async () => {
-    firebaseLogEvent('createSchedule');
+    firebaseLogEvent('create_schedule');
     await createEventAsync(calendarId, event);
     setState('isScheduleUpdated', true);
     navigation.goBack();
   };
   const updateEvent = async () => {
-    firebaseLogEvent('editSchedule');
+    firebaseLogEvent('edit_schedule');
     if (calendarId !== prevCalendarId) {
       await deleteEventAsync(id, { futureEvents: true });
       await createEventAsync(calendarId, event);

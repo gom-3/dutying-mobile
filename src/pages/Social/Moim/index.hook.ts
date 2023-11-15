@@ -6,6 +6,7 @@ import { useRef, useState } from 'react';
 import { useAccountStore } from 'store/account';
 import { useMoimStore } from './store';
 import Toast from 'react-native-toast-message';
+import { firebaseLogEvent } from '@libs/utils/event';
 
 const useMoimPage = () => {
   const [accountId] = useAccountStore((state) => [state.account.accountId]);
@@ -22,6 +23,7 @@ const useMoimPage = () => {
     () => createMoim(moimNameRef.current),
     {
       onSuccess: () => {
+        firebaseLogEvent('make_moim');
         queryClient.invalidateQueries(['getMoimList', accountId]);
         queryClient.refetchQueries(['getMoimList', accountId]);
         closeBottomSheet();
@@ -53,6 +55,11 @@ const useMoimPage = () => {
     isRefetching,
   } = useQuery(['getMoimList', accountId], () => getMoimList());
 
+  const pressEnterMoim = () => {
+    firebaseLogEvent('enter_moim');
+    navigateMoimEnter();
+  };
+
   const pressMoimCard = (moimId: number, moimCode: string) => {
     setMoimState('moimId', moimId);
     setMoimState('moimCode', moimCode);
@@ -69,6 +76,7 @@ const useMoimPage = () => {
       navigateMoimEnter,
       closeBottomSheet,
       navigateFriendsPage,
+      pressEnterMoim
     },
   };
 };

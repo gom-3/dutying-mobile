@@ -20,8 +20,10 @@ import { navigateToLoginAndResetHistory } from '@libs/utils/navigate';
 import { useCaledarDateStore } from 'store/calendar';
 import * as Linking from 'expo-linking';
 import Toast from 'react-native-toast-message';
+import { useOnboardingStore } from 'store/onboarding';
 
 const MyPage = () => {
+  const [initOnboardingState] = useOnboardingStore((state) => [state.initState]);
   const [account, logoutAccount, setState] = useAccountStore((state) => [
     state.account,
     state.logout,
@@ -69,7 +71,13 @@ const MyPage = () => {
     onSuccess: () => {
       navigateToLoginAndResetHistory();
       setCalendarState('isSideMenuOpen', false);
+      Toast.show({
+        type: 'success',
+        text1: '회원탈퇴가 완료되었습니다.',
+        visibilityTime: 3000,
+      });
       logoutAccount();
+      initOnboardingState();
     },
   });
 
@@ -117,6 +125,11 @@ const MyPage = () => {
         text: '네',
         onPress: () => {
           navigateToLoginAndResetHistory();
+          Toast.show({
+            type: 'success',
+            text1: '로그아웃 되었습니다.',
+            visibilityTime: 3000,
+          });
           setCalendarState('isSideMenuOpen', false);
           logoutAccount();
         },

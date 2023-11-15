@@ -17,19 +17,53 @@ import CollectionContoller from './components/CollectionController';
 import CollectionTable from './components/CollectionTable';
 import SelectedFriends from './components/SelectedFriends';
 import LottieLoading from '@components/LottieLoading';
+import UglySquareIcon from '@assets/svgs/ugly-square.svg';
+import UglyCircleIcon from '@assets/svgs/ugly-circle.svg';
+import RightArrowIcon from '@assets/svgs/right-arrow-gray.svg';
+import { useLinkProps } from '@react-navigation/native';
 
 const weekEnum = ['첫째 주', '둘째 주', '셋째 주', '넷째 주', '다섯째 주', '여섯째 주'];
 
-const NoFriend = (
-  <View style={{ alignItems: 'center', padding: 20 }}>
-    <Text style={{ color: COLOR.sub3, fontSize: 14, fontFamily: 'Apple' }}>
-      아직 친구가 없어요.
-    </Text>
-    <Text style={{ color: COLOR.sub3, fontSize: 14, fontFamily: 'Apple' }}>
-      코드를 공유해서 친구를 만들어보세요!
-    </Text>
-  </View>
-);
+const NoFriendToday = () => {
+  return (
+    <View style={{ paddingHorizontal: 26, paddingBottom: 16 }}>
+      <UglySquareIcon />
+      <Text style={{ color: COLOR.sub2, fontSize: 12, fontFamily: 'Apple', marginTop: 5 }}>
+        아직 등록된 친구가 없어요.
+      </Text>
+    </View>
+  );
+};
+
+const NoFriendList = () => {
+  const { onPress: navigateToRegistFriend } = useLinkProps({ to: { screen: 'RequestFriend' } });
+  return (
+    <View style={{ alignItems: 'center', padding: 20 }}>
+      <UglyCircleIcon />
+      <Text style={{ color: COLOR.sub25, fontSize: 14, fontFamily: 'Apple500', marginTop: 16 }}>
+        아직 등록된 친구가 없습니다.
+      </Text>
+      <TouchableOpacity
+        onPress={navigateToRegistFriend}
+        style={{
+          marginTop: 12,
+          flexDirection: 'row',
+          alignItems: 'center',
+          borderRadius: 30,
+          paddingHorizontal: 30,
+          paddingVertical: 4,
+          borderWidth: 1,
+          borderColor: COLOR.sub3,
+        }}
+      >
+        <Text style={{ fontSize: 16, fontFamily: 'Apple500', color: COLOR.sub3 }}>
+          친구 추가하러 가기
+        </Text>
+        <RightArrowIcon />
+      </TouchableOpacity>
+    </View>
+  );
+};
 
 const FriendsPage = () => {
   const {
@@ -49,6 +83,8 @@ const FriendsPage = () => {
       navigateMoimPage,
       navigateRequestPage,
       setState,
+      pressInvite,
+      pressAddFriend,
     },
   } = useFriendPage();
   const renderBackdrop = useCallback(
@@ -90,7 +126,7 @@ const FriendsPage = () => {
             </View>
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
               <TouchableOpacity
-                onPress={() => setIsInviteModalOpen(true)}
+                onPress={pressInvite}
                 style={[
                   styles.headerIcon,
                   {
@@ -101,7 +137,7 @@ const FriendsPage = () => {
                 <MailIcon />
                 <Text style={styles.headerIconText}>코드 공유</Text>
               </TouchableOpacity>
-              <TouchableOpacity onPress={navigateRequestPage} style={styles.headerIcon}>
+              <TouchableOpacity onPress={pressAddFriend} style={styles.headerIcon}>
                 <FreindIcon />
                 <Text style={styles.headerIconText}>추가</Text>
               </TouchableOpacity>
@@ -113,7 +149,7 @@ const FriendsPage = () => {
               <Text style={styles.sectionDesc}>친구들의 근무는 무엇일까요?</Text>
             </View>
           </View>
-          {friends && friends.length > 0 ? <TodayShift /> : NoFriend}
+          {friends && friends.length > 0 ? <TodayShift /> : <NoFriendToday />}
           <View style={{ height: 1, backgroundColor: '#e7e7ef', marginVertical: 16 }} />
           <View
             style={{
@@ -161,7 +197,9 @@ const FriendsPage = () => {
               <CollectionTable />
             </View>
           ) : (
-            <View style={{ marginTop: 50 }}>{NoFriend}</View>
+            <View style={{ marginTop: 50 }}>
+              <NoFriendList />
+            </View>
           )}
         </SafeAreaView>
       </BottomSheetModalProvider>

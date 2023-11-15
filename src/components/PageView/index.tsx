@@ -32,7 +32,6 @@ const styles = StyleSheet.create({
   container: {
     width: screenWidth,
     height: screenHeight,
-    position: 'relative',
     backgroundColor: 'white',
     zIndex: 5,
   },

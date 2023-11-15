@@ -2,6 +2,7 @@ import { days, isSameDate } from '@libs/utils/date';
 import { COLOR } from 'index.style';
 import { ScrollView, View, Text, StyleSheet } from 'react-native';
 import useCollectionTable from './index.hook';
+import LottieLoading from '@components/LottieLoading';
 
 const CollectionTable = () => {
   const {
