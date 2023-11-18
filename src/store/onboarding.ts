@@ -7,6 +7,7 @@ interface State {
   regist: boolean;
   moim: boolean;
   moimDetail: boolean;
+  ward: boolean;
 }
 
 interface Store extends State {
@@ -22,6 +23,7 @@ export const useOnboardingStore = createWithEqualityFn<Store>()(
         regist: false,
         moim: false,
         moimDetail: false,
+        ward: false,
         setState: (state, value) => set((prev) => ({ ...prev, [state]: value })),
         initState: () => set(() => ({ regist: false, moim: false, moimDetail: false })),
       }),

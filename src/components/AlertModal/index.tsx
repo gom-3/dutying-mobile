@@ -153,7 +153,7 @@ export const AlertModalInvite = ({ code, isOpen, text, subText, close }: InviteP
             borderBottomRightRadius: 10,
           }}
           onPress={() =>
-            Share.share({ message: code, title: '초대 코드' }).then((data) => {
+            Share.share({ message: code }).then((data) => {
               if (data.action === 'sharedAction') {
                 close();
                 Toast.show({
