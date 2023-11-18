@@ -9,6 +9,7 @@ export const API_URL =
 process.env.NODE_ENV === 'production' ? 'https://api.dutying.net' : 'https://dev.api.dutying.net';
 // export const API_URL = 'https://dev.api.dutying.net';
 
+
 const axiosInstance = axios.create({
   baseURL: API_URL,
   headers: {

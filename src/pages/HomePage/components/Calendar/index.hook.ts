@@ -12,7 +12,10 @@ import {
   State,
 } from 'react-native-gesture-handler';
 import { firebaseLogEvent } from '@libs/utils/event';
+
 import { getShiftTypesAll } from '@libs/api/shiftTypes';
+
+import useWidget from '@hooks/useWidget';
 
 const useCalendar = (isRender?: boolean) => {
   const [userId] = useAccountStore((state) => [state.account.accountId]);
@@ -106,6 +109,8 @@ const useCalendar = (isRender?: boolean) => {
       }
     }
   };
+
+  useWidget({ shiftTypes });
 
   return {
     state: { weeks, shiftTypes, date, today },
