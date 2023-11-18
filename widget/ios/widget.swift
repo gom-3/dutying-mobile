@@ -41,7 +41,7 @@ extension String {
 
 extension WidgetConfiguration {
   func disableContentMarginsIfNeeded() -> some WidgetConfiguration {
-    if #available(iOSApplicationExtension 17.0, *) {
+    if #available(iOSApplicationExtension 15.0, *) {
       return self.contentMarginsDisabled()
     } else {
       return self
@@ -440,7 +440,7 @@ struct small02View : View {
   var entry: Provider.Entry
   
   var body: some View {
-    var day = entry.widgetData.today.date.day.count == 1 ? "0" + entry.widgetData.today.date.day : entry.widgetData.today.date.day +
+    let day = entry.widgetData.today.date.day.count == 1 ? "0" + entry.widgetData.today.date.day : entry.widgetData.today.date.day +
     ", " + entry.widgetData.today.date.dayName
     
     if (entry.widgetData.today.shift != nil) {

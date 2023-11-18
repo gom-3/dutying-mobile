@@ -2,7 +2,7 @@
   "expo": {
     "name": "듀팅",
     "slug": "dutying-mobile",
-    "version": "1.1.32",
+    "version": "1.1.36",
     "orientation": "portrait",
     "icon": "./src/assets/icon.png",
     "userInterfaceStyle": "light",
@@ -86,7 +86,12 @@
       "associatedDomains": [
         "applinks:dutying.airbridge.io",
         "applinks:dutying.deeplink.page"
-      ]
+      ],
+      "entitlements": {
+        "com.apple.security.application-groups": [
+          "group.expo.modules.widgetsync.data"
+        ]
+      }
     },
     "android": {
       "enableProguardInReleaseBuilds": true,
@@ -158,7 +163,24 @@
     },
     "extra": {
       "eas": {
-        "projectId": "4f3009ff-f032-4d32-b711-054b0d76e953"
+        "projectId": "4f3009ff-f032-4d32-b711-054b0d76e953",
+        "build": {
+          "experimental": {
+            "ios": {
+              "appExtensions": [
+                {
+                  "targetName": "widget",
+                  "bundleIdentifier": "com.gom3.dutying.widget",
+                  "entitlements": {
+                    "com.apple.security.application-groups": [
+                      "group.expo.modules.widgetsync.data"
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        }
       }
     }
   }

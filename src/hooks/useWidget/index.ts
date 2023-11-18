@@ -165,8 +165,11 @@ function useWidget({ shiftTypes }: { shiftTypes: Map<number, Shift> }) {
   }, [year, month, shiftListResponse, shiftTypes]);
 
   useEffect(() => {
-    setSharedData('savedData', widgetData);
-    reloadAll();
+    if (widgetData) {
+      console.log(JSON.stringify(JSON.parse(widgetData).today));
+      setSharedData('savedData', widgetData);
+      reloadAll();
+    }
   }, [widgetData]);
 }
 
