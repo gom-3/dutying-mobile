@@ -21,6 +21,8 @@ import { useCaledarDateStore } from 'store/calendar';
 import * as Linking from 'expo-linking';
 import Toast from 'react-native-toast-message';
 import { useOnboardingStore } from 'store/onboarding';
+import { quitWard } from '@libs/api/ward';
+import { useLinkProps } from '@react-navigation/native';
 
 const MyPage = () => {
   const [initOnboardingState] = useOnboardingStore((state) => [state.initState]);
@@ -38,6 +40,7 @@ const MyPage = () => {
   const {
     actions: { pickImage },
   } = useImagePicker();
+  const { onPress: navigateToWard } = useLinkProps({ to: { screen: 'Ward' } });
 
   const { mutate: editProfileMutate, isLoading: changeProfileLoading } = useMutation(
     (image: string) => editProfile(name, image, account.accountId),
@@ -81,6 +84,12 @@ const MyPage = () => {
     },
   });
 
+  const { mutate: quitWardMutate, isLoading } = useMutation(() => quitWard(account.wardId), {
+    onSuccess: () => {
+      navigateToWard();
+    },
+  });
+
   const setRandomImage = async () => {
     const randomimage = images[Math.floor(Math.random() * 30)] || profile;
     setProfile(randomimage);
@@ -117,6 +126,23 @@ const MyPage = () => {
   const pressNameOutside = () => {
     setName(account.name);
     setIsNameEditing(false);
+  };
+
+  const quit = () => {
+    Alert.alert('병동에서 나가겠습니까?', '', [
+      {
+        text: '네',
+        onPress: () => {
+          quitWardMutate();
+          Toast.show({
+            type: 'success',
+            text1: '병동에서 나갔습니다.',
+            visibilityTime: 3000,
+          });
+        },
+      },
+      { text: '아니오', onPress: () => {} },
+    ]);
   };
 
   const logout = () => {
@@ -288,8 +314,13 @@ const MyPage = () => {
         <TouchableOpacity onPress={signout} style={{ paddingHorizontal: 24, paddingVertical: 16 }}>
           <Text style={{ fontSize: 16, fontFamily: 'Apple', color: COLOR.sub1 }}>회원탈퇴</Text>
         </TouchableOpacity>
+        {account.wardId > 0 && (
+          <TouchableOpacity onPress={quit} style={{ paddingHorizontal: 24, paddingVertical: 16 }}>
+            <Text style={{ fontSize: 16, fontFamily: 'Apple', color: COLOR.sub1 }}>병동탈퇴</Text>
+          </TouchableOpacity>
+        )}
       </View>
-      {changeProfileLoading && (
+      {(changeProfileLoading || isLoading) && (
         <View
           style={{
             position: 'absolute',

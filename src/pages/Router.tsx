@@ -25,6 +25,7 @@ import RequestFriendPage from './Social/Friend/Request';
 import EnterWardPage from './EnterWardPage';
 import RequestWardShiftPage from './Ward/Request';
 import RequestShift from './Ward/Request/RequestShift';
+import WardOnboardingPage from './Ward/Onboarding';
 
 // Airbridge.deeplink.setDeeplinkListener((deeplink) => {
 //   // code that will run when app is opened with deep-link or deferred-deep-link
@@ -85,6 +86,11 @@ const Router = () => {
           name="Ward"
           component={WardPage}
           options={{ animation: 'fade', gestureEnabled: false }}
+        />
+        <Stack.Screen
+          name="WardOnboarding"
+          component={WardOnboardingPage}
+          options={{ animation: 'fade_from_bottom' }}
         />
         {/* <Stack.Screen
           name="Ward"

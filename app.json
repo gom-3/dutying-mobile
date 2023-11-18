@@ -2,7 +2,7 @@
   "expo": {
     "name": "듀팅",
     "slug": "dutying-mobile",
-    "version": "1.1.35",
+    "version": "1.1.36",
     "orientation": "portrait",
     "icon": "./src/assets/icon.png",
     "userInterfaceStyle": "light",
