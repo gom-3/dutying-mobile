@@ -154,7 +154,9 @@ function EnterWardPendingPage() {
             />
           ))}
         </View>
-        <View style={{ width: '100%', padding: 30 }}>
+        <View
+          style={{ width: '100%', padding: screenHeight > 850 ? 30 : 10, paddingHorizontal: 30 }}
+        >
           {account.status === 'WARD_ENTRY_PENDING' ? (
             <>
               <NextButton disabled text="병동 입장 승인 대기 중입니다." onPress={() => {}} />
