@@ -2,7 +2,7 @@ import { Pressable, Text, View, Image, StyleSheet, ScrollView } from 'react-nati
 import { SafeAreaView } from 'react-native-safe-area-context';
 import DoubleArrowIcon from '@assets/svgs/double-right-arrow.svg';
 import NextButton from '@components/NextButton';
-import { COLOR, screenWidth } from 'index.style';
+import { COLOR, screenHeight, screenWidth } from 'index.style';
 import useEnterWardPending from './index.hook';
 import { useMemo, useRef, useState } from 'react';
 import Modal from 'react-native-modal';
@@ -113,9 +113,11 @@ function EnterWardPendingPage() {
   return (
     <SafeAreaView>
       <ScrollView>
-        <View style={{ width: '100%', marginLeft: 34, marginTop: 20 }}>
-          <FullLogo height={32} width={87} />
-        </View>
+        {screenHeight > 850 && (
+          <View style={{ width: '100%', marginLeft: 34, marginTop: 20 }}>
+            <FullLogo height={32} width={87} />
+          </View>
+        )}
         <View>
           <Carousel
             panGestureHandlerProps={{ activeOffsetX: [-10, 10] }}
@@ -132,7 +134,7 @@ function EnterWardPendingPage() {
         </View>
         <View
           style={{
-            marginTop: 30,
+            marginTop: screenHeight > 850 ? 30 : 0,
             flex: 1,
             flexDirection: 'row',
             width: '100%',
