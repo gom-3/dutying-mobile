@@ -1,4 +1,4 @@
-import { Pressable, Text, View, Image, StyleSheet } from 'react-native';
+import { Pressable, Text, View, Image, StyleSheet, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import DoubleArrowIcon from '@assets/svgs/double-right-arrow.svg';
 import NextButton from '@components/NextButton';
@@ -112,112 +112,93 @@ function EnterWardPendingPage() {
   };
   return (
     <SafeAreaView>
-      <View style={{ width: '100%', marginLeft: 34, marginTop: 20 }}>
-        <FullLogo height={32} width={87} />
-      </View>
-      <View>
-        <Carousel
-          loop={false}
-          // ref={carouselRef}
-          data={datas}
-          renderItem={renderItem}
-          width={screenWidth}
-          height={screenWidth + 50}
-          onScrollEnd={changePage}
-          mode="parallax"
-          modeConfig={{ parallaxScrollingScale: 0.85 }}
-        />
-      </View>
-      <View
-        style={{
-          marginTop: 30,
-          flex: 1,
-          flexDirection: 'row',
-          width: '100%',
-          justifyContent: 'center',
-        }}
-      >
-        {Array.from({ length: 3 }).map((_, i) => (
-          <View
-            key={i}
-            style={{
-              width: page === i ? 18 : 6,
-              height: 6,
-              backgroundColor: page === i ? COLOR.sub1 : COLOR.sub3,
-              borderRadius: 6,
-              marginLeft: i !== 0 ? 5 : 0,
-            }}
+      <ScrollView>
+        <View style={{ width: '100%', marginLeft: 34, marginTop: 20 }}>
+          <FullLogo height={32} width={87} />
+        </View>
+        <View>
+          <Carousel
+            panGestureHandlerProps={{ activeOffsetX: [-10, 10] }}
+            loop={false}
+            // ref={carouselRef}
+            data={datas}
+            renderItem={renderItem}
+            width={screenWidth}
+            height={screenWidth + 50}
+            onScrollEnd={changePage}
+            mode="parallax"
+            modeConfig={{ parallaxScrollingScale: 0.85 }}
           />
-        ))}
-      </View>
-      <View style={{ width: '100%', padding: 30 }}>
-        {account.status === 'WARD_ENTRY_PENDING' ? (
-          <>
-            <NextButton disabled text="병동 입장 승인 대기 중입니다." onPress={() => {}} />
-            <Text
-              style={{
-                textAlign: 'center',
-                marginTop: 16,
-                fontFamily: 'Apple500',
-                fontSize: 12,
-                color: COLOR.main2,
-                textDecorationLine: 'underline',
-              }}
-              onPress={() => setOpen(true)}
-            >
-              입장 취소하기
-            </Text>
-          </>
-        ) : (
-          <View>
-            <View style={{ alignItems: 'center', marginBottom: 14 }}>
-              <Text style={{ color: COLOR.sub3, fontFamily: 'Apple500', fontSize: 14 }}>
-                이미 만들어진 병동이 있다면?
-              </Text>
-            </View>
-            <NextButton text="병동 입장" onPress={pressEnterWard} Icon={DoubleArrowIcon} />
-          </View>
-        )}
-      </View>
-      <Modal isVisible={open} onBackdropPress={() => setOpen(false)}>
+        </View>
         <View
           style={{
-            backgroundColor: 'white',
+            marginTop: 30,
+            flex: 1,
+            flexDirection: 'row',
+            width: '100%',
             justifyContent: 'center',
-            alignItems: 'center',
-            // width: screenWidth * 0.84,
-            borderRadius: 10,
           }}
         >
-          <View
-            style={{
-              paddingHorizontal: 70,
-              paddingVertical: 42,
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}
-          >
-            <Text
+          {Array.from({ length: 3 }).map((_, i) => (
+            <View
+              key={i}
               style={{
-                textAlign: 'center',
-                fontSize: 20,
-                fontFamily: 'Apple500',
-                color: 'black',
+                width: page === i ? 18 : 6,
+                height: 6,
+                backgroundColor: page === i ? COLOR.sub1 : COLOR.sub3,
+                borderRadius: 6,
+                marginLeft: i !== 0 ? 5 : 0,
               }}
-            >
-              {accountWaitingWard?.name}병동 입장을
-            </Text>
-            <Text>
+            />
+          ))}
+        </View>
+        <View style={{ width: '100%', padding: 30 }}>
+          {account.status === 'WARD_ENTRY_PENDING' ? (
+            <>
+              <NextButton disabled text="병동 입장 승인 대기 중입니다." onPress={() => {}} />
               <Text
                 style={{
                   textAlign: 'center',
-                  fontSize: 20,
+                  marginTop: 16,
                   fontFamily: 'Apple500',
-                  color: COLOR.main1,
+                  fontSize: 12,
+                  color: COLOR.main2,
+                  textDecorationLine: 'underline',
                 }}
+                onPress={() => setOpen(true)}
               >
-                취소
+                입장 취소하기
               </Text>
+            </>
+          ) : (
+            <View>
+              <View style={{ alignItems: 'center', marginBottom: 14 }}>
+                <Text style={{ color: COLOR.sub3, fontFamily: 'Apple500', fontSize: 14 }}>
+                  이미 만들어진 병동이 있다면?
+                </Text>
+              </View>
+              <NextButton text="병동 입장" onPress={pressEnterWard} Icon={DoubleArrowIcon} />
+            </View>
+          )}
+        </View>
+        <Modal isVisible={open} onBackdropPress={() => setOpen(false)}>
+          <View
+            style={{
+              backgroundColor: 'white',
+              justifyContent: 'center',
+              alignItems: 'center',
+              // width: screenWidth * 0.84,
+              borderRadius: 10,
+            }}
+          >
+            <View
+              style={{
+                paddingHorizontal: 70,
+                paddingVertical: 42,
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}
+            >
               <Text
                 style={{
                   textAlign: 'center',
@@ -226,58 +207,80 @@ function EnterWardPendingPage() {
                   color: 'black',
                 }}
               >
-                하시겠어요?
+                {accountWaitingWard?.name}병동 입장을
               </Text>
-            </Text>
-            <Text
-              style={{
-                textAlign: 'center',
-                marginTop: 16,
-                color: COLOR.sub2,
-                fontFamily: 'Apple',
-                fontSize: 14,
-              }}
-            >
-              입력하신 관련 정보는 즉시 삭제됩니다.
-            </Text>
+              <Text>
+                <Text
+                  style={{
+                    textAlign: 'center',
+                    fontSize: 20,
+                    fontFamily: 'Apple500',
+                    color: COLOR.main1,
+                  }}
+                >
+                  취소
+                </Text>
+                <Text
+                  style={{
+                    textAlign: 'center',
+                    fontSize: 20,
+                    fontFamily: 'Apple500',
+                    color: 'black',
+                  }}
+                >
+                  하시겠어요?
+                </Text>
+              </Text>
+              <Text
+                style={{
+                  textAlign: 'center',
+                  marginTop: 16,
+                  color: COLOR.sub2,
+                  fontFamily: 'Apple',
+                  fontSize: 14,
+                }}
+              >
+                입력하신 관련 정보는 즉시 삭제됩니다.
+              </Text>
+            </View>
+            <View style={{ flexDirection: 'row', width: '100%' }}>
+              <Pressable
+                style={{
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  backgroundColor: COLOR.sub4,
+                  flex: 1,
+                  paddingVertical: 15,
+                  borderBottomLeftRadius: 10,
+                }}
+                onPress={() => setOpen(false)}
+              >
+                <Text style={{ color: COLOR.sub1, fontFamily: 'Apple500', fontSize: 16 }}>
+                  아니요
+                </Text>
+              </Pressable>
+              <Pressable
+                onPress={() => {
+                  accountWaitingWard && cancelWaiting(accountWaitingWard.wardId, account.nurseId);
+                  setOpen(false);
+                }}
+                style={{
+                  flex: 1,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  backgroundColor: COLOR.main1,
+                  paddingVertical: 15,
+                  borderBottomRightRadius: 10,
+                }}
+              >
+                <Text style={{ color: 'white', fontFamily: 'Apple500', fontSize: 16 }}>
+                  네, 취소할게요
+                </Text>
+              </Pressable>
+            </View>
           </View>
-          <View style={{ flexDirection: 'row', width: '100%' }}>
-            <Pressable
-              style={{
-                justifyContent: 'center',
-                alignItems: 'center',
-                backgroundColor: COLOR.sub4,
-                flex: 1,
-                paddingVertical: 15,
-                borderBottomLeftRadius: 10,
-              }}
-              onPress={() => setOpen(false)}
-            >
-              <Text style={{ color: COLOR.sub1, fontFamily: 'Apple500', fontSize: 16 }}>
-                아니요
-              </Text>
-            </Pressable>
-            <Pressable
-              onPress={() => {
-                accountWaitingWard && cancelWaiting(accountWaitingWard.wardId, account.nurseId);
-                setOpen(false);
-              }}
-              style={{
-                flex: 1,
-                justifyContent: 'center',
-                alignItems: 'center',
-                backgroundColor: COLOR.main1,
-                paddingVertical: 15,
-                borderBottomRightRadius: 10,
-              }}
-            >
-              <Text style={{ color: 'white', fontFamily: 'Apple500', fontSize: 16 }}>
-                네, 취소할게요
-              </Text>
-            </Pressable>
-          </View>
-        </View>
-      </Modal>
+        </Modal>
+      </ScrollView>
     </SafeAreaView>
   );
 }
