@@ -4,12 +4,12 @@ import DoubleArrowIcon from '@assets/svgs/double-right-arrow.svg';
 import NextButton from '@components/NextButton';
 import { COLOR, screenHeight, screenWidth } from 'index.style';
 import useEnterWardPending from './index.hook';
-import { useMemo, useRef, useState } from 'react';
+import { useMemo, useState } from 'react';
 import Modal from 'react-native-modal';
 import FullLogo from '@assets/svgs/logo-full.svg';
-import Carousel from 'react-native-reanimated-carousel';
 import { images } from '@assets/images/ward';
 import * as Linking from 'expo-linking';
+import PagerView, { PagerViewOnPageSelectedEvent } from 'react-native-pager-view';
 
 interface CarouselDataType {
   image: any;
@@ -24,8 +24,10 @@ function EnterWardPendingPage() {
   } = useEnterWardPending();
   const [open, setOpen] = useState(false);
   const [page, setPage] = useState(0);
-  const changePage = (index: number) => {
-    setPage(index);
+
+  const pageScrollHandler = (e: PagerViewOnPageSelectedEvent) => {
+    const { position } = e.nativeEvent;
+    setPage(position);
   };
 
   const datas: CarouselDataType[] = useMemo(
@@ -73,64 +75,32 @@ function EnterWardPendingPage() {
     [],
   );
 
-  // const carouselRef = useRef<any>(null);
-
-  const renderItem = ({ item }: { item: CarouselDataType }) => {
-    return (
-      <View style={{ alignItems: 'center' }}>
-        <View
-          style={{
-            width: screenWidth,
-            height: screenWidth,
-            flexDirection: 'row',
-            justifyContent: 'center',
-            alignItems: 'center',
-            borderWidth: 1,
-            borderColor: COLOR.sub5,
-            borderRadius: 10,
-            backgroundColor: 'white',
-            shadowColor: '#ede9f5',
-            shadowOpacity: 1,
-            shadowOffset: { width: 0, height: 4 },
-            shadowRadius: 34,
-            elevation: 10,
-          }}
-        >
-          <Image
-            style={{ width: screenWidth, height: screenWidth }}
-            // width={screenWidth}
-            // height={screenWidth}
-            source={item.image}
-            resizeMode="contain"
-          />
-        </View>
-        <View style={{ marginTop: 12 }} />
-        {item.text1}
-        {item.text2}
-      </View>
-    );
-  };
   return (
-    <SafeAreaView>
+    <SafeAreaView style={{ flex: 1 }}>
       <ScrollView>
         {screenHeight > 850 && (
           <View style={{ width: '100%', marginLeft: 34, marginTop: 20 }}>
             <FullLogo height={32} width={87} />
           </View>
         )}
-        <View>
-          <Carousel
-            panGestureHandlerProps={{ activeOffsetX: [-10, 10] }}
-            loop={false}
-            // ref={carouselRef}
-            data={datas}
-            renderItem={renderItem}
-            width={screenWidth}
-            height={screenWidth + 50}
-            onScrollEnd={changePage}
-            mode="parallax"
-            modeConfig={{ parallaxScrollingScale: 0.85 }}
-          />
+        <PagerView
+          style={{ width: screenWidth, height: screenWidth }}
+          initialPage={0}
+          onPageSelected={pageScrollHandler}
+        >
+          <View style={styles.pageView} key="1">
+            <Image source={images[0]} resizeMode="contain" style={styles.image} />
+          </View>
+          <View style={styles.pageView} key="2">
+            <Image source={images[1]} resizeMode="contain" style={styles.image} />
+          </View>
+          <View style={styles.pageView} key="3">
+            <Image source={images[2]} resizeMode="contain" style={styles.image} />
+          </View>
+        </PagerView>
+        <View style={{ justifyContent: 'center', alignItems: 'center', height: 40 }}>
+          <Text>{datas[page].text1}</Text>
+          <Text>{datas[page].text2}</Text>
         </View>
         <View
           style={{
@@ -191,7 +161,6 @@ function EnterWardPendingPage() {
               backgroundColor: 'white',
               justifyContent: 'center',
               alignItems: 'center',
-              // width: screenWidth * 0.84,
               borderRadius: 10,
             }}
           >
@@ -294,21 +263,29 @@ const styles = StyleSheet.create({
     marginTop: 4,
     color: COLOR.sub2,
     fontFamily: 'Apple500',
-    fontSize: 18,
+    fontSize: 14,
   },
   imageTextHighlight: {
     marginTop: 4,
     color: COLOR.main1,
     fontFamily: 'Apple600',
-    fontSize: 18,
+    fontSize: 14,
     textDecorationLine: 'underline',
   },
   imageTextHighlightThin: {
     marginTop: 4,
     color: COLOR.main1,
     fontFamily: 'Apple500',
-    fontSize: 18,
+    fontSize: 14,
     textDecorationLine: 'underline',
+  },
+  pageView: {
+    height: screenWidth + 50,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  image: {
+    width: screenWidth * 0.9,
   },
 });
 
