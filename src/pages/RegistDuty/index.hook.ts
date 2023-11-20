@@ -14,6 +14,7 @@ import {
 import { useAccountStore } from 'store/account';
 import { firebaseLogEvent } from '@libs/utils/event';
 import { useEditShiftTypeStore } from '@pages/ShiftTypePage/store';
+import { useOnboardingStore } from 'store/onboarding';
 
 const useRegistDuty = (dateFrom?: string) => {
   const [date, calendar, setState] = useCaledarDateStore((state) => [
@@ -24,6 +25,7 @@ const useRegistDuty = (dateFrom?: string) => {
   const [isLoading, setIsLoading] = useState(false);
   const [userId] = useAccountStore((state) => [state.account.accountId]);
   const [shiftTypes] = useShiftTypeStore((state) => [state.shiftTypes]);
+  const [setOnboardingState] = useOnboardingStore(state => [state.setState]);
   const [tempCalendar, setTempCalendar] = useState<DateType[]>(calendar);
   const [editShift] = useEditShiftTypeStore((state) => [state.editShift]);
   const { onPress: navigateToEidtShiftType } = useLinkProps({ to: { screen: 'ShiftTypeEdit' } });
@@ -53,6 +55,7 @@ const useRegistDuty = (dateFrom?: string) => {
       onSuccess: () => {
         setState('isSideMenuOpen', false);
         setState('calendar', [...tempCalendar]);
+        setOnboardingState('registDone', true);
         navigation.goBack();
         queryClient.invalidateQueries([
           'getAccountShiftList',

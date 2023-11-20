@@ -89,10 +89,11 @@ const useSideMenu = () => {
       },
       {
         icon: EditShiftTypeIcon,
-        title: '근무표 평가하기',
+        title: '이벤트',
         onPress: () => {
-          firebaseLogEvent('link_evaluate_duty_page');
-          Linking.openURL('https://abr.ge/ud2wuk');
+          firebaseLogEvent('link_event');
+          // firebaseLogEvent('link_evaluate_duty_page');
+          Linking.openURL('https://www.instagram.com/dutying_official');
         },
       },
     ],

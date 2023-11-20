@@ -5,9 +5,11 @@ import { createWithEqualityFn } from 'zustand/traditional';
 
 interface State {
   regist: boolean;
+  registDone: boolean;
   moim: boolean;
   moimDetail: boolean;
   ward: boolean;
+  surveyEvent: boolean;
 }
 
 interface Store extends State {
@@ -21,9 +23,11 @@ export const useOnboardingStore = createWithEqualityFn<Store>()(
     persist(
       (set, _) => ({
         regist: false,
+        registDone: false,
         moim: false,
         moimDetail: false,
         ward: false,
+        surveyEvent: false,
         setState: (state, value) => set((prev) => ({ ...prev, [state]: value })),
         initState: () => set(() => ({ regist: false, moim: false, moimDetail: false })),
       }),

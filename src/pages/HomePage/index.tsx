@@ -17,6 +17,8 @@ import { COLOR, screenWidth } from 'index.style';
 import { registDutyImage } from '@assets/images/onboarding';
 import { useAccountStore } from 'store/account';
 import { useEffect } from 'react';
+import * as Linking from 'expo-linking';
+import { eventImages } from '@assets/images/event';
 
 const HomePage = () => {
   const [account] = useAccountStore((state) => [state.account]);
@@ -24,10 +26,9 @@ const HomePage = () => {
     state.isCardOpen,
     state.isSideMenuOpen,
   ]);
-  const [isRegistOnboarding, setState] = useOnboardingStore((state) => [
-    state.regist,
-    state.setState,
-  ]);
+  const [isRegistOnboarding, isSurveyEvent, isDoneRegist, setState] = useOnboardingStore(
+    (state) => [state.regist, state.surveyEvent, state.registDone, state.setState],
+  );
 
   const { onPress: navigateToRegistDuty } = useLinkProps({ to: { screen: 'RegistDuty' } });
   const closeRegistPopup = () => {
@@ -36,6 +37,14 @@ const HomePage = () => {
   const acceptRegistPopup = () => {
     setState('regist', true);
     navigateToRegistDuty();
+  };
+
+  const closeEventPopup = () => {
+    setState('surveyEvent', true);
+  };
+
+  const acceptEventPopup = () => {
+    Linking.openURL('https://www.instagram.com/dutying_official');
   };
 
   useEffect(() => {
@@ -75,6 +84,30 @@ const HomePage = () => {
                   <Text style={{ fontFamily: 'Apple500', fontSize: 20, color: COLOR.sub1 }}>
                     근무표 등록해보세요!
                   </Text>
+                </View>
+              }
+            />
+          )}
+          {account.accountId > 0 && !isCardOpen && (
+            <FreeAlertModal
+              exitButton
+              isOpen={!isSurveyEvent && account.accountId > 0 && isDoneRegist}
+              close={closeEventPopup}
+              accept={acceptEventPopup}
+              acceptText="이벤트 하러 가기"
+              context={
+                <View style={{ alignItems: 'center' }}>
+                  <View style={{ width: '100%' }}>
+                    <Image
+                      source={eventImages[0]}
+                      resizeMode="contain"
+                      style={{
+                        width: screenWidth,
+                        height: screenWidth * 0.7,
+                        marginBottom: 32,
+                      }}
+                    />
+                  </View>
                 </View>
               }
             />
