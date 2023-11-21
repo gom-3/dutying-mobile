@@ -136,8 +136,8 @@ const useShiftTypeEdit = () => {
   };
   const onPressSaveButton = () => {
     if (isLoading) return;
-    setIsLoading(true);
     if (shift.name.length > 0 && shift.shortName.length > 0) {
+      setIsLoading(true);
       const startTime = shift.startTime
         ? `${shift.startTime.getHours().toString().padStart(2, '0')}:${shift.startTime
             ?.getMinutes()
