@@ -1,0 +1,9 @@
+{
+  "platforms": ["ios", "android", "web"],
+  "ios": {
+    "modules": ["WidgetModule"]
+  },
+  "android": {
+    "modules": ["com.gom3.dutying.WidgetModule"]
+  }
+}

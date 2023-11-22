@@ -10,6 +10,7 @@ import { Platform } from 'react-native';
 import { getEventsAsync } from 'expo-calendar';
 import { dateDiffInDays } from '@libs/utils/date';
 import { Schedule } from '@hooks/useDeviceCalendar';
+import { firebaseLogEvent } from '@libs/utils/event';
 
 const GROUP_NAME = 'group.expo.modules.widgetsync.data';
 
@@ -159,12 +160,14 @@ function useWidget({ shiftTypes }: { shiftTypes: Map<number, Shift> }) {
   };
 
   useEffect(() => {
+    firebaseLogEvent('widget_init');
     if (shiftListResponse && shiftTypes) {
       initCalendar(year, month);
     }
   }, [year, month, shiftListResponse, shiftTypes]);
 
   useEffect(() => {
+    firebaseLogEvent('widget_reload');
     if (widgetData) {
       console.log(JSON.stringify(JSON.parse(widgetData).today));
       setSharedData('savedData', widgetData);

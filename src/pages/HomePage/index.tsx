@@ -88,7 +88,7 @@ const HomePage = () => {
               }
             />
           )}
-          {account.accountId > 0 && !isCardOpen && (
+          {/* {account.accountId > 0 && !isCardOpen && (
             <FreeAlertModal
               exitButton
               isOpen={!isSurveyEvent && account.accountId > 0 && isDoneRegist}
@@ -111,7 +111,7 @@ const HomePage = () => {
                 </View>
               }
             />
-          )}
+          )} */}
           <Header />
           <Calendar />
           <NavigationBar page="home" />
