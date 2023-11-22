@@ -2,7 +2,7 @@
   "expo": {
     "name": "듀팅",
     "slug": "dutying-mobile",
-    "version": "1.1.39",
+    "version": "1.1.38",
     "orientation": "portrait",
     "icon": "./src/assets/icon.png",
     "userInterfaceStyle": "light",
@@ -12,6 +12,16 @@
       "@react-native-firebase/app",
       [
         "sentry-expo"
+      ],
+      [
+        "./app.plugin.js",
+        {
+          "widgetName": "widget",
+          "ios": {
+            "devTeamId": "Y4HPW9GX7Y",
+            "appGroupIdentifier": "group.expo.modules.widgetsync.data"
+          }
+        }
       ],
       [
         "expo-calendar",

@@ -17,7 +17,12 @@
     },
     "production": {
       "autoIncrement": true,
-      "credentialsSource": "local"
+      "ios": {
+        "credentialsSource": "local"
+      },
+      "android": {
+        "credentialsSource": "remote"
+      }
     }
   },
   "submit": {
