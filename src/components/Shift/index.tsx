@@ -33,8 +33,9 @@ const Shift = ({
               : COLOR.sub5
             : 'white',
           paddingLeft: fullNameVisibilty ? 0 : 8,
-          borderWidth: isToday ? 1.5 : 1,
-          borderColor: isToday ? COLOR.main1 : !isCurrent ? 'white' : backgroundColor,
+          paddingVertical: isToday ? 2.5 : 4,
+          borderWidth: isToday ? 1.5 : 0,
+          borderColor: COLOR.main1,
           borderRadius: !fullNameVisibilty && isToday ? 50 : 5,
         },
       ]}
@@ -67,7 +68,6 @@ const styles = StyleSheet.create({
   shiftContainer: {
     width: 'auto',
     paddingLeft: 8,
-    paddingVertical: 3,
     margin: 1,
     position: 'relative',
   },
