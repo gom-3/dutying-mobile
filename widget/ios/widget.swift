@@ -401,7 +401,7 @@ struct small01View : View {
       } else {
         HStack {
           Rectangle()
-            .fill(Color(UIColor(rgb: 0xF8E85A)))
+            .fill(Color(UIColor(rgb: entry.widgetData.today.schedules[0].color)))
             .frame(width: 4, height: 36)
           VStack(alignment: .leading){
             Text(entry.widgetData.today.schedules[0].title)
