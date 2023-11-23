@@ -11,13 +11,16 @@ import ColorPickers, {
   PreviewText,
 } from 'reanimated-color-picker';
 import PlusIcon from '@assets/svgs/plus-gray.svg';
+import BottomSheetHeader from '@components/BottomSheetHeader';
+import { TouchableOpacity } from 'react-native-gesture-handler';
+import CheckIcon from '@assets/svgs/check.svg';
 
 interface Props {
   color: string;
   onChange: (color: string) => void;
 }
 
-const customSwatches = new Array(6).fill('#fff').map(() => colorKit.randomRgbColor().hex());
+const customSwatches = new Array(6).fill('').map(() => colorKit.randomRgbColor().hex());
 
 const ColorPicker = ({ color, onChange }: Props) => {
   const ref = useRef<BottomSheetModal>(null);
@@ -50,8 +53,16 @@ const ColorPicker = ({ color, onChange }: Props) => {
         onChange={(index) => {
           if (index !== 1) ref.current?.close();
         }}
-        style={{ justifyContent: 'center', alignItems: 'center' }}
+        style={{ padding: 15 }}
       >
+        <BottomSheetHeader
+          onPressExit={() => ref.current?.close()}
+          rightItems={
+            <TouchableOpacity onPress={() => ref.current?.close()}>
+              <CheckIcon />
+            </TouchableOpacity>
+          }
+        />
         <View style={styles.pickerContainer}>
           <ColorPickers
             value={color}
@@ -63,11 +74,11 @@ const ColorPicker = ({ color, onChange }: Props) => {
             <HueCircular containerStyle={styles.hueContainer} thumbShape="pill">
               <Panel1 style={styles.panelStyle} />
             </HueCircular>
-            <Swatches
+            {/* <Swatches
               style={styles.swatchesContainer}
               swatchStyle={styles.swatchStyle}
               colors={customSwatches}
-            />
+            /> */}
             <View style={styles.previewTxtContainer}>
               <PreviewText style={{ color: '#707070' }} colorFormat="hsl" />
             </View>
