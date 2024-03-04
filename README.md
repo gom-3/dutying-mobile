@@ -1,62 +1,34 @@
-<p align='center'>Dutying 간호사 근무표</p>
+<img width="1510" alt="image" src="https://github.com/gom-3/dutying-web/assets/73516336/609319d4-8560-411e-a65e-206912bc09e7">
 
-## Team
 
-## 프로젝트 사양
+## Introduce
+This service provides an easy and convenient work schedule creation environment for head nurses who felt inconvenience due to the existing difficult work schedule creation process, and by synchronizing the created work schedules, it eliminates the hassle of registering and checking cumbersome shift work.
 
-### State Management
+## Platform
+We provide a web service for head nurses and a mobile app for general nurses, solving their respective issues. By linking these two platforms into a single service, we eliminate inefficient tasks that previously occurred offline.
 
-store
+### Web 
 
-- Zustand: https://github.com/pmndrs/zustand
+Our web service provides head nurses with guidance based on scheduling constraints and a work schedule auto-completion feature, reducing the time and difficulty involved in creating work schedules.
+- URL : <a href="https://dutying.net">https://dutying.net</a>
+- Github : <a href="https://github.com/gom-3/dutying-web">Github Repo Link</a>
 
-fetch
+### Mobile App (this repo)
+General nurses can directly check the synchronized work schedules through the mobile app and even apply for leave. They can easily find out who they will be working with and who the shift handover will be from, without having to search through the entire Excel sheet. They can selectively sync with all calendars stored on the device, allowing them to manage all schedules through a single app.
+- IOS : <a href="https://apps.apple.com/kr/app/%EB%93%80%ED%8C%85-%EA%B0%84%ED%98%B8%EC%82%AC-%EA%B7%BC%EB%AC%B4%ED%91%9C/id6466558189">App Store Link</a>
+- Android : <a href="https://play.google.com/store/apps/details?id=com.gom3.dutying&hl=ko-KR">Google Play Link</a>
 
-- React Query: https://react-query.tanstack.com/overview
+## Tech Stack
+- Core : React-Native, TypesScript, Expo, Swift
+- State Management : Tanstack-Query, Zustand
+- Styling : StyleSheet
+- Package Manager : NPM
+- Monitoring : Sentry
+- Analytics : Google Ananytics, Airbridge
 
-mutation
+## Documentaion
+- <a href="https://gom3.notion.site/ce18d806df034effaf8e488f02f49cf4">Tutorial</a>
+- <a href="https://gom3.notion.site/5ed51c04dd5d475c868367ed05a7d903">Terms of Use</a>
 
-- axios: https://github.com/axios/axios
-
-### Linting Tools
-
-- ESlint: https://eslint.org/docs/user-guide/getting-started
-- prettier: https://prettier.io/docs/en/index.html
-- lint-staged: https://github.com/okonet/lint-staged
-
-### Others
-
-- Github Actions: https://docs.github.com/en/actions
-
-### Testing
-
-- Testing Library: https://github.com/okonet/lint-staged
-- Jest: https://jestjs.io/docs/getting-started
-
-## 컨벤션
-
-### 커밋
-
-- Feat: 새로운 기능 추가
-- Fix: 버그 수정
-- Docs: 문서 작성
-- Chore: 기타 변경사항 (빌드 스크립트 수정 등)
-
-### 브랜치
-
-- main: 배포용 브랜치
-- hotfix: 긴급 수정용 브랜치
-- release: 배포 준비용 브랜치
-- develop: 개발용 브랜치
-- DUT-XX: 작업용 브랜치 (XX: 이슈 번호)
-
-![](https://lanziani.com/slides/gitflow/images/gitflow_1.png)
-
-### 코드
-
-개발 하면서 정하기
-
-## VSCode Extensions
-
-- prettier
-- eslint
+## Lisence
+Apache License 2.0
